@@ -10,14 +10,42 @@ import java.io.FileOutputStream
 object ImageUtils {
 
     @JvmStatic
-    fun getFilePath(context: Context, uri: Uri, onResult: ((String?) -> Unit)? = null): String? {
-        val result = when (uri.scheme) {
-            "file" -> uri.path
-            "content" -> copyContentToCache(context, uri)
-            else -> null
+        /**
+     * מחזיר נתיב קובץ אמיתי.
+     * אם זה content:// -> מעתיק ל-cacheDir ומחזיר נתיב פנימי (זה גם פותר הרשאות + isolated process).
+     */
+    fun getFilePath(context: android.content.Context, uri: android.net.Uri, onResult: (String) -> Unit = {}): String? {
+        return try {
+            // file://
+            if (uri.scheme == "file") {
+                val p = uri.path
+                if (p != null && java.io.File(p).exists()) {
+                    onResult(p)
+                    return p
+                }
+            }
+
+            // content:// => copy to cache
+            val cr = context.contentResolver
+            val mime = cr.getType(uri) ?: ""
+            val ext = when {
+                mime.contains("png") -> "png"
+                mime.contains("webp") -> "webp"
+                mime.contains("jpeg") or mime.contains("jpg") -> "jpg"
+                mime.contains("mp4") -> "mp4"
+                else -> "bin"
+            }
+
+            val out = java.io.File(context.cacheDir, "import_${System.currentTimeMillis()}.$ext")
+            cr.openInputStream(uri)?.use { input ->
+                out.outputStream().use { output -> input.copyTo(output) }
+            } ?: return null
+
+            onResult(out.absolutePath)
+            out.absolutePath
+        } catch (e: Exception) {
+            null
         }
-        onResult?.invoke(result)
-        return result
     }
 
     private fun copyContentToCache(context: Context, uri: Uri): String? = try {
