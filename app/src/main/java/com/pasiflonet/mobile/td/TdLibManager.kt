@@ -1,7 +1,7 @@
 package com.pasiflonet.mobile.td
 
 import android.content.Context
-import android.util.Log
+import android.os.Build
 import com.pasiflonet.mobile.utils.CacheManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,9 +10,10 @@ import org.drinkless.tdlib.TdApi
 import java.io.File
 
 object TdLibManager {
+
     private var client: Client? = null
-    private var isAuthorized = false
     private var appContext: Context? = null
+    private var isAuthorized: Boolean = false
 
     private const val MAX_MESSAGES = 100
 
@@ -26,12 +27,12 @@ object TdLibManager {
         if (client != null) return
         appContext = context.applicationContext
 
-        // שקט לוגים של TDLib (לא קבצי לוג, רק רמת verbosity פנימית)
+        // שקט מוחלט בלוגים של TDLib
         Client.execute(TdApi.SetLogVerbosityLevel(0))
 
         client = Client.create({ update ->
             when (update) {
-                is TdApi.UpdateAuthorizationState -> handleAuthState(update.authorizationState, apiId, apiHash)
+                is TdApi.UpdateAuthorizationState -> handleAuth(update.authorizationState, apiId, apiHash)
                 is TdApi.UpdateNewMessage -> {
                     val list = _currentMessages.value.toMutableList()
                     list.add(0, update.message) // newest first
@@ -45,34 +46,50 @@ object TdLibManager {
                             } catch (_: Exception) {}
                         }
                     }
+
                     _currentMessages.value = list
                 }
             }
         }, null, null)
     }
 
-    private fun handleAuthState(state: TdApi.AuthorizationState, apiId: Int, apiHash: String) {
+    private fun handleAuth(state: TdApi.AuthorizationState, apiId: Int, apiHash: String) {
         _authState.value = state
 
         when (state) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
                 val ctx = appContext ?: return
-                val params = TdApi.TdlibParameters().apply {
-                    databaseDirectory = File(ctx.filesDir, "tdlib_db").absolutePath
-                    filesDirectory = File(ctx.filesDir, "tdlib_files").absolutePath
-                    useMessageDatabase = true
-                    useSecretChats = false
-                    this.apiId = apiId
-                    this.apiHash = apiHash
-                    systemLanguageCode = "en"
-                    deviceModel = "Android"
-                    systemVersion = android.os.Build.VERSION.RELEASE ?: "Unknown"
-                    applicationVersion = "1.0"
-                    enableStorageOptimizer = true
-                }
-                client?.send(TdApi.SetTdlibParameters(params)) {}
+                val dbDir = File(ctx.filesDir, "tdlib_db").absolutePath
+                val filesDir = File(ctx.filesDir, "tdlib_files").absolutePath
+
+                // אצלך אין TdlibParameters(), לכן משתמשים ב-SetTdlibParameters
+                val p = TdApi.SetTdlibParameters(
+                    false,                // useTestDc
+                    dbDir,                // databaseDirectory
+                    filesDir,             // filesDirectory
+                    null,                 // databaseEncryptionKey (ByteArray)
+                    true,                 // useFileDatabase
+                    true,                 // useChatInfoDatabase
+                    true,                 // useMessageDatabase
+                    false,                // useSecretChats
+                    apiId,
+                    apiHash,
+                    "en",
+                    Build.MODEL ?: "Android",
+                    Build.VERSION.RELEASE ?: "Android",
+                    "Azretr"
+                )
+
+                client?.send(p) { /* ignore */ }
             }
-            is TdApi.AuthorizationStateReady -> isAuthorized = true
+
+            is TdApi.AuthorizationStateReady -> {
+                isAuthorized = true
+            }
+
+            is TdApi.AuthorizationStateClosed -> {
+                isAuthorized = false
+            }
         }
     }
 
@@ -98,33 +115,74 @@ object TdLibManager {
         client?.send(TdApi.DownloadFile(fileId, 32, 0, 0, false)) {}
     }
 
-    fun sendFinalMessage(targetUsername: String, caption: String, filePath: String?, isVideo: Boolean) {
-        if (!isAuthorized) return
-        val username = targetUsername.removePrefix("@")
+    fun getFilePath(fileId: Int, onResult: (String?) -> Unit) {
+        client?.send(TdApi.GetFile(fileId)) { obj ->
+            if (obj is TdApi.File) onResult(obj.local?.path) else onResult(null)
+        }
+    }
+
+    /**
+     * שליחת טקסט בלבד או קובץ.
+     * חשוב: אצלך SendMessage מקבל topicId מסוג MessageTopic, לכן שולחים null (לא 0).
+     */
+    fun sendFinalMessage(
+        targetUsername: String,
+        caption: String,
+        filePath: String?,
+        onError: (String) -> Unit = {}
+    ) {
+        if (!isAuthorized) { onError("Not authorized"); return }
+
+        val username = targetUsername.trim().removePrefix("@")
+        if (username.isBlank()) { onError("Target username is empty"); return }
 
         client?.send(TdApi.SearchPublicChat(username)) { chatRes ->
-            if (chatRes !is TdApi.Chat) return@send
+            when (chatRes) {
+                is TdApi.Error -> { onError(chatRes.message); return@send }
+                !is TdApi.Chat -> { onError("Chat not found"); return@send }
+            }
+
             val chatId = chatRes.id
 
-            // טקסט בלבד
-            if (filePath.isNullOrBlank()) {
-                val inputText = TdApi.InputMessageText(TdApi.FormattedText(caption, null), null, false)
-                client?.send(TdApi.SendMessage(chatId, 0, null, null, null, inputText)) {}
-                return@send
-            }
-
-            val local = File(filePath)
-            if (!local.exists()) {
-                Log.e("TdLib", "sendFinalMessage: file not found: $filePath")
-                return@send
-            }
-
-            val inputFile = TdApi.InputFileLocal(local.absolutePath)
             val content: TdApi.InputMessageContent =
-                if (isVideo) TdApi.InputMessageVideo(inputFile, null, null, 0, 0, 0, false, false, TdApi.FormattedText(caption, null))
-                else TdApi.InputMessagePhoto(inputFile, null, null, 0, TdApi.FormattedText(caption, null))
+                if (filePath.isNullOrBlank()) {
+                    TdApi.InputMessageText(TdApi.FormattedText(caption, null), null, false)
+                } else {
+                    val f = File(filePath)
+                    val input = TdApi.InputFileLocal(f.absolutePath)
+                    val ft = TdApi.FormattedText(caption, null)
 
-            client?.send(TdApi.SendMessage(chatId, 0, null, null, null, content)) {}
+                    if (filePath.endsWith(".mp4", true)) {
+                        TdApi.InputMessageVideo(
+                            input,               // video
+                            null,                // thumbnail
+                            null,                // addedVideoStickerFile (InputFile)
+                            0,                   // startTimestamp
+                            intArrayOf(),         // addedStickerFileIds
+                            0, 0, 0,             // duration,width,height (0=unknown)
+                            true,                // supportsStreaming
+                            ft,
+                            false,               // showCaptionAboveMedia
+                            null,                // selfDestructType
+                            false                // hasSpoiler
+                        )
+                    } else {
+                        TdApi.InputMessagePhoto(
+                            input,
+                            null,                // thumbnail
+                            intArrayOf(),         // addedStickerFileIds
+                            0, 0,                // width,height
+                            ft,
+                            false,               // showCaptionAboveMedia
+                            null,                // selfDestructType
+                            false                // hasSpoiler
+                        )
+                    }
+                }
+
+            client?.send(TdApi.SendMessage(chatId, null, null, null, null, content)) { r ->
+                if (r is TdApi.Error) onError(r.message)
+            }
         }
     }
 }
