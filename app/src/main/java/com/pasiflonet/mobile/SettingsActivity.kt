@@ -10,7 +10,7 @@ import com.pasiflonet.mobile.databinding.ActivitySettingsBinding
 import java.io.File
 import java.io.FileOutputStream
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
     private lateinit var b: ActivitySettingsBinding
     private lateinit var prefs: SharedPreferences
 

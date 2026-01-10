@@ -29,7 +29,7 @@ import java.util.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class DetailsActivity : AppCompatActivity() {
+class DetailsActivity : BaseActivity() {
     private lateinit var b: ActivityDetailsBinding
     private var rawMediaPath: String? = null
     private var isVideo = false

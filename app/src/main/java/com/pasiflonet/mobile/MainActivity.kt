@@ -22,7 +22,7 @@ import org.drinkless.tdlib.TdApi
 import java.io.File
 import android.util.Log
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private lateinit var b: ActivityMainBinding
     private lateinit var adapter: ChatAdapter
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
