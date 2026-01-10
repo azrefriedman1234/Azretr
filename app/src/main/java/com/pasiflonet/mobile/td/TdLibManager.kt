@@ -160,7 +160,7 @@ object TdLibManager {
                 !is TdApi.Chat -> { onError("Chat not found"); return@send }
             }
 
-            val chatId = chatRes.id
+            val chatId = (chatRes as? TdApi.Chat)?.id ?: return@send
 
             val content: TdApi.InputMessageContent =
                 if (filePath.isNullOrBlank()) {

@@ -1,19 +1,25 @@
 package com.pasiflonet.mobile.utils
 
 /**
- * המשתמש ביקש: לא ליצור יותר קבצי לוגים.
- * לכן הכל no-op, אבל משאירים API "גמיש" כדי שכל הקריאות בקוד יתקמפלו.
+ * NO-OP: לא יוצר קבצי לוגים בכלל.
+ * מחזיר String ריק כדי שכל שימוש בקוד (גם בתוך ביטוי) יתקמפל.
  */
 object DownloadLog {
     const val ENABLED: Boolean = false
 
-    @JvmStatic fun i(tag: String, msg: String) { /* no-op */ }
-    @JvmStatic fun e(tag: String, msg: String, tr: Throwable? = null) { /* no-op */ }
+    @JvmStatic fun write(text: String): String = ""
+    @JvmStatic fun writeWithTimestamp(text: String): String = ""
+    @JvmStatic fun writeCrash(text: String): String = ""
+    @JvmStatic fun writeFfmpeg(text: String): String = ""
 
-    // תאימות מלאה: מאפשר כל חתימה וכל מספר פרמטרים
-    @JvmStatic fun write(vararg any: Any?) { /* no-op */ }
-    @JvmStatic fun writeWithTimestamp(vararg any: Any?) { /* no-op */ }
+    // תאימות לכל קריאה קיימת (Context/Throwable/כמה פרמטרים וכו')
+    @JvmStatic fun write(vararg any: Any?): String = ""
+    @JvmStatic fun writeWithTimestamp(vararg any: Any?): String = ""
+    @JvmStatic fun writeCrash(vararg any: Any?): String = ""
+    @JvmStatic fun writeFfmpeg(vararg any: Any?): String = ""
 
-    @JvmStatic fun writeCrash(vararg any: Any?) { /* no-op */ }
-    @JvmStatic fun writeFfmpeg(vararg any: Any?) { /* no-op */ }
+    @JvmStatic fun i(vararg any: Any?): String = ""
+    @JvmStatic fun d(vararg any: Any?): String = ""
+    @JvmStatic fun w(vararg any: Any?): String = ""
+    @JvmStatic fun e(vararg any: Any?): String = ""
 }
