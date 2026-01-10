@@ -35,11 +35,15 @@ object TdLibManager {
             when (update) {
                 is TdApi.UpdateAuthorizationState -> handleAuth(update.authorizationState, apiId, apiHash)
                 is TdApi.UpdateNewMessage -> {
-                    val list = _currentMessages.value.toMutableList()
-                    list.add(0, update.message)
+                    val current = _currentMessages.value.toMutableList()
 
-                    if (list.size > MAX_MESSAGES) {
-                        val removed = list.removeAt(list.size - 1)
+                    // הוסף את ההודעה החדשה ואז מיין "מהחדש לישן"
+                    current.add(update.message)
+                    current.sortWith(compareByDescending<TdApi.Message> { it.date }.thenByDescending { it.id })
+
+                    // הגבלה ל-100 הודעות + מחיקת קבצי temp של הישנות
+                    while (current.size > MAX_MESSAGES) {
+                        val removed = current.removeAt(current.size - 1) // oldest after sort
                         appContext?.let { ctx ->
                             try {
                                 CacheManager.deleteTempForMessage(ctx, removed)
@@ -47,7 +51,8 @@ object TdLibManager {
                             } catch (_: Exception) {}
                         }
                     }
-                    _currentMessages.value = list
+
+                    _currentMessages.value = current.toList()
                 }
             }
         }, null, null)
