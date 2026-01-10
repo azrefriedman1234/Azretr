@@ -5,188 +5,155 @@ import android.graphics.*
 import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.*
 
 object ImageUtils {
 
-    /**
-     * מחזיר נתיב קובץ אמיתי.
-     * אם uri הוא content:// -> מעתיק לקובץ בתוך cacheDir ומחזיר נתיב פנימי.
-     */
-    @JvmStatic
-    fun getFilePath(context: Context, uri: Uri, onResult: (String) -> Unit = {}): String? {
+    /** מחזיר path מקומי לקובץ (אם זה content:// הוא יועתק ל-cache) */
+    fun getFilePath(context: Context, uri: Uri): String? {
         return try {
-            if (uri.scheme == "file") {
-                val p = uri.path
-                if (!p.isNullOrBlank() && File(p).exists()) {
-                    onResult(p)
-                    return p
-                }
-            }
+            if (uri.scheme == "file") uri.path
+            else copyUriToCache(context, uri)
+        } catch (_: Exception) { null }
+    }
 
-            val cr = context.contentResolver
-            val mime = cr.getType(uri) ?: ""
-            val ext = when {
-                mime.contains("png") -> "png"
-                mime.contains("webp") -> "webp"
-                mime.contains("jpeg") || mime.contains("jpg") -> "jpg"
-                mime.contains("mp4") -> "mp4"
-                else -> "bin"
-            }
+    /** תאימות לקוד ישן שמצפה callback */
+    fun getFilePath(context: Context, uri: Uri, onResult: (String?) -> Unit) {
+        onResult(getFilePath(context, uri))
+    }
 
-            val out = File(context.cacheDir, "import_${System.currentTimeMillis()}.$ext")
-            cr.openInputStream(uri)?.use { input ->
-                FileOutputStream(out).use { output -> input.copyTo(output) }
-            } ?: return null
-
-            onResult(out.absolutePath)
-            out.absolutePath
-        } catch (_: Exception) {
-            null
-        }
+    private fun copyUriToCache(context: Context, uri: Uri): String? {
+        val cr = context.contentResolver
+        val name = "in_${System.currentTimeMillis()}.bin"
+        val out = File(context.cacheDir, name)
+        cr.openInputStream(uri)?.use { ins ->
+            FileOutputStream(out).use { fos -> ins.copyTo(fos) }
+        } ?: return null
+        return out.absolutePath
     }
 
     /**
-     * שומר על קומפילציה גם אם הקריאה משתנה:
-     * DetailsActivity יכול לקרוא עם חתימה שונה -> אנחנו מקבלים vararg.
-     *
-     * מחזיר נתיב קובץ פלט (בתוך cacheDir).
+     * עיבוד תמונה:
+     * - blurRects: אפשר יחסיים (0..1) או פיקסלים
+     * - לוגו: logoRelX/logoRelY יחסיים (0..1), logoRelW יחסית לרוחב התמונה
+     * מחזיר true אם נוצר קובץ תקין.
      */
-    @JvmStatic
-    fun processImage(context: Context, vararg args: Any?): String {
-        // 1) מוצאים inputPath אמיתי
-        val inputPath = args.firstOrNull { it is String && File(it).exists() } as? String
-            ?: throw IllegalArgumentException("processImage: missing input file path")
+    fun processImage(
+        context: Context,
+        inputPath: String,
+        outputPath: String,
+        blurRects: List<BlurRect>,
+        logoUri: Uri?,
+        logoRelX: Float,
+        logoRelY: Float,
+        logoRelW: Float
+    ): Boolean {
+        val src = decodeToBitmap(context, inputPath) ?: return false
+        val bmp = src.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = Canvas(bmp)
 
-        // 2) blurRects אם יש
-        val blurRects: List<Any?> = (args.firstOrNull { it is List<*> } as? List<*>)?.toList() ?: emptyList()
+        // blur strength: 15% יותר (כלומר scale קטן יותר)
+        val baseScale = 0.14f
+        val scale = (baseScale / 1.15f).coerceIn(0.08f, 0.20f)
 
-        // 3) לוגו אם יש (עוד String שקיים אבל לא ה-input)
-        val logoPath = args.filterIsInstance<String>()
-            .firstOrNull { it != inputPath && File(it).exists() }
-
-        // 4) פרמטרים יחסיים (אם קיימים)
-        val floats = args.filterIsInstance<Float>()
-        val logoRelX = floats.getOrNull(0) ?: 0.02f
-        val logoRelY = floats.getOrNull(1) ?: 0.02f
-        val logoRelW = floats.getOrNull(2) ?: 0.20f
-        val strengthMul = floats.getOrNull(3) ?: 1.0f   // אם אצלך אתה מעלה ב-15% -> תעביר 1.15f
-
-        val bmp = BitmapFactory.decodeFile(inputPath)
-            ?: throw IllegalStateException("processImage: cannot decode image")
-
-        val outBmp = bmp.copy(Bitmap.Config.ARGB_8888, true)
-        val canvas = Canvas(outBmp)
-
-        // blur בכל Rect שנמצא
-        val radius = (16f * strengthMul).coerceIn(6f, 40f)
         for (r in blurRects) {
-            val rect = toRectF(r, outBmp.width, outBmp.height) ?: continue
-            blurRectInPlace(outBmp, rect, radius)
+            val rr = toPxRect(bmp.width, bmp.height, r) ?: continue
+            blurRect(canvas, bmp, rr, scale)
         }
 
-        // Overlay logo אם יש
-        if (!logoPath.isNullOrBlank()) {
-            try {
-                val logoBmp = BitmapFactory.decodeFile(logoPath)
-                if (logoBmp != null) {
-                    val targetW = (outBmp.width * logoRelW).toInt().coerceAtLeast(24)
-                    val scale = targetW.toFloat() / logoBmp.width.toFloat()
-                    val targetH = (logoBmp.height * scale).toInt().coerceAtLeast(24)
+        // לוגו
+        if (logoUri != null && logoRelW > 0.01f) {
+            val logo = decodeLogo(context, logoUri)
+            if (logo != null) {
+                val targetW = (bmp.width * logoRelW).roundToInt().coerceAtLeast(24)
+                val ratio = logo.height.toFloat() / max(1, logo.width).toFloat()
+                val targetH = (targetW * ratio).roundToInt().coerceAtLeast(24)
+                val scaled = Bitmap.createScaledBitmap(logo, targetW, targetH, true)
 
-                    val scaled = Bitmap.createScaledBitmap(logoBmp, targetW, targetH, true)
-                    val x = (outBmp.width * logoRelX).toInt()
-                    val y = (outBmp.height * logoRelY).toInt()
+                val x = (bmp.width * logoRelX).roundToInt().coerceIn(0, max(0, bmp.width - targetW))
+                val y = (bmp.height * logoRelY).roundToInt().coerceIn(0, max(0, bmp.height - targetH))
 
-                    canvas.drawBitmap(scaled, x.toFloat(), y.toFloat(), Paint(Paint.ANTI_ALIAS_FLAG))
-                }
-            } catch (_: Exception) {}
-        }
-
-        val outFile = File(context.cacheDir, "processed_${System.currentTimeMillis()}.jpg")
-        FileOutputStream(outFile).use { fos ->
-            outBmp.compress(Bitmap.CompressFormat.JPEG, 92, fos)
-        }
-        return outFile.absolutePath
-    }
-
-    // ===== helpers =====
-
-    private fun toRectF(any: Any?, w: Int, h: Int): RectF? {
-        if (any == null) return null
-
-        // אם זה BlurRect שלנו (בדרך כלל יש לו left/top/right/bottom כ-Float)
-        try {
-            val cls = any.javaClass
-            val leftF = cls.methods.firstOrNull { it.name == "getLeft" }?.invoke(any) as? Float
-            val topF  = cls.methods.firstOrNull { it.name == "getTop" }?.invoke(any) as? Float
-            val rightF= cls.methods.firstOrNull { it.name == "getRight" }?.invoke(any) as? Float
-            val bottomF=cls.methods.firstOrNull { it.name == "getBottom" }?.invoke(any) as? Float
-            if (leftF != null && topF != null && rightF != null && bottomF != null) {
-                return RectF(leftF, topF, rightF, bottomF).normalize(w, h)
-            }
-        } catch (_: Exception) {}
-
-        return null
-    }
-
-    private fun RectF.normalize(w: Int, h: Int): RectF {
-        // אם הערכים נראים יחסיים (0..1) נהפוך לפיקסלים
-        val rel = (left in 0f..1.5f) && (right in 0f..1.5f) && (top in 0f..1.5f) && (bottom in 0f..1.5f)
-        val r = if (rel) RectF(left*w, top*h, right*w, bottom*h) else RectF(left, top, right, bottom)
-        r.sort()
-        // clamp
-        r.left = r.left.coerceIn(0f, w.toFloat())
-        r.right = r.right.coerceIn(0f, w.toFloat())
-        r.top = r.top.coerceIn(0f, h.toFloat())
-        r.bottom = r.bottom.coerceIn(0f, h.toFloat())
-        return r
-    }
-
-    /**
-     * blur פשוט (box blur) על תת-אזור. מספיק לתיקון קומפילציה + "blur" אמיתי (לא פיקסלים).
-     */
-    private fun blurRectInPlace(bmp: Bitmap, rect: RectF, radius: Float) {
-        val r = radius.toInt().coerceAtLeast(2)
-        val x0 = rect.left.toInt().coerceAtLeast(0)
-        val y0 = rect.top.toInt().coerceAtLeast(0)
-        val x1 = rect.right.toInt().coerceAtMost(bmp.width)
-        val y1 = rect.bottom.toInt().coerceAtMost(bmp.height)
-        if (x1 - x0 < 2 || y1 - y0 < 2) return
-
-        val w = x1 - x0
-        val h = y1 - y0
-        val pixels = IntArray(w * h)
-        bmp.getPixels(pixels, 0, w, x0, y0, w, h)
-
-        val out = IntArray(w * h)
-        for (y in 0 until h) {
-            for (x in 0 until w) {
-                var rs = 0
-                var gs = 0
-                var bs = 0
-                var cnt = 0
-                val yMin = (y - r).coerceAtLeast(0)
-                val yMax = (y + r).coerceAtMost(h - 1)
-                val xMin = (x - r).coerceAtLeast(0)
-                val xMax = (x + r).coerceAtMost(w - 1)
-                for (yy in yMin..yMax) {
-                    val row = yy * w
-                    for (xx in xMin..xMax) {
-                        val c = pixels[row + xx]
-                        rs += (c shr 16) and 0xff
-                        gs += (c shr 8) and 0xff
-                        bs += (c) and 0xff
-                        cnt++
-                    }
-                }
-                val a = 0xff
-                val rr = (rs / cnt).coerceIn(0, 255)
-                val gg = (gs / cnt).coerceIn(0, 255)
-                val bb = (bs / cnt).coerceIn(0, 255)
-                out[y * w + x] = (a shl 24) or (rr shl 16) or (gg shl 8) or bb
+                val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { alpha = 230 }
+                canvas.drawBitmap(scaled, x.toFloat(), y.toFloat(), p)
             }
         }
 
-        bmp.setPixels(out, 0, w, x0, y0, w, h)
+        return try {
+            val outFile = File(outputPath)
+            outFile.parentFile?.mkdirs()
+            FileOutputStream(outFile).use { fos ->
+                // jpg אם לא png
+                val isPng = outputPath.endsWith(".png", true)
+                val fmt = if (isPng) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+                val q = if (isPng) 100 else 92
+                bmp.compress(fmt, q, fos)
+            }
+            outFile.exists() && outFile.length() > 0
+        } catch (_: Exception) {
+            false
+        } finally {
+            try { src.recycle() } catch (_: Exception) {}
+        }
+    }
+
+    private fun decodeToBitmap(context: Context, path: String): Bitmap? {
+        return try {
+            if (path.startsWith("content://")) {
+                val uri = Uri.parse(path)
+                context.contentResolver.openInputStream(uri)?.use {
+                    BitmapFactory.decodeStream(it)
+                }
+            } else {
+                BitmapFactory.decodeFile(path)
+            }
+        } catch (_: Exception) { null }
+    }
+
+    private fun decodeLogo(context: Context, uri: Uri): Bitmap? {
+        return try {
+            context.contentResolver.openInputStream(uri)?.use {
+                BitmapFactory.decodeStream(it)
+            }
+        } catch (_: Exception) { null }
+    }
+
+    private fun toPxRect(w: Int, h: Int, r: BlurRect): Rect? {
+        // אם זה נראה יחסי (0..1.2) – נמיר ל-px
+        val relative = maxOf(r.left, r.top, r.right, r.bottom) <= 1.2f
+        val l = if (relative) (r.left * w) else r.left
+        val t = if (relative) (r.top * h) else r.top
+        val rr = if (relative) (r.right * w) else r.right
+        val bb = if (relative) (r.bottom * h) else r.bottom
+
+        val left = floor(min(l, rr)).toInt().coerceIn(0, w - 1)
+        val top = floor(min(t, bb)).toInt().coerceIn(0, h - 1)
+        val right = ceil(max(l, rr)).toInt().coerceIn(left + 1, w)
+        val bottom = ceil(max(t, bb)).toInt().coerceIn(top + 1, h)
+
+        if (right - left < 2 || bottom - top < 2) return null
+        return Rect(left, top, right, bottom)
+    }
+
+    /** blur לא מפוקסל: downscale+FILTER ואז upscale */
+    private fun blurRect(canvas: Canvas, src: Bitmap, rect: Rect, scale: Float) {
+        val rw = rect.width()
+        val rh = rect.height()
+
+        val region = Bitmap.createBitmap(src, rect.left, rect.top, rw, rh)
+
+        val sw = max(1, (rw * scale).roundToInt())
+        val sh = max(1, (rh * scale).roundToInt())
+
+        val small = Bitmap.createScaledBitmap(region, sw, sh, true)
+        val blurred = Bitmap.createScaledBitmap(small, rw, rh, true)
+
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            isFilterBitmap = true
+        }
+        canvas.drawBitmap(blurred, rect.left.toFloat(), rect.top.toFloat(), paint)
+
+        try { region.recycle() } catch (_: Exception) {}
+        try { small.recycle() } catch (_: Exception) {}
+        try { blurred.recycle() } catch (_: Exception) {}
     }
 }

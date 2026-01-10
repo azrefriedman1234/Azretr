@@ -68,7 +68,7 @@ class ChatAdapter(
     }
 
     fun updateList(newItems: List<TdApi.Message>) {
-        items = newItems
+        items = newItems.sortedByDescending { it.date }
         notifyDataSetChanged()
     }
 

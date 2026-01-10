@@ -3,24 +3,23 @@ package com.pasiflonet.mobile.utils
 import android.content.Context
 
 /**
- * המשתמש ביקש: לא ליצור קבצי לוגים.
- * עדיין שומרים חתימות תואמות כדי שלא יהיו שגיאות קומפילציה.
+ * המשתמש ביקש: לא ליצור יותר קבצי לוגים.
+ * לכן הכל כאן NO-OP.
+ *
+ * חשוב: יש כאן overloadים שמחזירים String כדי לא לשבור קוד שמצפה ל-String.
  */
 object DownloadLog {
-    @JvmStatic fun i(tag: String, msg: String) {}
-    @JvmStatic fun e(tag: String, msg: String, tr: Throwable? = null) {}
+    const val ENABLED: Boolean = false
 
-    @JvmStatic fun write(text: String): String = ""
-    @JvmStatic fun write(context: Context?, text: String): String = ""
-    @JvmStatic fun write(context: Context?, fileName: String, text: String): String = ""
-    @JvmStatic fun write(tag: String, text: String): String = ""
+    fun i(tag: String, msg: String) {}
+    fun e(tag: String, msg: String, tr: Throwable? = null) {}
 
-    @JvmStatic fun writeWithTimestamp(text: String): String = ""
-    @JvmStatic fun writeWithTimestamp(context: Context?, text: String): String = ""
-    @JvmStatic fun writeWithTimestamp(context: Context?, fileName: String, text: String): String = ""
+    fun write(text: String): String = text
+    fun write(ctx: Context, text: String): String = text
 
-    @JvmStatic fun writeCrash(text: String) {}
-    @JvmStatic fun writeCrash(context: Context?, text: String) {}
-    @JvmStatic fun writeFfmpeg(text: String) {}
-    @JvmStatic fun writeFfmpeg(context: Context?, text: String) {}
+    fun writeWithTimestamp(text: String): String = text
+    fun writeWithTimestamp(ctx: Context, text: String): String = text
+
+    fun writeCrash(text: String) {}
+    fun writeFfmpeg(text: String) {}
 }

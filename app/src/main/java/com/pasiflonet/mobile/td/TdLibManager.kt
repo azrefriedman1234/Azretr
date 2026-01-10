@@ -209,4 +209,13 @@ object TdLibManager {
             }
         }
     }
+
+    fun setOnline(online: Boolean) {
+        val c = client ?: return
+        try {
+            c.send(TdApi.SetOption("online", TdApi.OptionValueBoolean(online))) {}
+            c.send(TdApi.SetOption("is_background", TdApi.OptionValueBoolean(!online))) {}
+        } catch (_: Exception) {}
+    }
+
 }
