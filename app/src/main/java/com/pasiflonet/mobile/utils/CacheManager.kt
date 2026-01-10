@@ -7,50 +7,82 @@ import java.io.File
 object CacheManager {
 
     fun getCacheSize(context: Context): String {
-        return try { formatSize(getDirSize(context.cacheDir)) } catch (_: Exception) { "0 MB" }
+        return try {
+            val size = getDirSize(context.cacheDir)
+            formatSize(size)
+        } catch (_: Exception) {
+            "0 MB"
+        }
     }
 
     fun clearAppCache(context: Context) {
-        try { context.cacheDir.deleteRecursively() } catch (_: Exception) {}
+        try {
+            context.cacheDir.deleteRecursively()
+        } catch (_: Exception) {}
     }
 
+    /**
+     * מוחק קבצי מדיה מקומיים של ההודעה (רק בתוך תיקיות שמותר לנו למחוק):
+     * - filesDir/tdlib_files (קבצי TDLib)
+     * - cacheDir / externalCacheDir (קבצי temp של האפליקציה)
+     */
     fun deleteTempForMessage(context: Context, msg: TdApi.Message) {
         val tdlibDir = File(context.filesDir, "tdlib_files")
         val allowed = listOfNotNull(context.cacheDir, context.externalCacheDir, tdlibDir)
 
-        fun canDelete(f: File): Boolean = try {
-            val c = f.canonicalFile
-            allowed.any { parent -> c.path.startsWith(parent.canonicalFile.path) }
-        } catch (_: Exception) { false }
+        fun canDelete(f: File): Boolean {
+            return try {
+                val c = f.canonicalFile
+                allowed.any { parent -> c.path.startsWith(parent.canonicalFile.path) }
+            } catch (_: Exception) { false }
+        }
 
         fun delPath(path: String?) {
             if (path.isNullOrBlank()) return
             try {
                 val f = File(path)
-                if (f.exists() && f.isFile && canDelete(f)) f.delete()
+                if (f.exists() && f.isFile && canDelete(f)) {
+                    f.delete()
+                }
             } catch (_: Exception) {}
         }
 
         when (val c = msg.content) {
-            is TdApi.MessagePhoto -> c.photo.sizes.forEach { ps -> delPath(ps.photo.local.path) }
-            is TdApi.MessageVideo -> { delPath(c.video.video.local.path); delPath(c.video.thumbnail?.file?.local?.path) }
-            is TdApi.MessageAnimation -> { delPath(c.animation.animation.local.path); delPath(c.animation.thumbnail?.file?.local?.path) }
-            is TdApi.MessageDocument -> { delPath(c.document.document.local.path); delPath(c.document.thumbnail?.file?.local?.path) }
+            is TdApi.MessagePhoto -> c.photo.sizes.forEach { delPath(it.photo.local.path) }
+            is TdApi.MessageVideo -> {
+                delPath(c.video.video.local.path)
+                delPath(c.video.thumbnail?.file?.local?.path)
+            }
+            is TdApi.MessageAnimation -> {
+                delPath(c.animation.animation.local.path)
+                delPath(c.animation.thumbnail?.file?.local?.path)
+            }
+            is TdApi.MessageDocument -> {
+                delPath(c.document.document.local.path)
+                delPath(c.document.thumbnail?.file?.local?.path)
+            }
         }
     }
 
+    /**
+     * ניקוי קבצי temp ישנים מה-cacheDir כדי שלא יגדל בלי סוף.
+     */
     fun pruneAppTempFiles(context: Context, keep: Int = 250) {
         val dir = context.cacheDir ?: return
         val prefixes = listOf("sent_", "safe_", "proc_", "processed_", "tmp_", "draft_")
         val files = dir.listFiles()?.filter { it.isFile && prefixes.any { p -> it.name.startsWith(p) } } ?: return
         if (files.size <= keep) return
-        files.sortedByDescending { it.lastModified() }.drop(keep).forEach { f -> try { f.delete() } catch (_: Exception) {} }
+
+        val sorted = files.sortedByDescending { it.lastModified() }
+        sorted.drop(keep).forEach { f -> try { f.delete() } catch (_: Exception) {} }
     }
 
     private fun getDirSize(dir: File?): Long {
         if (dir == null || !dir.exists()) return 0
         var size = 0L
-        for (file in dir.listFiles().orEmpty()) size += if (file.isDirectory) getDirSize(file) else file.length()
+        for (file in dir.listFiles().orEmpty()) {
+            size += if (file.isDirectory) getDirSize(file) else file.length()
+        }
         return size
     }
 

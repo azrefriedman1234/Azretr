@@ -54,6 +54,184 @@
         app:layout_constraintTop_toTopOf="@id/tvTitle"
         app:layout_constraintEnd_toStartOf="@id/btnSettings" />
 
+    <!-- API container -->
+    <LinearLayout
+        android:id="@+id/apiContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_cyber_input"
+        android:padding="22dp"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="API Configuration"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="14dp"/>
+
+        <EditText
+            android:id="@+id/etApiId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="API ID"
+            android:inputType="number"
+            android:background="@null"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:textSize="18sp"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/cyber_border_dim"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etApiHash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="API Hash"
+            android:background="@null"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:textSize="18sp"
+            android:padding="12dp"
+            android:layout_marginBottom="18dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSaveApi"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:text="INITIALIZE SYSTEM"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_cyber_button"/>
+    </LinearLayout>
+
+    <!-- Login container -->
+    <LinearLayout
+        android:id="@+id/loginContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_cyber_input"
+        android:padding="22dp"
+        android:elevation="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Secure Login"
+            android:textSize="24sp"
+            android:textColor="@color/cyber_secondary"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="22dp"/>
+
+        <LinearLayout
+            android:id="@+id/phoneLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="+972..."
+                android:background="@drawable/bg_cyber_input"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSendCode"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="SEND CODE"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_cyber_button"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/codeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/etCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="12345"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:background="@drawable/bg_cyber_input"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnVerify"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="VERIFY"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_cyber_button"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/passwordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="2FA Password"
+                android:inputType="textPassword"
+                android:background="@drawable/bg_cyber_input"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnVerifyPassword"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="UNLOCK"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_cyber_button"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Main content -->
     <LinearLayout
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
@@ -62,71 +240,6 @@
         android:layout_marginTop="18dp"
         app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
         app:layout_constraintBottom_toBottomOf="parent">
-
-        <LinearLayout
-            android:id="@+id/tableHeader"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/row_border"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:layout_width="64dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="פרטים"
-                android:textStyle="bold"
-                android:textColor="@color/cyber_primary"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="0.16"
-                android:gravity="center"
-                android:text="שעה"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.12"
-                android:gravity="center"
-                android:text="סוג"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                android:gravity="center"
-                android:text="ID"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.16"
-                android:gravity="center"
-                android:text="גודל"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.36"
-                android:gravity="right"
-                android:text="טקסט"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"/>
-        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMessages"
