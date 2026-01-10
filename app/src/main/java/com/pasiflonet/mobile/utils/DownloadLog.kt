@@ -1,25 +1,26 @@
 package com.pasiflonet.mobile.utils
 
+import android.content.Context
+
 /**
- * NO-OP: לא יוצר קבצי לוגים בכלל.
- * מחזיר String ריק כדי שכל שימוש בקוד (גם בתוך ביטוי) יתקמפל.
+ * המשתמש ביקש: לא ליצור קבצי לוגים.
+ * עדיין שומרים חתימות תואמות כדי שלא יהיו שגיאות קומפילציה.
  */
 object DownloadLog {
-    const val ENABLED: Boolean = false
+    @JvmStatic fun i(tag: String, msg: String) {}
+    @JvmStatic fun e(tag: String, msg: String, tr: Throwable? = null) {}
 
     @JvmStatic fun write(text: String): String = ""
+    @JvmStatic fun write(context: Context?, text: String): String = ""
+    @JvmStatic fun write(context: Context?, fileName: String, text: String): String = ""
+    @JvmStatic fun write(tag: String, text: String): String = ""
+
     @JvmStatic fun writeWithTimestamp(text: String): String = ""
-    @JvmStatic fun writeCrash(text: String): String = ""
-    @JvmStatic fun writeFfmpeg(text: String): String = ""
+    @JvmStatic fun writeWithTimestamp(context: Context?, text: String): String = ""
+    @JvmStatic fun writeWithTimestamp(context: Context?, fileName: String, text: String): String = ""
 
-    // תאימות לכל קריאה קיימת (Context/Throwable/כמה פרמטרים וכו')
-    @JvmStatic fun write(vararg any: Any?): String = ""
-    @JvmStatic fun writeWithTimestamp(vararg any: Any?): String = ""
-    @JvmStatic fun writeCrash(vararg any: Any?): String = ""
-    @JvmStatic fun writeFfmpeg(vararg any: Any?): String = ""
-
-    @JvmStatic fun i(vararg any: Any?): String = ""
-    @JvmStatic fun d(vararg any: Any?): String = ""
-    @JvmStatic fun w(vararg any: Any?): String = ""
-    @JvmStatic fun e(vararg any: Any?): String = ""
+    @JvmStatic fun writeCrash(text: String) {}
+    @JvmStatic fun writeCrash(context: Context?, text: String) {}
+    @JvmStatic fun writeFfmpeg(text: String) {}
+    @JvmStatic fun writeFfmpeg(context: Context?, text: String) {}
 }
