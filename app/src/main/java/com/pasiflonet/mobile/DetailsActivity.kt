@@ -371,7 +371,7 @@ var logoUri: Uri? = null
                         }
                     } catch (_: Exception) { false }
                 } else {
-                    ImageUtils.processImage(
+                    success = ImageUtils.processImage(
                         appCtx, safeInputPath, outPath, rects,
                         logoUri, logoRelX, logoRelY, relW
                     )
