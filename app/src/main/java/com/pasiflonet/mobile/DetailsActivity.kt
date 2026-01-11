@@ -371,13 +371,13 @@ var logoUri: Uri? = null
                         }
                     } catch (_: Exception) { false }
                 } else {
-                    success = ImageUtils.processImage(
+                    ImageUtils.processImage(
                         appCtx, safeInputPath, outPath, rects,
                         logoUri, logoRelX, logoRelY, relW
                     )
                 }
 
-                if (success && File(outPath).exists() && File(outPath).length() > 0) {
+                if (File(outPath).exists() && File(outPath).length() > 0) {
                     TdLibManager.sendFinalMessage(target, caption, outPath, isVideo)
                     safeToast("✅ נשלח")
                     runOnUiThread { try { finish() } catch (_: Exception) {} }
