@@ -3,35 +3,26 @@ package com.pasiflonet.mobile.utils
 import android.content.Context
 
 /**
- * המשתמש ביקש: לא ליצור יותר קבצי לוגים.
- * לכן הכל כאן NO-OP.
- *
- * חשוב: יש כאן overloads + vararg כדי לא לשבור קומפילציה
- * מכל מיני קריאות שקיימות בפרויקט (ctx/tag/text/Throwable וכו').
+ * המשתמש ביקש: לא ליצור יותר לוגים לקבצים.
+ * אז הכל כאן NO-OP. מחזירים String ריק כדי להתאים לקוד שמצפה למסלול/טקסט.
  */
 object DownloadLog {
     const val ENABLED: Boolean = false
 
-    // info/error no-op (תופס כל חתימה)
-    fun i(vararg args: Any?) {}
-    fun e(vararg args: Any?) {}
+    @JvmStatic fun i(tag: String, msg: String) { /* no-op */ }
+    @JvmStatic fun e(tag: String, msg: String, tr: Throwable? = null) { /* no-op */ }
 
-    // ---- write: מחזיר String כדי לא לשבור קוד שמצפה להחזרה ----
-    fun write(text: String): String = text
-    fun write(ctx: Context, text: String): String = text
-    fun write(tag: String, text: String): String = text
-    fun write(ctx: Context, tag: String, text: String): String = text
+    // generic writers (some code expects a String return)
+    @JvmStatic fun write(text: String): String = ""
+    @JvmStatic fun write(ctx: Context, text: String): String = ""
 
-    // catch-all לכל מקרה (למשל write(ctx, tag, text, throwable))
-    fun write(vararg args: Any?): String = args.lastOrNull()?.toString() ?: ""
+    @JvmStatic fun writeWithTimestamp(text: String): String = ""
+    @JvmStatic fun writeWithTimestamp(ctx: Context, text: String): String = ""
 
-    // ---- writeWithTimestamp: אותו רעיון ----
-    fun writeWithTimestamp(text: String): String = text
-    fun writeWithTimestamp(ctx: Context, text: String): String = text
-    fun writeWithTimestamp(tag: String, text: String): String = text
-    fun writeWithTimestamp(ctx: Context, tag: String, text: String): String = text
-    fun writeWithTimestamp(vararg args: Any?): String = write(*args)
+    // specific helpers (also return String to avoid "Unit but String expected")
+    @JvmStatic fun writeCrash(text: String): String = ""
+    @JvmStatic fun writeCrash(ctx: Context, text: String): String = ""
 
-    fun writeCrash(vararg args: Any?) {}
-    fun writeFfmpeg(vararg args: Any?) {}
+    @JvmStatic fun writeFfmpeg(text: String): String = ""
+    @JvmStatic fun writeFfmpeg(ctx: Context, text: String): String = ""
 }
