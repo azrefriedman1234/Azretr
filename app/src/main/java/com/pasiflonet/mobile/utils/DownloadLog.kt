@@ -4,48 +4,34 @@ import android.content.Context
 
 /**
  * המשתמש ביקש: לא ליצור יותר קבצי לוגים.
- * הכל no-op.
- * מחזיר String כדי לא לשבור קוד שמצפה לערך חזרה.
+ * לכן הכל כאן NO-OP.
+ *
+ * חשוב: יש כאן overloads + vararg כדי לא לשבור קומפילציה
+ * מכל מיני קריאות שקיימות בפרויקט (ctx/tag/text/Throwable וכו').
  */
 object DownloadLog {
     const val ENABLED: Boolean = false
 
-    fun i(tag: String, msg: String) { /* no-op */ }
-    fun e(tag: String, msg: String, tr: Throwable? = null) { /* no-op */ }
+    // info/error no-op (תופס כל חתימה)
+    fun i(vararg args: Any?) {}
+    fun e(vararg args: Any?) {}
 
-    // חתימות "ספציפיות"
-    fun write(text: String): String = ""
-    fun write(ctx: Context, text: String): String = ""
-    fun write(tag: String, text: String): String = ""
-    fun write(ctx: Context, tag: String, text: String): String = ""
+    // ---- write: מחזיר String כדי לא לשבור קוד שמצפה להחזרה ----
+    fun write(text: String): String = text
+    fun write(ctx: Context, text: String): String = text
+    fun write(tag: String, text: String): String = text
+    fun write(ctx: Context, tag: String, text: String): String = text
 
-    fun writeWithTimestamp(text: String): String = ""
-    fun writeWithTimestamp(ctx: Context, text: String): String = ""
-    fun writeWithTimestamp(tag: String, text: String): String = ""
-    fun writeWithTimestamp(ctx: Context, tag: String, text: String): String = ""
+    // catch-all לכל מקרה (למשל write(ctx, tag, text, throwable))
+    fun write(vararg args: Any?): String = args.lastOrNull()?.toString() ?: ""
 
-    fun writeCrash(text: String): String = ""
-    fun writeCrash(ctx: Context, text: String): String = ""
+    // ---- writeWithTimestamp: אותו רעיון ----
+    fun writeWithTimestamp(text: String): String = text
+    fun writeWithTimestamp(ctx: Context, text: String): String = text
+    fun writeWithTimestamp(tag: String, text: String): String = text
+    fun writeWithTimestamp(ctx: Context, tag: String, text: String): String = text
+    fun writeWithTimestamp(vararg args: Any?): String = write(*args)
 
-    fun writeFfmpeg(text: String): String = ""
-    fun writeFfmpeg(ctx: Context, text: String): String = ""
-
-    // "פאלבק" גמיש לקריאות עם 2-4 פרמטרים (מונע 'None can be called')
-    @Suppress("UNUSED_PARAMETER")
-    fun write(a: Any?, b: Any?): String = ""
-
-    @Suppress("UNUSED_PARAMETER")
-    fun write(ctx: Context, a: Any?, b: Any?): String = ""
-
-    @Suppress("UNUSED_PARAMETER")
-    fun write(ctx: Context, a: Any?, b: Any?, c: Any?): String = ""
-
-    @Suppress("UNUSED_PARAMETER")
-    fun writeWithTimestamp(a: Any?, b: Any?): String = ""
-
-    @Suppress("UNUSED_PARAMETER")
-    fun writeWithTimestamp(ctx: Context, a: Any?, b: Any?): String = ""
-
-    @Suppress("UNUSED_PARAMETER")
-    fun writeWithTimestamp(ctx: Context, a: Any?, b: Any?, c: Any?): String = ""
+    fun writeCrash(vararg args: Any?) {}
+    fun writeFfmpeg(vararg args: Any?) {}
 }
