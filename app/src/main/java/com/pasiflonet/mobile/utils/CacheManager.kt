@@ -3,53 +3,38 @@ package com.pasiflonet.mobile.utils
 import android.content.Context
 import org.drinkless.tdlib.TdApi
 import java.io.File
+import java.util.Locale
 
 object CacheManager {
 
+    // יעד: להשאיר את tdlib_files עד ~1.2GB כדי שלא יתנפח בלי סוף
+    private const val TDLIB_FILES_CAP_BYTES: Long = 1_200L * 1024L * 1024L * 1024L
+
+    /** מציג גודל "אמיתי" (cache + externalCache + tdlib_files) */
     fun getCacheSize(context: Context): String {
         return try {
-            val size = getDirSize(context.cacheDir) + getDirSize(context.externalCacheDir)
-            formatSize(size)
+            val tdlibDir = File(context.filesDir, "tdlib_files")
+            val total =
+                getDirSize(context.cacheDir) +
+                getDirSize(context.externalCacheDir) +
+                getDirSize(tdlibDir)
+            formatSize(total)
         } catch (_: Exception) {
             "0 MB"
         }
     }
 
     /**
-     * ניקוי אמיתי: לא רק cacheDir אלא גם:
-     * - cacheDir + externalCacheDir
-     * - filesDir/tdlib_files (הורדות TDLib)  ✅ זה מה שתופס אצלך את ה-700MB לרוב
-     * - tmp/processed/sent שנשארים ב-filesDir
-     *
-     * לא מוחק tdlib_db כדי שלא תצטרך להתחבר מחדש.
+     * הכפתור "נקה מטמון" קורא לזה בהרבה מקומות.
+     * פה אנחנו הופכים את זה לניקוי עמוק — בלי למחוק התחברות:
+     * ✅ מוחק: cacheDir / externalCacheDir / files/tdlib_files + תיקיות עיבוד שלנו
+     * ❌ לא נוגע: files/tdlib_db (DB של TDLib, כולל auth)
      */
     fun clearAppCache(context: Context) {
-        try { context.cacheDir.deleteRecursively() } catch (_: Exception) {}
-        try { context.externalCacheDir?.deleteRecursively() } catch (_: Exception) {}
-
-        // מוחק הורדות TDLib (מדיה)
-        try {
-            val tdlibFiles = File(context.filesDir, "tdlib_files")
-            if (tdlibFiles.exists()) tdlibFiles.deleteRecursively()
-            tdlibFiles.mkdirs()
-        } catch (_: Exception) {}
-
-        // מוחק קבצי tmp/processed שהאפליקציה יצרה ושמה ב-filesDir
-        try {
-            val prefixes = listOf("sent_", "safe_", "proc_", "processed_", "tmp_", "draft_")
-            context.filesDir.listFiles()?.forEach { f ->
-                if (f.isFile && prefixes.any { p -> f.name.startsWith(p) }) {
-                    try { f.delete() } catch (_: Exception) {}
-                }
-            }
-        } catch (_: Exception) {}
+        deepCleanNoLogout(context)
     }
 
-    /**
-     * מוחק קבצי מדיה מקומיים של ההודעה (רק בתוך תיקיות שמותר לנו למחוק):
-     * - filesDir/tdlib_files (קבצי TDLib)
-     * - cacheDir / externalCacheDir (קבצי temp של האפליקציה)
-     */
+    /** מוחק קבצי מדיה מקומיים של ההודעה (רק מה שמותר למחוק). */
     fun deleteTempForMessage(context: Context, msg: TdApi.Message) {
         val tdlibDir = File(context.filesDir, "tdlib_files")
         val allowed = listOfNotNull(context.cacheDir, context.externalCacheDir, tdlibDir)
@@ -87,36 +72,94 @@ object CacheManager {
     }
 
     /**
-     * ניקוי קבצי temp ישנים (cacheDir) – שומר רק newest "keep"
+     * ניקוי קבצי temp ישנים מתוך cacheDir כדי שלא יגדל בלי סוף.
+     * בנוסף: מאכף תקרת נפח לתיקיית tdlib_files (ככה האחסון לא יתנפח שוב).
      */
     fun pruneAppTempFiles(context: Context, keep: Int = 250) {
-        val prefixes = listOf("sent_", "safe_", "proc_", "processed_", "tmp_", "draft_")
+        try {
+            val dir = context.cacheDir ?: return
+            val prefixes = listOf("sent_", "safe_", "proc_", "processed_", "tmp_", "draft_")
+            val files = dir.listFiles()?.filter { it.isFile && prefixes.any { p -> it.name.startsWith(p) } } ?: emptyList()
+            if (files.size > keep) {
+                val sorted = files.sortedByDescending { it.lastModified() }
+                sorted.drop(keep).forEach { f -> try { f.delete() } catch (_: Exception) {} }
+            }
+        } catch (_: Exception) {}
 
-        fun pruneDir(dir: File?) {
-            if (dir == null || !dir.exists()) return
-            val files = dir.listFiles()?.filter { it.isFile && prefixes.any { p -> it.name.startsWith(p) } } ?: return
-            if (files.size <= keep) return
-            val sorted = files.sortedByDescending { it.lastModified() }
-            sorted.drop(keep).forEach { f -> try { f.delete() } catch (_: Exception) {} }
+        // מאוד חשוב: מאכף תקרה ל-tdlib_files כדי שלא יגיע לג׳יגות
+        try { enforceTdlibFilesCap(context, TDLIB_FILES_CAP_BYTES) } catch (_: Exception) {}
+    }
+
+    /** ניקוי עמוק: cache + externalCache + tdlib_files + תיקיות עיבוד שלנו. */
+    fun deepCleanNoLogout(context: Context) {
+        // לא לגעת בזה:
+        // val tdlibDb = File(context.filesDir, "tdlib_db")
+
+        val cache = context.cacheDir
+        val extCache = context.externalCacheDir
+        val tdlibFiles = File(context.filesDir, "tdlib_files")
+
+        // גם אם יש לך תיקיות עיבוד משלך
+        val processedDirs = listOf(
+            File(context.filesDir, "processed"),
+            File(context.filesDir, "tmp"),
+            File(context.filesDir, "out"),
+        )
+
+        // מוחקים את תוכן cache/externalCache
+        try { cache?.listFiles()?.forEach { it.deleteRecursively() } } catch (_: Exception) {}
+        try { extCache?.listFiles()?.forEach { it.deleteRecursively() } } catch (_: Exception) {}
+
+        // מוחקים את תוכן tdlib_files (זה מה שתופס ג׳יגות), אבל לא נוגעים ב-tdlib_db
+        try {
+            if (tdlibFiles.exists()) tdlibFiles.listFiles()?.forEach { it.deleteRecursively() }
+            tdlibFiles.mkdirs()
+        } catch (_: Exception) {}
+
+        // מוחקים תיקיות עיבוד שלנו (לא DB)
+        processedDirs.forEach { d ->
+            try { if (d.exists()) d.deleteRecursively() } catch (_: Exception) {}
         }
 
-        pruneDir(context.cacheDir)
-        pruneDir(context.externalCacheDir)
-        // גם filesDir (לפעמים נשאר שם processed)
-        pruneDir(context.filesDir)
+        // אחרי ניקוי עמוק, מאכפים תקרה (למקרה שיתחיל לרדת מחדש)
+        try { enforceTdlibFilesCap(context, TDLIB_FILES_CAP_BYTES) } catch (_: Exception) {}
+    }
+
+    /** מוחק קבצים הכי ישנים מ-tdlib_files עד שהגודל יורד מתחת לתקרה. */
+    private fun enforceTdlibFilesCap(context: Context, maxBytes: Long) {
+        val dir = File(context.filesDir, "tdlib_files")
+        if (!dir.exists() || !dir.isDirectory) return
+
+        var total = getDirSize(dir)
+        if (total <= maxBytes) return
+
+        // מוחקים קבצים בלבד (לא תיקיות), מהישן לחדש
+        val files = dir.walkTopDown()
+            .filter { it.isFile }
+            .toList()
+            .sortedBy { it.lastModified() }
+
+        for (f in files) {
+            if (total <= maxBytes) break
+            val len = try { f.length() } catch (_: Exception) { 0L }
+            try { f.delete() } catch (_: Exception) {}
+            total -= len
+        }
     }
 
     private fun getDirSize(dir: File?): Long {
         if (dir == null || !dir.exists()) return 0
         var size = 0L
-        for (file in dir.listFiles().orEmpty()) {
-            size += if (file.isDirectory) getDirSize(file) else file.length()
+        dir.walkTopDown().forEach { f ->
+            if (f.isFile) {
+                try { size += f.length() } catch (_: Exception) {}
+            }
         }
         return size
     }
 
     private fun formatSize(size: Long): String {
-        val mb = size.toDouble() / (1024 * 1024)
-        return String.format("%.2f MB", mb)
+        val mb = size.toDouble() / (1024.0 * 1024.0)
+        return String.format(Locale.US, "%.2f MB", mb)
     }
 }
