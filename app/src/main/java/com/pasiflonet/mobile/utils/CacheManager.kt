@@ -79,7 +79,7 @@ object CacheManager {
     }
 
     /** ניקוי temp לפי **גודל** (לא לפי כמות) */
-    fun pruneAppTempFiles(context: Context) {
+    fun pruneAppTempFiles(context: Context, keep: Int = 250) {
         try { pruneDirToMaxBytes(context.cacheDir, TEMP_MAX_BYTES) } catch (_: Exception) {}
         try { pruneDirToMaxBytes(context.externalCacheDir, TEMP_MAX_BYTES) } catch (_: Exception) {}
     }
