@@ -8,7 +8,7 @@ import java.util.Locale
 object CacheManager {
 
     // יעד: להשאיר את tdlib_files עד ~1.2GB כדי שלא יתנפח בלי סוף
-    private const val TDLIB_FILES_CAP_BYTES: Long = 1_200L * 1024L * 1024L * 1024L
+    private const val TDLIB_FILES_CAP_BYTES: Long = 600L * 1024L * 1024L
 
     /** מציג גודל "אמיתי" (cache + externalCache + tdlib_files) */
     fun getCacheSize(context: Context): String {
