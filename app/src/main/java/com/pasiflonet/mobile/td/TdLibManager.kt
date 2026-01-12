@@ -47,7 +47,7 @@ object TdLibManager {
                         appContext?.let { ctx ->
                             try {
                                 CacheManager.deleteTempForMessage(ctx, removed)
-                                CacheManager.pruneAppTempFiles(ctx, keep = 250)
+                                CacheManager.pruneAppTempFiles(ctx, 250)
                             } catch (_: Exception) {}
                         }
                     }
