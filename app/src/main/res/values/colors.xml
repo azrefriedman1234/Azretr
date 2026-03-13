@@ -23,4 +23,9 @@
 
     <color name="cyber_primary">#36FFB9</color>
     <color name="cyber_primary_dark">#1E8F6A</color>
+
+    <color name="cyber_secondary">#7C4DFF</color>
+    <color name="cyber_secondary_dark">#512DA8</color>
+    <color name="cyber_black">#0B0F14</color>
+    <color name="cyber_white">#F4F7FA</color>
 </resources>
