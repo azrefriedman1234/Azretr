@@ -508,7 +508,24 @@ var logoUri: Uri? = null
     }
 
     // שימוש ב-applicationContext ליתר ביטחון
-    private fun safeToast(msg: String) { 
+    
+    private fun jumpBackToMain(message: String? = null) {
+        runOnUiThread {
+            try {
+                if (!message.isNullOrBlank()) {
+                    Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                }
+                startActivity(
+                    Intent(this, MainActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    }
+                )
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+private fun safeToast(msg: String) { 
         runOnUiThread { 
             try { Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show() } catch(e: Exception) {} 
         } 
