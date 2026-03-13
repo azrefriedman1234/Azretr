@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".DetailsActivity" android:exported="false" />
+        <activity android:name=".DetailsActivity" android:exported="false"  android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".SettingsActivity" android:exported="false" />
         
         <service android:name=".utils.KeepAliveService" android:enabled="true" android:exported="false" />

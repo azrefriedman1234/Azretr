@@ -1,165 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_screen_refresh">
+    android:background="#08111A"
+    tools:context=".DetailsActivity">
 
-    <LinearLayout
-        android:id="@+id/editorHost"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="14dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingStart="10dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.05"
-            app:cardBackgroundColor="@color/ui_card"
-            app:cardCornerRadius="28dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/ui_stroke"
-            app:strokeWidth="1dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Preview"
-                        android:textColor="@color/ui_text_primary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <Space
-                        android:layout_width="8dp"
-                        android:layout_height="1dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip_neutral"
-                        android:paddingStart="10dp"
-                        android:paddingTop="6dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="6dp"
-                        android:text="Logo / Blur / Crop safe"
-                        android:textColor="@color/ui_text_secondary"
-                        android:textSize="11sp" />
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_preview_card">
-
-                    <ImageView
-                        android:id="@+id/ivPreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter" />
-
-                    <com.pasiflonet.mobile.ui.DrawingView
-                        android:id="@+id/drawingView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <ImageView
-                        android:id="@+id/ivDraggableLogo"
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
-                        android:scaleType="fitCenter"
-                        android:visibility="gone" />
-                </FrameLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="12dp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.95"
-            app:cardBackgroundColor="@color/ui_card"
-            app:cardCornerRadius="28dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/ui_stroke"
-            app:strokeWidth="1dp">
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fillViewport="true"
-                android:overScrollMode="never">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="#122031"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="#223645"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="18dp">
+                    android:padding="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end|center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:background="#0C1824"
+                            android:gravity="center"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:text="Logo / Blur / Crop safe"
+                            android:textColor="#95A8B7"
+                            android:textSize="12sp" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="1dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Preview"
+                            android:textColor="#F4F7FA"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#030A12">
+
+                        <ImageView
+                            android:id="@+id/ivPreview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="false"
+                            android:background="#030A12"
+                            android:scaleType="fitCenter" />
+
+                        <com.pasiflonet.mobile.ui.DrawingView
+                            android:id="@+id/drawingView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/ivDraggableLogo"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:layout_gravity="top|start"
+                            android:visibility="gone"
+                            tools:src="@mipmap/ic_launcher" />
+                    </FrameLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#122031"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="#223645"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="end"
                         android:text="Edit"
-                        android:textColor="@color/ui_text_primary"
+                        android:textColor="#F4F7FA"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="טקסט, תרגום, לוגו וטשטוש במקום אחד"
-                        android:textColor="@color/ui_text_secondary"
-                        android:textSize="13sp" />
-
-                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="כיתוב / טקסט"
-                        app:boxBackgroundColor="@color/ui_card_alt"
-                        app:boxBackgroundMode="outline"
-                        app:boxCornerRadiusBottomEnd="20dp"
-                        app:boxCornerRadiusBottomStart="20dp"
-                        app:boxCornerRadiusTopEnd="20dp"
-                        app:boxCornerRadiusTopStart="20dp"
-                        app:boxStrokeColor="@color/ui_stroke">
+                        android:layout_marginTop="4dp"
+                        android:gravity="end"
+                        android:text="טקסט, תרגום, לוגו וטשטוש במקום אחד"
+                        android:textColor="#95A8B7"
+                        android:textSize="13sp" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etCaption"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="top|start"
-                            android:inputType="textMultiLine"
-                            android:minHeight="120dp"
-                            android:textColor="@color/ui_text_primary"
-                            android:textColorHint="@color/ui_text_secondary" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="end"
+                        android:text="כיתוב / טקסט"
+                        android:textColor="#36FFB9"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/etCaption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="#223645"
+                        android:gravity="top|start"
+                        android:hint="כתוב כאן טקסט, תרגום, חתימה או קישור"
+                        android:imeOptions="flagNoExtractUi"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:minLines="5"
+                        android:padding="12dp"
+                        android:scrollbars="vertical"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#95A8B7" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -168,141 +164,111 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnTranslate"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/ui_card_alt"
-                            android:text="תרגום"
-                            android:textAllCaps="false"
-                            android:textColor="@color/ui_text_primary"
-                            app:cornerRadius="16dp"
-                            app:strokeColor="@color/ui_stroke"
-                            app:strokeWidth="1dp" />
-
-                        <Space
-                            android:layout_width="10dp"
-                            android:layout_height="1dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnModeBlur"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/ui_card_alt"
-                            android:text="Blur"
-                            android:textAllCaps="false"
-                            android:textColor="@color/ui_text_primary"
-                            app:cornerRadius="16dp"
-                            app:strokeColor="@color/ui_stroke"
-                            app:strokeWidth="1dp" />
-
-                        <Space
-                            android:layout_width="10dp"
-                            android:layout_height="1dp" />
-
-                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnModeLogo"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="42dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/ui_accent_dark"
                             android:text="Logo"
-                            android:textAllCaps="false"
-                            android:textColor="@color/ui_text_primary"
-                            app:cornerRadius="16dp" />
+                            app:backgroundTint="#163B33"
+                            app:cornerRadius="18dp" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnModeBlur"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="Blur"
+                            android:textColor="#F4F7FA"
+                            app:cornerRadius="18dp"
+                            app:strokeColor="#223645" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnTranslate"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="תרגום"
+                            android:textColor="#F4F7FA"
+                            app:cornerRadius="18dp"
+                            app:strokeColor="#223645" />
                     </LinearLayout>
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="14dp"
+                        android:gravity="end"
                         android:text="גודל לוגו"
-                        android:textColor="@color/ui_text_primary"
-                        android:textSize="14sp"
+                        android:textColor="#F4F7FA"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <SeekBar
                         android:id="@+id/sbLogoSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp" />
+                        android:layout_marginTop="6dp"
+                        android:max="100"
+                        android:progress="20" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="14dp"
                         android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnCancel"
-                            android:layout_width="0dp"
-                            android:layout_height="54dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/ui_card_alt"
-                            android:text="ביטול"
-                            android:textAllCaps="false"
-                            android:textColor="@color/ui_text_primary"
-                            app:cornerRadius="18dp"
-                            app:strokeColor="@color/ui_stroke"
-                            app:strokeWidth="1dp" />
-
-                        <Space
-                            android:layout_width="12dp"
-                            android:layout_height="1dp" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnSend"
                             android:layout_width="0dp"
-                            android:layout_height="54dp"
-                            android:layout_weight="1.15"
-                            android:backgroundTint="@color/ui_accent"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
                             android:text="שליחה"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
                             android:textStyle="bold"
-                            app:cornerRadius="18dp" />
+                            app:backgroundTint="#36FFB9"
+                            app:cornerRadius="22dp" />
+
+                        <Space
+                            android:layout_width="10dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnCancel"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:text="ביטול"
+                            android:textColor="#F4F7FA"
+                            app:cornerRadius="22dp"
+                            app:strokeColor="#223645" />
                     </LinearLayout>
                 </LinearLayout>
-            </ScrollView>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/loadingOverlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#B8121820"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:visibility="gone">
 
-        <LinearLayout
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_loading_sheet"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <ProgressBar
-                android:layout_width="40dp"
-                android:layout_height="40dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="מעבד ושולח..."
-                android:textColor="@color/ui_text_primary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center" />
     </FrameLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -27,8 +27,8 @@ object TdLibManager {
 
     fun init(context: Context, apiId: Int, apiHash: String) {
         if (client != null) return
-        appContext = context.applicationContext
 
+        appContext = context.applicationContext
         Client.execute(TdApi.SetLogVerbosityLevel(0))
 
         client = Client.create({ update ->
@@ -36,19 +36,17 @@ object TdLibManager {
                 is TdApi.UpdateAuthorizationState -> handleAuth(update.authorizationState, apiId, apiHash)
                 is TdApi.UpdateNewMessage -> {
                     val current = _currentMessages.value.toMutableList()
-
-                    // הוסף את ההודעה החדשה ואז מיין "מהחדש לישן"
                     current.add(update.message)
                     current.sortWith(compareByDescending<TdApi.Message> { it.date }.thenByDescending { it.id })
 
-                    // הגבלה ל-100 הודעות + מחיקת קבצי temp של הישנות
                     while (current.size > MAX_MESSAGES) {
-                        val removed = current.removeAt(current.size - 1) // oldest after sort
+                        val removed = current.removeAt(current.size - 1)
                         appContext?.let { ctx ->
                             try {
                                 CacheManager.deleteTempForMessage(ctx, removed)
                                 CacheManager.pruneAppTempFiles(ctx, 250)
-                            } catch (_: Exception) {}
+                            } catch (_: Exception) {
+                            }
                         }
                     }
 
@@ -67,7 +65,6 @@ object TdLibManager {
                 val dbDir = File(ctx.filesDir, "tdlib_db").absolutePath
                 val filesDir = File(ctx.filesDir, "tdlib_files").absolutePath
 
-                // tdlib.aar אצלך לא כולל TdlibParameters(), אז משתמשים ב-SetTdlibParameters
                 val p = TdApi.SetTdlibParameters(
                     false,
                     dbDir,
@@ -84,7 +81,6 @@ object TdLibManager {
                     Build.VERSION.RELEASE ?: "Android",
                     "Azretr"
                 )
-
                 client?.send(p) {}
             }
 
@@ -115,7 +111,6 @@ object TdLibManager {
         client?.send(TdApi.DownloadFile(fileId, 32, 0, 0, false)) {}
     }
 
-    // ===== תאימות ל-DetailsActivity הישן: מחזיר String? (blocking קצר)
     fun getFilePath(fileId: Int): String? {
         if (fileId == 0) return null
         val c = client ?: return null
@@ -128,22 +123,36 @@ object TdLibManager {
             latch.countDown()
         }
 
-        // מחכים מעט (כדי לא לתקוע UI יותר מדי)
         latch.await(1500, TimeUnit.MILLISECONDS)
         return out
     }
 
-    // הגרסה האסינכרונית (חדשה)
     fun getFilePath(fileId: Int, onResult: (String?) -> Unit) {
-        val c = client ?: run { onResult(null); return }
+        val c = client ?: run {
+            onResult(null)
+            return
+        }
+
         c.send(TdApi.GetFile(fileId)) { r ->
             if (r is TdApi.File) onResult(r.local?.path) else onResult(null)
         }
     }
 
-    // ===== שליחה: overload לתאימות אם מועבר Boolean
+    private fun buildCaptionWithSignature(text: String): String {
+        val base = text.trim()
+        if (base.isBlank()) return ""
+
+        val signature = appContext
+            ?.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            ?.getString("text_signature", "")
+            ?.trim()
+            .orEmpty()
+
+        return if (signature.isBlank()) base else "$base\n\n$signature"
+    }
+
     fun sendFinalMessage(targetUsername: String, caption: String, filePath: String?, silent: Boolean) {
-        sendFinalMessage(targetUsername, caption, filePath) { /* ignore */ }
+        sendFinalMessage(targetUsername, caption, filePath) { }
     }
 
     fun sendFinalMessage(
@@ -152,28 +161,57 @@ object TdLibManager {
         filePath: String?,
         onError: (String) -> Unit = {}
     ) {
-        if (!isAuthorized) { onError("Not authorized"); return }
+        if (!isAuthorized) {
+            onError("Not authorized")
+            return
+        }
 
         val username = targetUsername.trim().removePrefix("@")
-        if (username.isBlank()) { onError("Target username is empty"); return }
+        if (username.isBlank()) {
+            onError("Target username is empty")
+            return
+        }
 
-        val c = client ?: run { onError("Client null"); return }
+        val c = client ?: run {
+            onError("Client null")
+            return
+        }
 
         c.send(TdApi.SearchPublicChat(username)) { chatRes ->
             when (chatRes) {
-                is TdApi.Error -> { onError(chatRes.message); return@send }
-                !is TdApi.Chat -> { onError("Chat not found"); return@send }
+                is TdApi.Error -> {
+                    onError(chatRes.message)
+                    return@send
+                }
+
+                !is TdApi.Chat -> {
+                    onError("Chat not found")
+                    return@send
+                }
             }
 
-            val chatId = (chatRes as? TdApi.Chat)?.id ?: return@send
+            val chatId = (chatRes as TdApi.Chat).id
+            val finalCaption = buildCaptionWithSignature(caption)
 
             val content: TdApi.InputMessageContent =
                 if (filePath.isNullOrBlank()) {
-                    TdApi.InputMessageText(TdApi.FormattedText(caption, null), null, false)
+                    val linkPreviewOptions = TdApi.LinkPreviewOptions(
+                        true,
+                        "",
+                        false,
+                        false,
+                        false
+                    )
+
+                    TdApi.InputMessageText(
+                        TdApi.FormattedText(finalCaption, null),
+                        linkPreviewOptions,
+                        false
+                    )
                 } else {
                     val f = File(filePath)
                     val input = TdApi.InputFileLocal(f.absolutePath)
-                    val ft = TdApi.FormattedText(caption, null)
+                    val ft = TdApi.FormattedText(finalCaption, null)
 
                     if (filePath.endsWith(".mp4", true)) {
                         TdApi.InputMessageVideo(
@@ -182,7 +220,9 @@ object TdLibManager {
                             null,
                             0,
                             intArrayOf(),
-                            0, 0, 0,
+                            0,
+                            0,
+                            0,
                             true,
                             ft,
                             false,
@@ -194,7 +234,8 @@ object TdLibManager {
                             input,
                             null,
                             intArrayOf(),
-                            0, 0,
+                            0,
+                            0,
                             ft,
                             false,
                             null,
@@ -203,7 +244,6 @@ object TdLibManager {
                     }
                 }
 
-            // חשוב: topicId אצלך הוא MessageTopic -> לכן שולחים null ולא 0
             c.send(TdApi.SendMessage(chatId, null, null, null, null, content)) { r ->
                 if (r is TdApi.Error) onError(r.message)
             }
@@ -215,7 +255,7 @@ object TdLibManager {
         try {
             c.send(TdApi.SetOption("online", TdApi.OptionValueBoolean(online))) {}
             c.send(TdApi.SetOption("is_background", TdApi.OptionValueBoolean(!online))) {}
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
     }
-
 }
