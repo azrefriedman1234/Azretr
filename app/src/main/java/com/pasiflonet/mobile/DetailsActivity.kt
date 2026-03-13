@@ -232,7 +232,7 @@ var touchOffsetX = 0f
 
             when (event.actionMasked) {
                 android.view.MotionEvent.ACTION_DOWN -> {
-                    parentView.requestDisallowInterceptTouchEvent(true)
+                    parentView.parent?.requestDisallowInterceptTouchEvent(true)
                     v.bringToFront()
                     lastRawX = event.rawX
                     lastRawY = event.rawY
@@ -242,8 +242,8 @@ var touchOffsetX = 0f
                 }
 
                 android.view.MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.rawX - lastRawX) * 1.55f
-                    val dy = (event.rawY - lastRawY) * 2.20f
+                    val dx = (event.rawX - lastRawX) * 2.40f
+                    val dy = (event.rawY - lastRawY) * 2.40f
                     lastRawX = event.rawX
                     lastRawY = event.rawY
 
@@ -272,7 +272,7 @@ var touchOffsetX = 0f
 
                 android.view.MotionEvent.ACTION_UP,
                 android.view.MotionEvent.ACTION_CANCEL -> {
-                    parentView.requestDisallowInterceptTouchEvent(false)
+                    parentView.parent?.requestDisallowInterceptTouchEvent(false)
                     true
                 }
 
