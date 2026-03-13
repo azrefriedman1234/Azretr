@@ -32,4 +32,14 @@
     <color name="btn_gradient_start">#19C37D</color>
     <color name="btn_gradient_end">#36FFB9</color>
     <color name="cyber_border_dim">#2A3B47</color>
+
+    <color name="cyber_card">#141D25</color>
+    <color name="surface_card">#141D25</color>
+    <color name="surface_input">#0E161D</color>
+    <color name="surface_chip">#1A2732</color>
+    <color name="stroke_soft">#223645</color>
+    <color name="text_primary">#F4F7FA</color>
+    <color name="text_secondary">#95A8B7</color>
+    <color name="accent_primary">#36FFB9</color>
+    <color name="accent_soft">#17342B</color>
 </resources>
