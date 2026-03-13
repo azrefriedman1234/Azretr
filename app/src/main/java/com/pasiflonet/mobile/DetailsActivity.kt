@@ -7,6 +7,8 @@ import android.graphics.Matrix
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
+import android.view.MotionEvent
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -51,6 +53,24 @@ class DetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
+
+            b.etCaption.movementMethod = ScrollingMovementMethod()
+
+            b.etCaption.setOnTouchListener { v, event ->
+                when (event.actionMasked) {
+                    MotionEvent.ACTION_DOWN,
+                    MotionEvent.ACTION_MOVE -> {
+                        b.scrollRoot.requestDisallowInterceptTouchEvent(true)
+                    }
+
+                    MotionEvent.ACTION_UP,
+                    MotionEvent.ACTION_CANCEL -> {
+                        b.scrollRoot.requestDisallowInterceptTouchEvent(false)
+                    }
+                }
+                false
+            }
+
 
             window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 

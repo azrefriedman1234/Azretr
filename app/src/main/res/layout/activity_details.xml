@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#08111A"
+    android:background="#F5F6F8"
     tools:context=".DetailsActivity">
 
     <androidx.core.widget.NestedScrollView
@@ -26,17 +26,17 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="#122031"
-                app:cardCornerRadius="20dp"
-                app:strokeColor="#223645"
+                android:layout_marginBottom="6dp"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="8dp"
+                app:strokeColor="#D9DEE5"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -47,12 +47,12 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="32dp"
-                            android:background="#0C1824"
+                            android:background="#F3F4F6"
                             android:gravity="center"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp"
                             android:text="Logo / Blur / Crop safe"
-                            android:textColor="#95A8B7"
+                            android:textColor="#6B7280"
                             android:textSize="12sp" />
 
                         <Space
@@ -63,7 +63,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Preview"
-                            android:textColor="#F4F7FA"
+                            android:textColor="#111827"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -71,15 +71,15 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="230dp"
-                        android:layout_marginTop="10dp"
-                        android:background="#030A12">
+                        android:layout_marginTop="6dp"
+                        android:background="#F8FAFC">
 
                         <ImageView
                             android:id="@+id/ivPreview"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="false"
-                            android:background="#030A12"
+                            android:background="#F8FAFC"
                             android:scaleType="fitCenter" />
 
                         <com.pasiflonet.mobile.ui.DrawingView
@@ -102,23 +102,23 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#122031"
-                app:cardCornerRadius="20dp"
-                app:strokeColor="#223645"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="8dp"
+                app:strokeColor="#D9DEE5"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="10dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
                         android:text="Edit"
-                        android:textColor="#F4F7FA"
+                        android:textColor="#111827"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -128,34 +128,36 @@
                         android:layout_marginTop="4dp"
                         android:gravity="end"
                         android:text="טקסט, תרגום, לוגו וטשטוש במקום אחד"
-                        android:textColor="#95A8B7"
+                        android:textColor="#6B7280"
                         android:textSize="13sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="8dp"
                         android:gravity="end"
                         android:text="כיתוב / טקסט"
-                        android:textColor="#36FFB9"
+                        android:textColor="#2563EB"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/etCaption"
                         android:layout_width="match_parent"
-                        android:layout_height="120dp"
+                        android:layout_height="160dp"
                         android:layout_marginTop="8dp"
                         android:backgroundTint="#223645"
+                        android:fadeScrollbars="false"
                         android:gravity="top|start"
                         android:hint="כתוב כאן טקסט, תרגום, חתימה או קישור"
                         android:imeOptions="flagNoExtractUi"
                         android:inputType="textMultiLine|textCapSentences"
                         android:isScrollContainer="true"
-                        android:maxLines="4"
-                        android:minLines="3"
-                        android:overScrollMode="ifContentScrolls"
+                        android:maxLines="8"
+                        android:minLines="5"
+                        android:overScrollMode="always"
                         android:padding="12dp"
+                        android:scrollHorizontally="false"
                         android:scrollbars="vertical"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#95A8B7" />
@@ -163,7 +165,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="6dp"
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
@@ -172,8 +174,8 @@
                             android:layout_height="42dp"
                             android:layout_weight="1"
                             android:text="Logo"
-                            app:backgroundTint="#163B33"
-                            app:cornerRadius="18dp" />
+                            app:backgroundTint="#EAF1FF"
+                            app:cornerRadius="8dp" />
 
                         <Space
                             android:layout_width="8dp"
@@ -186,9 +188,9 @@
                             android:layout_height="42dp"
                             android:layout_weight="1"
                             android:text="Blur"
-                            android:textColor="#F4F7FA"
-                            app:cornerRadius="18dp"
-                            app:strokeColor="#223645" />
+                            android:textColor="#111827"
+                            app:cornerRadius="8dp"
+                            app:strokeColor="#D9DEE5" />
 
                         <Space
                             android:layout_width="8dp"
@@ -201,18 +203,18 @@
                             android:layout_height="42dp"
                             android:layout_weight="1"
                             android:text="תרגום"
-                            android:textColor="#F4F7FA"
-                            app:cornerRadius="18dp"
-                            app:strokeColor="#223645" />
+                            android:textColor="#111827"
+                            app:cornerRadius="8dp"
+                            app:strokeColor="#D9DEE5" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="6dp"
                         android:gravity="end"
                         android:text="גודל לוגו"
-                        android:textColor="#F4F7FA"
+                        android:textColor="#111827"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -227,7 +229,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="6dp"
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
@@ -237,8 +239,8 @@
                             android:layout_weight="1"
                             android:text="שליחה"
                             android:textStyle="bold"
-                            app:backgroundTint="#36FFB9"
-                            app:cornerRadius="22dp" />
+                            app:backgroundTint="#2563EB"
+                            app:cornerRadius="8dp" />
 
                         <Space
                             android:layout_width="10dp"
@@ -251,9 +253,9 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:text="ביטול"
-                            android:textColor="#F4F7FA"
-                            app:cornerRadius="22dp"
-                            app:strokeColor="#223645" />
+                            android:textColor="#111827"
+                            app:cornerRadius="8dp"
+                            app:strokeColor="#D9DEE5" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
