@@ -219,25 +219,69 @@ private fun startFullMediaHunter(fId: Int) {
         b.btnModeLogo.setOnLongClickListener { pickLogoLauncher.launch("image/*"); true }
 
         var dX = 0f; var dY = 0f
+        
+var touchOffsetX = 0f
+        var touchOffsetY = 0f
+        var lastRawX = 0f
+        var lastRawY = 0f
+        val parentLoc = IntArray(2)
+
         b.ivDraggableLogo.setOnTouchListener { v, event ->
-            when (event.action) {
-                android.view.MotionEvent.ACTION_DOWN -> { dX = v.x - event.rawX; dY = v.y - event.rawY }
-                android.view.MotionEvent.ACTION_MOVE -> {
-                    var newX = event.rawX + dX; var newY = event.rawY + dY
-                    if (imageBounds.width() > 0) {
-                        newX = newX.coerceIn(imageBounds.left, imageBounds.right - v.width)
-                        newY = newY.coerceIn(imageBounds.top, imageBounds.bottom - v.height)
-                        logoRelX = (newX - imageBounds.left) / imageBounds.width()
-                        logoRelY = (newY - imageBounds.top) / imageBounds.height()
-                    }
-                    v.x = newX; v.y = newY
+            val parentView = b.ivPreview.parent as android.view.View
+            parentView.getLocationOnScreen(parentLoc)
+
+            when (event.actionMasked) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    parentView.requestDisallowInterceptTouchEvent(true)
+                    v.bringToFront()
+                    lastRawX = event.rawX
+                    lastRawY = event.rawY
+                    touchOffsetX = event.rawX - parentLoc[0] - v.x
+                    touchOffsetY = event.rawY - parentLoc[1] - v.y
+                    true
                 }
+
+                android.view.MotionEvent.ACTION_MOVE -> {
+                    val dx = (event.rawX - lastRawX) * 1.55f
+                    val dy = (event.rawY - lastRawY) * 2.20f
+                    lastRawX = event.rawX
+                    lastRawY = event.rawY
+
+                    var newX = v.x + dx
+                    var newY = v.y + dy
+
+                    if (imageBounds.width() > 0f && imageBounds.height() > 0f) {
+                        val maxX = imageBounds.right - v.width
+                        val maxY = imageBounds.bottom - v.height
+
+                        newX = newX.coerceIn(imageBounds.left, maxX)
+                        newY = newY.coerceIn(imageBounds.top, maxY)
+
+                        val rangeX = (imageBounds.width() - v.width).coerceAtLeast(1f)
+                        val rangeY = (imageBounds.height() - v.height).coerceAtLeast(1f)
+
+                        logoRelX = ((newX - imageBounds.left) / rangeX).coerceIn(0f, 1f)
+                        logoRelY = ((newY - imageBounds.top) / rangeY).coerceIn(0f, 1f)
+                    }
+
+                    v.animate().cancel()
+                    v.x = newX
+                    v.y = newY
+                    true
+                }
+
+                android.view.MotionEvent.ACTION_UP,
+                android.view.MotionEvent.ACTION_CANCEL -> {
+                    parentView.requestDisallowInterceptTouchEvent(false)
+                    true
+                }
+
+                else -> true
             }
-            true
         }
 
-        
-        // --- Logo size slider (works for both image+video) ---
+        // --- Logo size slider
+ (works for both image+video) ---
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         savedLogoRelW = prefs.getFloat("logo_rel_w", 0.2f).coerceIn(0.05f, 0.8f)
 
@@ -284,11 +328,16 @@ b.btnSend.setOnClickListener { performStrictSend() }
         b.drawingView.setValidBounds(imageBounds)
     }
 
-    private fun restoreLogoPosition() {
-        if (imageBounds.width() > 0) {
-            b.ivDraggableLogo.x = imageBounds.left + (logoRelX * imageBounds.width())
-            b.ivDraggableLogo.y = imageBounds.top + (logoRelY * imageBounds.height())
+    
+private fun restoreLogoPosition() {
+        if (imageBounds.width() > 0 && imageBounds.height() > 0) {
+            val rangeX = (imageBounds.width() - b.ivDraggableLogo.width).coerceAtLeast(1f)
+            val rangeY = (imageBounds.height() - b.ivDraggableLogo.height).coerceAtLeast(1f)
+            b.ivDraggableLogo.x = imageBounds.left + (logoRelX * rangeX)
+            b.ivDraggableLogo.y = imageBounds.top + (logoRelY * rangeY)
         }
+    }
+
     }
 
 

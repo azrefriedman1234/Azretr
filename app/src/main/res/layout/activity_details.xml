@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F6F8"
+    android:background="#EEF1F5"
     tools:context=".DetailsActivity">
 
     <androidx.core.widget.NestedScrollView
@@ -13,10 +13,10 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingStart="10dp"
+        android:paddingStart="8dp"
         android:paddingTop="8dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="10dp">
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,10 +26,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="8dp"
-                app:strokeColor="#D9DEE5"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="#08152D"
+                app:cardCornerRadius="10dp"
+                app:strokeColor="#D8DEE8"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -41,45 +41,45 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="end|center_vertical"
+                        android:gravity="start|center_vertical"
                         android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="32dp"
-                            android:background="#F3F4F6"
-                            android:gravity="center"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:text="Logo / Blur / Crop safe"
-                            android:textColor="#6B7280"
-                            android:textSize="12sp" />
-
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="1dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Preview"
-                            android:textColor="#111827"
-                            android:textSize="20sp"
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
+
+                        <Space
+                            android:layout_width="10dp"
+                            android:layout_height="1dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:background="#F2F4F7"
+                            android:gravity="center"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp"
+                            android:text="Logo / Blur / Crop safe"
+                            android:textColor="#6B7280"
+                            android:textSize="11sp" />
                     </LinearLayout>
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="230dp"
-                        android:layout_marginTop="6dp"
-                        android:background="#F8FAFC">
+                        android:layout_height="420dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#E8EBF0">
 
                         <ImageView
                             android:id="@+id/ivPreview"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="false"
-                            android:background="#F8FAFC"
+                            android:background="#E8EBF0"
                             android:scaleType="fitCenter" />
 
                         <com.pasiflonet.mobile.ui.DrawingView
@@ -90,8 +90,8 @@
 
                         <ImageView
                             android:id="@+id/ivDraggableLogo"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
                             android:layout_gravity="top|start"
                             android:visibility="gone"
                             tools:src="@mipmap/ic_launcher" />
@@ -102,9 +102,9 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#111827"
-                app:cardCornerRadius="8dp"
-                app:strokeColor="#D9DEE5"
+                app:cardBackgroundColor="#08152D"
+                app:cardCornerRadius="10dp"
+                app:strokeColor="#D8DEE8"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -118,64 +118,72 @@
                         android:layout_height="wrap_content"
                         android:gravity="end"
                         android:text="Edit"
-                        android:textColor="#111827"
-                        android:textSize="20sp"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="end"
-                        android:text="טקסט, תרגום, לוגו וטשטוש במקום אחד"
-                        android:textColor="#6B7280"
-                        android:textSize="13sp" />
+                        android:layout_marginTop="6dp"
+                        android:gravity="start"
+                        android:text="טקסט, תרגום, לוגו ושיטוש במקום אחד"
+                        android:textColor="#AAB3C2"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="end"
+                        android:layout_marginTop="10dp"
+                        android:gravity="start"
                         android:text="כיתוב / טקסט"
-                        android:textColor="#2563EB"
-                        android:textSize="15sp"
+                        android:textColor="#2F67E8"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/etCaption"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:layout_marginTop="8dp"
-                        android:backgroundTint="#223645"
-                        android:fadeScrollbars="false"
-                        android:gravity="top|start"
-                        android:hint="כתוב כאן טקסט, תרגום, חתימה או קישור"
+                        android:layout_height="220dp"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#31435F"
+                        android:gravity="top|end"
+                        android:hint="כתוב כאן טקסט"
                         android:imeOptions="flagNoExtractUi"
                         android:inputType="textMultiLine|textCapSentences"
                         android:isScrollContainer="true"
-                        android:maxLines="8"
-                        android:minLines="5"
+                        android:minLines="6"
+                        android:maxLines="12"
                         android:overScrollMode="always"
-                        android:padding="12dp"
-                        android:scrollHorizontally="false"
+                        android:padding="14dp"
                         android:scrollbars="vertical"
                         android:textColor="#FFFFFF"
-                        android:textColorHint="#95A8B7" />
+                        android:textColorHint="#AAB3C2"
+                        android:textSize="20sp"
+                        android:lineSpacingExtra="6dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:background="#31435F" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="14dp"
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnModeLogo"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnTranslate"
                             android:layout_width="0dp"
-                            android:layout_height="42dp"
+                            android:layout_height="46dp"
                             android:layout_weight="1"
-                            android:text="Logo"
-                            app:backgroundTint="#EAF1FF"
-                            app:cornerRadius="8dp" />
+                            android:text="תרגום"
+                            android:textColor="#FFFFFF"
+                            app:cornerRadius="8dp"
+                            app:strokeColor="#FFFFFF" />
 
                         <Space
                             android:layout_width="8dp"
@@ -185,36 +193,35 @@
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:id="@+id/btnModeBlur"
                             android:layout_width="0dp"
-                            android:layout_height="42dp"
+                            android:layout_height="46dp"
                             android:layout_weight="1"
-                            android:text="Blur"
-                            android:textColor="#111827"
+                            android:text="BLUR"
+                            android:textColor="#FFFFFF"
                             app:cornerRadius="8dp"
-                            app:strokeColor="#D9DEE5" />
+                            app:strokeColor="#FFFFFF" />
 
                         <Space
                             android:layout_width="8dp"
                             android:layout_height="1dp" />
 
                         <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:id="@+id/btnTranslate"
+                            android:id="@+id/btnModeLogo"
                             android:layout_width="0dp"
-                            android:layout_height="42dp"
+                            android:layout_height="46dp"
                             android:layout_weight="1"
-                            android:text="תרגום"
+                            android:text="LOGO"
                             android:textColor="#111827"
-                            app:cornerRadius="8dp"
-                            app:strokeColor="#D9DEE5" />
+                            app:backgroundTint="#1E6A48"
+                            app:cornerRadius="8dp" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:gravity="end"
+                        android:layout_marginTop="14dp"
+                        android:gravity="start"
                         android:text="גודל לוגו"
-                        android:textColor="#111827"
+                        android:textColor="#FFFFFF"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -229,22 +236,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="12dp"
                         android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnSend"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:text="שליחה"
-                            android:textStyle="bold"
-                            app:backgroundTint="#2563EB"
-                            app:cornerRadius="8dp" />
-
-                        <Space
-                            android:layout_width="10dp"
-                            android:layout_height="1dp" />
 
                         <com.google.android.material.button.MaterialButton
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -253,9 +246,23 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:text="ביטול"
-                            android:textColor="#111827"
+                            android:textColor="#FFFFFF"
                             app:cornerRadius="8dp"
-                            app:strokeColor="#D9DEE5" />
+                            app:strokeColor="#FFFFFF" />
+
+                        <Space
+                            android:layout_width="10dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSend"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:text="שליחה"
+                            android:textStyle="bold"
+                            app:backgroundTint="#2F67E8"
+                            app:cornerRadius="8dp" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -266,14 +273,14 @@
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#88000000"
+        android:background="#55000000"
         android:clickable="false"
         android:focusable="false"
         android:visibility="gone">
 
         <ProgressBar
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_gravity="center" />
     </FrameLayout>
 </FrameLayout>
