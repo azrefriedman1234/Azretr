@@ -281,7 +281,7 @@ var touchOffsetX = 0f
         }
 
         // --- Logo size slider
- (works for both image+video) ---
+        // works for both image+video
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         savedLogoRelW = prefs.getFloat("logo_rel_w", 0.2f).coerceIn(0.05f, 0.8f)
 
@@ -338,7 +338,6 @@ private fun restoreLogoPosition() {
         }
     }
 
-    }
 
 
     private fun applyLogoSize(relW: Float) {
