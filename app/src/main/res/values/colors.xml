@@ -29,4 +29,9 @@
 
     <color name="btn_gradient_start">#FFFFFF</color>
     <color name="btn_gradient_end">#FFFFFF</color>
+
+    <color name="ui_accent">#2563EB</color>
+    <color name="ui_card_alt">#F3F4F6</color>
+    <color name="ui_stroke">#D9DEE5</color>
+    <color name="ui_card">#FFFFFF</color>
 </resources>
