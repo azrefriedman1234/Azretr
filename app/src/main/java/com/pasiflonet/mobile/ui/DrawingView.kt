@@ -15,36 +15,41 @@ import kotlin.math.min
 
 class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    private val paint = Paint().apply {
+    private val strokePaint = Paint().apply {
         color = Color.RED
         style = Paint.Style.STROKE
-        strokeWidth = 5f
-        pathEffect = DashPathEffect(floatArrayOf(10f, 20f), 0f)
+        strokeWidth = 6f
+        pathEffect = DashPathEffect(floatArrayOf(14f, 16f), 0f)
+        isAntiAlias = true
     }
 
-    private val blurFill = Paint().apply {
+    private val fillPaint = Paint().apply {
         color = 0x55000000
         style = Paint.Style.FILL
+        isAntiAlias = true
     }
 
     var isBlurMode = false
+
+    private var validBounds: RectF? = null
+    val rects = mutableListOf<BlurRect>()
 
     private var startX = 0f
     private var startY = 0f
     private var currentX = 0f
     private var currentY = 0f
-    private var isDrawing = false
 
-    private var validBounds: RectF? = null
-
-    val rects = mutableListOf<BlurRect>()
+    private var activeRectIndex = -1
+    private var lastTouchX = 0f
+    private var lastTouchY = 0f
+    private var isCreating = false
 
     fun setValidBounds(bounds: RectF) {
         validBounds = RectF(bounds)
         invalidate()
     }
 
-    private fun getActiveBounds(): RectF {
+    private fun activeBounds(): RectF {
         val b = validBounds
         return if (b != null && b.width() > 0f && b.height() > 0f) {
             RectF(b)
@@ -53,60 +58,130 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         }
     }
 
-    private fun clampToBounds(x: Float, y: Float, bounds: RectF): Pair<Float, Float> {
-        return Pair(
-            x.coerceIn(bounds.left, bounds.right),
-            y.coerceIn(bounds.top, bounds.bottom)
+    private fun clampX(x: Float, b: RectF): Float = x.coerceIn(b.left, b.right)
+    private fun clampY(y: Float, b: RectF): Float = y.coerceIn(b.top, b.bottom)
+
+    private fun toPixelRect(r: BlurRect, b: RectF): RectF {
+        return RectF(
+            b.left + r.left * b.width(),
+            b.top + r.top * b.height(),
+            b.left + r.right * b.width(),
+            b.top + r.bottom * b.height()
         )
+    }
+
+    private fun findRectAt(x: Float, y: Float, b: RectF): Int {
+        val pad = 34f
+        for (i in rects.indices.reversed()) {
+            val pr = toPixelRect(rects[i], b)
+            pr.inset(-pad, -pad)
+            if (pr.contains(x, y)) return i
+        }
+        return -1
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isBlurMode) return false
 
-        val bounds = getActiveBounds()
-        if (bounds.width() <= 0f || bounds.height() <= 0f) return false
+        parent?.requestDisallowInterceptTouchEvent(true)
 
-        when (event.action) {
+        val b = activeBounds()
+        if (b.width() <= 0f || b.height() <= 0f) return false
+
+        val x = clampX(event.x, b)
+        val y = clampY(event.y, b)
+
+        when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                val (cx, cy) = clampToBounds(event.x, event.y, bounds)
-                startX = cx
-                startY = cy
-                currentX = cx
-                currentY = cy
-                isDrawing = true
-                invalidate()
-            }
+                activeRectIndex = findRectAt(x, y, b)
+                lastTouchX = x
+                lastTouchY = y
 
-            MotionEvent.ACTION_MOVE -> {
-                val (cx, cy) = clampToBounds(event.x, event.y, bounds)
-                currentX = cx
-                currentY = cy
-                invalidate()
-            }
-
-            MotionEvent.ACTION_UP -> {
-                val (cx, cy) = clampToBounds(event.x, event.y, bounds)
-                currentX = cx
-                currentY = cy
-                isDrawing = false
-
-                val left = min(startX, currentX)
-                val top = min(startY, currentY)
-                val right = max(startX, currentX)
-                val bottom = max(startY, currentY)
-
-                if ((right - left) > 4f && (bottom - top) > 4f) {
-                    rects.add(
-                        BlurRect(
-                            (left - bounds.left) / bounds.width(),
-                            (top - bounds.top) / bounds.height(),
-                            (right - bounds.left) / bounds.width(),
-                            (bottom - bounds.top) / bounds.height()
-                        )
-                    )
+                if (activeRectIndex >= 0) {
+                    isCreating = false
+                } else {
+                    isCreating = true
+                    startX = x
+                    startY = y
+                    currentX = x
+                    currentY = y
                 }
 
                 invalidate()
+                return true
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                if (activeRectIndex >= 0) {
+                    val dx = x - lastTouchX
+                    val dy = y - lastTouchY
+                    lastTouchX = x
+                    lastTouchY = y
+
+                    val bw = b.width()
+                    val bh = b.height()
+                    if (bw > 0f && bh > 0f) {
+                        val r = rects[activeRectIndex]
+
+                        var left = r.left + (dx / bw)
+                        var right = r.right + (dx / bw)
+                        var top = r.top + (dy / bh)
+                        var bottom = r.bottom + (dy / bh)
+
+                        val w = right - left
+                        val h = bottom - top
+
+                        if (left < 0f) {
+                            left = 0f
+                            right = w
+                        }
+                        if (right > 1f) {
+                            right = 1f
+                            left = 1f - w
+                        }
+                        if (top < 0f) {
+                            top = 0f
+                            bottom = h
+                        }
+                        if (bottom > 1f) {
+                            bottom = 1f
+                            top = 1f - h
+                        }
+
+                        rects[activeRectIndex] = BlurRect(left, top, right, bottom)
+                    }
+                } else if (isCreating) {
+                    currentX = x
+                    currentY = y
+                }
+
+                invalidate()
+                return true
+            }
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (isCreating) {
+                    val left = min(startX, currentX)
+                    val top = min(startY, currentY)
+                    val right = max(startX, currentX)
+                    val bottom = max(startY, currentY)
+
+                    if ((right - left) > 18f && (bottom - top) > 18f) {
+                        rects.add(
+                            BlurRect(
+                                ((left - b.left) / b.width()).coerceIn(0f, 1f),
+                                ((top - b.top) / b.height()).coerceIn(0f, 1f),
+                                ((right - b.left) / b.width()).coerceIn(0f, 1f),
+                                ((bottom - b.top) / b.height()).coerceIn(0f, 1f)
+                            )
+                        )
+                    }
+                }
+
+                activeRectIndex = -1
+                isCreating = false
+                invalidate()
+                return true
             }
         }
 
@@ -116,25 +191,21 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val bounds = getActiveBounds()
+        val b = activeBounds()
 
         rects.forEach { r ->
-            val left = bounds.left + (r.left * bounds.width())
-            val top = bounds.top + (r.top * bounds.height())
-            val right = bounds.left + (r.right * bounds.width())
-            val bottom = bounds.top + (r.bottom * bounds.height())
-
-            canvas.drawRect(left, top, right, bottom, blurFill)
-            canvas.drawRect(left, top, right, bottom, paint)
+            val pr = toPixelRect(r, b)
+            canvas.drawRect(pr, fillPaint)
+            canvas.drawRect(pr, strokePaint)
         }
 
-        if (isDrawing) {
+        if (isCreating) {
             canvas.drawRect(
                 min(startX, currentX),
                 min(startY, currentY),
                 max(startX, currentX),
                 max(startY, currentY),
-                paint
+                strokePaint
             )
         }
     }
