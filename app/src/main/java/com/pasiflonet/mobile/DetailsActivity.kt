@@ -398,7 +398,7 @@ private fun restoreLogoPosition() {
 
             pendingSendWhileDownloading = true
             try { b.loadingOverlay.visibility = View.GONE } catch (_: Exception) {}
-            safeToast("המדיה עדיין יורדת ברקע. אפשר להמשיך לערוך והיא תישלח אוטומטית כשההורדה תסתיים")
+            jumpBackToMain("המדיה עדיין יורדת. חוזר למסך הראשי והשליחה תמשיך אוטומטית ברקע…")
             return
         }
 
