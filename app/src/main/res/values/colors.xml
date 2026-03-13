@@ -28,4 +28,8 @@
     <color name="cyber_secondary_dark">#512DA8</color>
     <color name="cyber_black">#0B0F14</color>
     <color name="cyber_white">#F4F7FA</color>
+
+    <color name="btn_gradient_start">#19C37D</color>
+    <color name="btn_gradient_end">#36FFB9</color>
+    <color name="cyber_border_dim">#2A3B47</color>
 </resources>
