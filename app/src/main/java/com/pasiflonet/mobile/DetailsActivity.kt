@@ -339,7 +339,6 @@ private fun restoreLogoPosition() {
     }
 
 
-
     private fun applyLogoSize(relW: Float) {
         // must have imageBounds
         if (imageBounds.width() <= 0) calculateMatrixBounds()
