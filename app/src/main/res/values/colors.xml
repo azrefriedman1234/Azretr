@@ -20,4 +20,7 @@
     <color name="ui_text_primary">#F5F7FA</color>
     <color name="ui_text_secondary">#94A8B7</color>
     <color name="ui_warning">#FFCE73</color>
+
+    <color name="cyber_primary">#36FFB9</color>
+    <color name="cyber_primary_dark">#1E8F6A</color>
 </resources>
