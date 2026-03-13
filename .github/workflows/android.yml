@@ -19,17 +19,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: '8.2'
+
       - name: Validate local AAR files
         run: |
           test -f app/libs/tdlib.aar
           test -f app/libs/ffmpeg-kit-full-gpl-6.0.aar
           ls -lh app/libs
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
+        run: gradle assembleDebug --stacktrace --no-daemon --refresh-dependencies
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

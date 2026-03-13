@@ -4,16 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="@color/surface_card"
+    app:cardBackgroundColor="@color/ui_card"
     app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
-    app:strokeColor="@color/stroke_soft"
+    app:strokeColor="@color/ui_stroke"
     app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="120dp"
+        android:minHeight="118dp"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -27,13 +27,13 @@
                 android:id="@+id/tvMediaType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_primary"
+                android:background="@drawable/bg_chip_accent"
                 android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="12dp"
                 android:paddingBottom="8dp"
-                android:text="IMG"
-                android:textColor="@android:color/black"
+                android:text="TXT"
+                android:textColor="@color/black"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -45,13 +45,13 @@
                 android:id="@+id/tvMsgId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip_soft"
+                android:background="@drawable/bg_chip_neutral"
                 android:paddingStart="10dp"
                 android:paddingTop="7dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="7dp"
                 android:text="#000000"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/ui_text_secondary"
                 android:textSize="11sp" />
 
             <View
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/ui_text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -75,7 +75,7 @@
             android:layout_marginTop="12dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/ui_text_primary"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0KB"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/ui_text_secondary"
                 android:textSize="12sp" />
 
             <View
@@ -103,10 +103,10 @@
                 android:id="@+id/btnDetails"
                 android:layout_width="110dp"
                 android:layout_height="44dp"
-                android:backgroundTint="@color/accent_primary"
+                android:backgroundTint="@color/ui_accent"
                 android:text="עריכה"
                 android:textAllCaps="false"
-                android:textColor="@android:color/black"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:cornerRadius="16dp" />
         </LinearLayout>

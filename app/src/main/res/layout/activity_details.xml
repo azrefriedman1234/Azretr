@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_screen_modern">
+    android:background="@drawable/bg_screen_refresh">
 
     <LinearLayout
-        android:id="@+id/mainStack"
+        android:id="@+id/editorHost"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="14dp"
@@ -20,87 +20,79 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/previewCard"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.05"
-            app:cardBackgroundColor="@color/surface_card"
+            app:cardBackgroundColor="@color/ui_card"
             app:cardCornerRadius="28dp"
             app:cardElevation="0dp"
-            app:strokeColor="@color/stroke_soft"
+            app:strokeColor="@color/ui_stroke"
             app:strokeWidth="1dp">
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:padding="12dp">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_preview_surface">
-
-                    <ImageView
-                        android:id="@+id/ivPreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="preview"
-                        android:scaleType="fitCenter" />
-
-                    <com.pasiflonet.mobile.ui.DrawingView
-                        android:id="@+id/drawingView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="visible" />
-
-                    <ImageView
-                        android:id="@+id/ivDraggableLogo"
-                        android:layout_width="92dp"
-                        android:layout_height="92dp"
-                        android:contentDescription="logo"
-                        android:scaleType="fitCenter"
-                        android:visibility="gone" />
-                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip_soft"
-                        android:paddingStart="12dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="12dp"
-                        android:paddingBottom="8dp"
-                        android:text="אזור תצוגה ועריכה"
-                        android:textColor="@color/text_primary"
-                        android:textSize="12sp"
+                        android:text="Preview"
+                        android:textColor="@color/ui_text_primary"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1" />
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="1dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip_soft"
-                        android:paddingStart="12dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="12dp"
-                        android:paddingBottom="8dp"
-                        android:text="גרור לוגו / סמן Blur"
-                        android:textColor="@color/text_secondary"
+                        android:background="@drawable/bg_chip_neutral"
+                        android:paddingStart="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="6dp"
+                        android:text="Logo / Blur / Crop safe"
+                        android:textColor="@color/ui_text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
-            </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_preview_card">
+
+                    <ImageView
+                        android:id="@+id/ivPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter" />
+
+                    <com.pasiflonet.mobile.ui.DrawingView
+                        android:id="@+id/drawingView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivDraggableLogo"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:scaleType="fitCenter"
+                        android:visibility="gone" />
+                </FrameLayout>
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <Space
@@ -108,14 +100,13 @@
             android:layout_height="12dp" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/editorCard"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.95"
-            app:cardBackgroundColor="@color/surface_card"
+            app:cardBackgroundColor="@color/ui_card"
             app:cardCornerRadius="28dp"
             app:cardElevation="0dp"
-            app:strokeColor="@color/stroke_soft"
+            app:strokeColor="@color/ui_stroke"
             app:strokeWidth="1dp">
 
             <ScrollView
@@ -133,8 +124,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="טקסט וכלי עריכה"
-                        android:textColor="@color/text_primary"
+                        android:text="Edit"
+                        android:textColor="@color/ui_text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -142,22 +133,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="כתוב, תרגם, הוסף טשטוש או לוגו ואז שלח"
-                        android:textColor="@color/text_secondary"
+                        android:text="טקסט, תרגום, לוגו וטשטוש במקום אחד"
+                        android:textColor="@color/ui_text_secondary"
                         android:textSize="13sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:hint="טקסט / כיתוב"
-                        app:boxBackgroundColor="@color/surface_input"
-                        app:boxCornerRadiusBottomEnd="22dp"
-                        app:boxCornerRadiusBottomStart="22dp"
-                        app:boxCornerRadiusTopEnd="22dp"
-                        app:boxCornerRadiusTopStart="22dp"
-                        app:boxStrokeColor="@color/stroke_soft">
+                        android:hint="כיתוב / טקסט"
+                        app:boxBackgroundColor="@color/ui_card_alt"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/ui_stroke">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCaption"
@@ -166,28 +157,28 @@
                             android:gravity="top|start"
                             android:inputType="textMultiLine"
                             android:minHeight="120dp"
-                            android:textColor="@color/text_primary"
-                            android:textColorHint="@color/text_secondary" />
+                            android:textColor="@color/ui_text_primary"
+                            android:textColorHint="@color/ui_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnTranslate"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"
+                            android:backgroundTint="@color/ui_card_alt"
                             android:text="תרגום"
                             android:textAllCaps="false"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/ui_text_primary"
                             app:cornerRadius="16dp"
-                            app:strokeColor="@color/stroke_soft" />
+                            app:strokeColor="@color/ui_stroke"
+                            app:strokeWidth="1dp" />
 
                         <Space
                             android:layout_width="10dp"
@@ -198,11 +189,13 @@
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/surface_chip"
+                            android:backgroundTint="@color/ui_card_alt"
                             android:text="Blur"
                             android:textAllCaps="false"
-                            android:textColor="@color/text_primary"
-                            app:cornerRadius="16dp" />
+                            android:textColor="@color/ui_text_primary"
+                            app:cornerRadius="16dp"
+                            app:strokeColor="@color/ui_stroke"
+                            app:strokeWidth="1dp" />
 
                         <Space
                             android:layout_width="10dp"
@@ -213,10 +206,10 @@
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/accent_soft"
+                            android:backgroundTint="@color/ui_accent_dark"
                             android:text="Logo"
                             android:textAllCaps="false"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/ui_text_primary"
                             app:cornerRadius="16dp" />
                     </LinearLayout>
 
@@ -225,7 +218,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="גודל לוגו"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/ui_text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -238,20 +231,21 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="18dp"
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnCancel"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
                             android:layout_width="0dp"
                             android:layout_height="54dp"
                             android:layout_weight="1"
+                            android:backgroundTint="@color/ui_card_alt"
                             android:text="ביטול"
                             android:textAllCaps="false"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/ui_text_primary"
                             app:cornerRadius="18dp"
-                            app:strokeColor="@color/stroke_soft" />
+                            app:strokeColor="@color/ui_stroke"
+                            app:strokeWidth="1dp" />
 
                         <Space
                             android:layout_width="12dp"
@@ -261,11 +255,11 @@
                             android:id="@+id/btnSend"
                             android:layout_width="0dp"
                             android:layout_height="54dp"
-                            android:layout_weight="1.25"
-                            android:backgroundTint="@color/accent_primary"
+                            android:layout_weight="1.15"
+                            android:backgroundTint="@color/ui_accent"
                             android:text="שליחה"
                             android:textAllCaps="false"
-                            android:textColor="@android:color/black"
+                            android:textColor="@color/black"
                             android:textStyle="bold"
                             app:cornerRadius="18dp" />
                     </LinearLayout>
@@ -278,7 +272,7 @@
         android:id="@+id/loadingOverlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#B5121720"
+        android:background="#B8121820"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
@@ -291,21 +285,21 @@
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/bg_loading_card"
+            android:background="@drawable/bg_loading_sheet"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="24dp">
 
             <ProgressBar
-                android:layout_width="42dp"
-                android:layout_height="42dp" />
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="מעבד ושולח..."
-                android:textColor="@color/text_primary"
+                android:textColor="@color/ui_text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>

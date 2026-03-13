@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_screen_modern">
+    android:background="@drawable/bg_screen_refresh">
 
     <View
-        android:id="@+id/topGlow"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:background="@drawable/bg_orb_green"
-        android:alpha="0.45"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+        android:background="@drawable/bg_glow_top"
+        android:alpha="0.55"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/headerCard"
@@ -21,10 +20,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="18dp"
         android:layout_marginEnd="16dp"
-        app:cardBackgroundColor="@color/surface_card"
+        app:cardBackgroundColor="@color/ui_card"
         app:cardCornerRadius="28dp"
         app:cardElevation="0dp"
-        app:strokeColor="@color/stroke_soft"
+        app:strokeColor="@color/ui_stroke"
         app:strokeWidth="1dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,8 +38,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Azretr Mobile"
-                android:textColor="@color/text_primary"
+                android:text="Azretr"
+                android:textColor="@color/ui_text_primary"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -48,28 +47,70 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="ממשק נוח למסך קטן, קריא ונעים יותר לשימוש רציף"
-                android:textColor="@color/text_secondary"
+                android:text="ממשק נעים, מסודר ומהיר למסך קטן"
+                android:textColor="@color/ui_text_secondary"
                 android:textSize="13sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_chip_accent"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
+                    android:text="Mobile First"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <Space
+                    android:layout_width="8dp"
+                    android:layout_height="1dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_chip_neutral"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
+                    android:text="Dark Comfortable UI"
+                    android:textColor="@color/ui_text_secondary"
+                    android:textSize="12sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSettings"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/ui_card_alt"
                     android:text="הגדרות"
                     android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:cornerRadius="16dp"
-                    app:strokeColor="@color/stroke_soft" />
+                    android:textColor="@color/ui_text_primary"
+                    app:cornerRadius="18dp"
+                    app:strokeColor="@color/ui_stroke"
+                    app:strokeWidth="1dp" />
 
                 <Space
                     android:layout_width="10dp"
@@ -80,17 +121,16 @@
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/accent_soft"
+                    android:backgroundTint="@color/ui_accent_dark"
                     android:text="ניקוי קאש"
                     android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:cornerRadius="16dp" />
+                    android:textColor="@color/ui_text_primary"
+                    app:cornerRadius="18dp" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <ScrollView
-        android:id="@+id/scrollHost"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -98,7 +138,7 @@
         android:paddingStart="16dp"
         android:paddingTop="14dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="18dp"
         app:layout_constraintTop_toBottomOf="@id/headerCard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,10 +154,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:cardBackgroundColor="@color/surface_card"
-                app:cardCornerRadius="26dp"
+                app:cardBackgroundColor="@color/ui_card"
+                app:cardCornerRadius="28dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/stroke_soft"
+                app:strokeColor="@color/ui_stroke"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -130,7 +170,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="חיבור API"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/ui_text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -138,51 +178,51 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="הזן API ID ו־API Hash כדי להתחיל"
-                        android:textColor="@color/text_secondary"
+                        android:text="הזן API ID ו־API Hash"
+                        android:textColor="@color/ui_text_secondary"
                         android:textSize="13sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:hint="API ID"
-                        app:boxBackgroundColor="@color/surface_input"
+                        app:boxBackgroundColor="@color/ui_card_alt"
+                        app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="18dp"
                         app:boxCornerRadiusBottomStart="18dp"
                         app:boxCornerRadiusTopEnd="18dp"
                         app:boxCornerRadiusTopStart="18dp"
-                        app:boxStrokeColor="@color/stroke_soft">
+                        app:boxStrokeColor="@color/ui_stroke">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etApiId"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
-                            android:textColor="@color/text_primary"
-                            android:textColorHint="@color/text_secondary" />
+                            android:textColor="@color/ui_text_primary"
+                            android:textColorHint="@color/ui_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:hint="API Hash"
-                        app:boxBackgroundColor="@color/surface_input"
+                        app:boxBackgroundColor="@color/ui_card_alt"
+                        app:boxBackgroundMode="outline"
                         app:boxCornerRadiusBottomEnd="18dp"
                         app:boxCornerRadiusBottomStart="18dp"
                         app:boxCornerRadiusTopEnd="18dp"
                         app:boxCornerRadiusTopStart="18dp"
-                        app:boxStrokeColor="@color/stroke_soft">
+                        app:boxStrokeColor="@color/ui_stroke">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etApiHash"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
-                            android:textColorHint="@color/text_secondary" />
+                            android:textColor="@color/ui_text_primary"
+                            android:textColorHint="@color/ui_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -190,10 +230,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:layout_marginTop="16dp"
-                        android:backgroundTint="@color/accent_primary"
+                        android:backgroundTint="@color/ui_accent"
                         android:text="שמירה והתחלה"
                         android:textAllCaps="false"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/black"
                         android:textStyle="bold"
                         app:cornerRadius="18dp" />
                 </LinearLayout>
@@ -205,10 +245,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:visibility="gone"
-                app:cardBackgroundColor="@color/surface_card"
-                app:cardCornerRadius="26dp"
+                app:cardBackgroundColor="@color/ui_card"
+                app:cardCornerRadius="28dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/stroke_soft"
+                app:strokeColor="@color/ui_stroke"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -221,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="התחברות לטלגרם"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/ui_text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -229,8 +269,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="המשך לפי השלב הנוכחי של האימות"
-                        android:textColor="@color/text_secondary"
+                        android:text="המסך מתחלף אוטומטית לפי שלב ההתחברות"
+                        android:textColor="@color/ui_text_secondary"
                         android:textSize="13sp" />
 
                     <LinearLayout
@@ -241,24 +281,24 @@
                         android:orientation="vertical">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="מספר טלפון"
-                            app:boxBackgroundColor="@color/surface_input"
+                            app:boxBackgroundColor="@color/ui_card_alt"
+                            app:boxBackgroundMode="outline"
                             app:boxCornerRadiusBottomEnd="18dp"
                             app:boxCornerRadiusBottomStart="18dp"
                             app:boxCornerRadiusTopEnd="18dp"
                             app:boxCornerRadiusTopStart="18dp"
-                            app:boxStrokeColor="@color/stroke_soft">
+                            app:boxStrokeColor="@color/ui_stroke">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etPhone"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="phone"
-                                android:textColor="@color/text_primary"
-                                android:textColorHint="@color/text_secondary" />
+                                android:textColor="@color/ui_text_primary"
+                                android:textColorHint="@color/ui_text_secondary" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
@@ -266,10 +306,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="52dp"
                             android:layout_marginTop="12dp"
-                            android:backgroundTint="@color/accent_primary"
+                            android:backgroundTint="@color/ui_accent"
                             android:text="SEND CODE"
                             android:textAllCaps="false"
-                            android:textColor="@android:color/black"
+                            android:textColor="@color/black"
                             android:textStyle="bold"
                             app:cornerRadius="18dp" />
                     </LinearLayout>
@@ -283,24 +323,24 @@
                         android:visibility="gone">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="קוד אימות"
-                            app:boxBackgroundColor="@color/surface_input"
+                            app:boxBackgroundColor="@color/ui_card_alt"
+                            app:boxBackgroundMode="outline"
                             app:boxCornerRadiusBottomEnd="18dp"
                             app:boxCornerRadiusBottomStart="18dp"
                             app:boxCornerRadiusTopEnd="18dp"
                             app:boxCornerRadiusTopStart="18dp"
-                            app:boxStrokeColor="@color/stroke_soft">
+                            app:boxStrokeColor="@color/ui_stroke">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etCode"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
-                                android:textColor="@color/text_primary"
-                                android:textColorHint="@color/text_secondary" />
+                                android:textColor="@color/ui_text_primary"
+                                android:textColorHint="@color/ui_text_secondary" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
@@ -308,10 +348,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="52dp"
                             android:layout_marginTop="12dp"
-                            android:backgroundTint="@color/accent_primary"
+                            android:backgroundTint="@color/ui_accent"
                             android:text="אימות קוד"
                             android:textAllCaps="false"
-                            android:textColor="@android:color/black"
+                            android:textColor="@color/black"
                             android:textStyle="bold"
                             app:cornerRadius="18dp" />
                     </LinearLayout>
@@ -325,24 +365,24 @@
                         android:visibility="gone">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="סיסמה"
-                            app:boxBackgroundColor="@color/surface_input"
+                            app:boxBackgroundColor="@color/ui_card_alt"
+                            app:boxBackgroundMode="outline"
                             app:boxCornerRadiusBottomEnd="18dp"
                             app:boxCornerRadiusBottomStart="18dp"
                             app:boxCornerRadiusTopEnd="18dp"
                             app:boxCornerRadiusTopStart="18dp"
-                            app:boxStrokeColor="@color/stroke_soft">
+                            app:boxStrokeColor="@color/ui_stroke">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etPassword"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="textPassword"
-                                android:textColor="@color/text_primary"
-                                android:textColorHint="@color/text_secondary" />
+                                android:textColor="@color/ui_text_primary"
+                                android:textColorHint="@color/ui_text_secondary" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
@@ -350,10 +390,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="52dp"
                             android:layout_marginTop="12dp"
-                            android:backgroundTint="@color/accent_primary"
+                            android:backgroundTint="@color/ui_accent"
                             android:text="אימות סיסמה"
                             android:textAllCaps="false"
-                            android:textColor="@android:color/black"
+                            android:textColor="@color/black"
                             android:textStyle="bold"
                             app:cornerRadius="18dp" />
                     </LinearLayout>
@@ -372,7 +412,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="הודעות זמינות לעריכה"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/ui_text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -380,8 +420,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="בחר הודעה כדי להיכנס לעמוד העריכה החדש"
-                    android:textColor="@color/text_secondary"
+                    android:text="בחר הודעה כדי לפתוח את מסך העריכה החדש"
+                    android:textColor="@color/ui_text_secondary"
                     android:textSize="13sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -391,7 +431,7 @@
                     android:layout_marginTop="12dp"
                     android:clipToPadding="false"
                     android:overScrollMode="never"
-                    android:paddingBottom="10dp" />
+                    android:paddingBottom="8dp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
