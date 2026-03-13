@@ -65,8 +65,8 @@
                     android:hint="@channel_username"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="#111827"
-                    android:textColorHint="#6B7280" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#AAB3C2" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -98,8 +98,8 @@
                     android:inputType="textMultiLine|textUri"
                     android:minLines="4"
                     android:padding="10dp"
-                    android:textColor="#111827"
-                    android:textColorHint="#6B7280" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#AAB3C2" />
 
                 <TextView
                     android:layout_width="match_parent"

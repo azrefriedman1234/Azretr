@@ -47,8 +47,8 @@
                 android:inputType="number"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:textColor="#111827"
-                android:textColorHint="#6B7280" />
+                android:textColor="#FFFFFF"
+                android:textColorHint="#AAB3C2" />
 
             <EditText
                 android:id="@+id/etApiHash"
@@ -59,8 +59,8 @@
                 android:hint="API HASH"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:textColor="#111827"
-                android:textColorHint="#6B7280" />
+                android:textColor="#FFFFFF"
+                android:textColorHint="#AAB3C2" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveApi"
@@ -107,8 +107,8 @@
                     android:inputType="phone"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:textColor="#111827"
-                    android:textColorHint="#6B7280" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#AAB3C2" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSendCode"
@@ -136,8 +136,8 @@
                     android:inputType="number"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:textColor="#111827"
-                    android:textColorHint="#6B7280" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#AAB3C2" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerify"
@@ -165,8 +165,8 @@
                     android:inputType="textPassword"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:textColor="#111827"
-                    android:textColorHint="#6B7280" />
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#AAB3C2" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerifyPassword"
