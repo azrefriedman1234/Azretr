@@ -35,6 +35,7 @@ class DetailsActivity : BaseActivity() {
     private var isVideo = false
     private var fileId = 0
     private var thumbId = 0
+    private var pendingSendWhileDownloading = false
     private var imageBounds = RectF()
     private var logoRelX = 0.5f; private var logoRelY = 0.5f; private var savedLogoRelW = 0.2f
 
@@ -98,24 +99,41 @@ class DetailsActivity : BaseActivity() {
         }
     }
 
-    private fun startFullMediaHunter(fId: Int) {
+    
+private fun startFullMediaHunter(fId: Int) {
         TdLibManager.downloadFile(fId)
         lifecycleScope.launch(Dispatchers.IO) {
-            for (i in 0..60) {
-                if (isFinishing) break
+            for (i in 0..180) {
+                if (isFinishing || isDestroyed) break
+
                 val path = TdLibManager.getFilePath(fId)
                 if (path != null && File(path).exists()) {
                     val file = File(path)
                     if (file.length() > 50000 || !isVideo) {
                         rawMediaPath = path
-                        if (!isVideo) withContext(Dispatchers.Main) { loadPreview(path) }
+
+                        withContext(Dispatchers.Main) {
+                            try { b.loadingOverlay.visibility = View.GONE } catch (_: Exception) {}
+
+                            if (!isVideo) {
+                                loadPreview(path)
+                            }
+
+                            if (pendingSendWhileDownloading) {
+                                pendingSendWhileDownloading = false
+                                safeToast("המדיה ירדה. שולח ברקע…")
+                                performStrictSend()
+                            }
+                        }
                         break
                     }
                 }
+
                 delay(1000)
             }
         }
     }
+
 
     private fun setupTools() {
         b.btnTranslate.setOnClickListener {
@@ -287,7 +305,9 @@ b.btnSend.setOnClickListener { performStrictSend() }
                 return
             }
 
-            safeToast("Wait, downloading media...")
+            pendingSendWhileDownloading = true
+            try { b.loadingOverlay.visibility = View.GONE } catch (_: Exception) {}
+            safeToast("המדיה עדיין יורדת ברקע. אפשר להמשיך לערוך והיא תישלח אוטומטית כשההורדה תסתיים")
             return
         }
 
