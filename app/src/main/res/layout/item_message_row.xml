@@ -1,78 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:orientation="horizontal"
-    android:padding="10dp"
-    android:gravity="center_vertical"
-    android:background="@drawable/row_border"
-    android:layout_marginBottom="10dp"
-    android:descendantFocusability="blocksDescendants">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@color/surface_card"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/stroke_soft"
+    app:strokeWidth="1dp">
 
-    <ImageButton
-        android:id="@+id/btnDetails"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@android:drawable/ic_menu_search"
-        android:background="@drawable/bg_cyber_icon_button"
-        android:contentDescription="Details"
-        android:scaleType="centerInside"
-        android:clickable="true"
-        android:focusable="false"
-        android:padding="10dp"/>
-
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_weight="0.16"
-        android:gravity="center"
-        android:text="00:00"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_secondary"/>
+        android:minHeight="120dp"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvMediaType"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.12"
-        android:gravity="center"
-        android:text="TXT"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_secondary"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tvMsgId"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.20"
-        android:gravity="center"
-        android:text="ID"
-        android:textSize="13sp"
-        android:textColor="@color/text_secondary"/>
+            <TextView
+                android:id="@+id/tvMediaType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_primary"
+                android:paddingStart="12dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:text="IMG"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvSize"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.16"
-        android:gravity="center"
-        android:text="-"
-        android:textSize="13sp"
-        android:textColor="@color/text_secondary"/>
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="1dp" />
 
-    <TextView
-        android:id="@+id/tvMsgText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.36"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:gravity="right"
-        android:text="Loading..."
-        android:textSize="14sp"
-        android:textColor="@color/text_primary"/>
-</LinearLayout>
+            <TextView
+                android:id="@+id/tvMsgId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_soft"
+                android:paddingStart="10dp"
+                android:paddingTop="7dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="7dp"
+                android:text="#000000"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvMsgText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0KB"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDetails"
+                android:layout_width="110dp"
+                android:layout_height="44dp"
+                android:backgroundTint="@color/accent_primary"
+                android:text="עריכה"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                app:cornerRadius="16dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

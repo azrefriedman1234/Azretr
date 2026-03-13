@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cyber_bg">#040B06</color>
-    <color name="cyber_card">#07140C</color>
-
-    <color name="cyber_primary">#39FF14</color>
-    <color name="cyber_primary_dark">#00C853</color>
-    <color name="cyber_secondary">#00FFB3</color>
-
-    <color name="text_primary">#E6FFE6</color>
-    <color name="text_secondary">#7CFF8A</color>
-
-    <color name="btn_gradient_start">#39FF14</color>
-    <color name="btn_gradient_end">#00C853</color>
-
-    <color name="cyber_border">#39FF14</color>
-    <color name="cyber_border_dim">#6639FF14</color>
-
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="accent_primary">#36FFB9</color>
+    <color name="accent_soft">#17342B</color>
+    <color name="surface_card">#141D25</color>
+    <color name="surface_input">#0E161D</color>
+    <color name="surface_chip">#1A2732</color>
+    <color name="stroke_soft">#223645</color>
+    <color name="text_primary">#F4F7FA</color>
+    <color name="text_secondary">#95A8B7</color>
 </resources>
