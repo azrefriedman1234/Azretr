@@ -70,7 +70,7 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="300dp"
+                        android:layout_height="230dp"
                         android:layout_marginTop="10dp"
                         android:background="#030A12">
 
@@ -144,14 +144,17 @@
                     <EditText
                         android:id="@+id/etCaption"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="120dp"
                         android:layout_marginTop="8dp"
                         android:backgroundTint="#223645"
                         android:gravity="top|start"
                         android:hint="כתוב כאן טקסט, תרגום, חתימה או קישור"
                         android:imeOptions="flagNoExtractUi"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:minLines="5"
+                        android:isScrollContainer="true"
+                        android:maxLines="4"
+                        android:minLines="3"
+                        android:overScrollMode="ifContentScrolls"
                         android:padding="12dp"
                         android:scrollbars="vertical"
                         android:textColor="#FFFFFF"

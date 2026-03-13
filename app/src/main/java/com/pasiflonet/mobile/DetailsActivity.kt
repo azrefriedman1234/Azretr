@@ -52,6 +52,30 @@ class DetailsActivity : BaseActivity() {
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
 
+            window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+            val scrollCaptionIntoView = {
+                try {
+                    b.scrollRoot.postDelayed({
+                        b.scrollRoot.smoothScrollTo(0, b.etCaption.bottom + 260)
+                    }, 220)
+                } catch (_: Exception) {}
+            }
+
+            b.etCaption.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) scrollCaptionIntoView()
+            }
+
+            b.etCaption.setOnClickListener {
+                scrollCaptionIntoView()
+            }
+
+            b.etCaption.setOnLongClickListener {
+                scrollCaptionIntoView()
+                false
+            }
+
+
         isVideo = intent.getBooleanExtra("IS_VIDEO", false)
         fileId = intent.getIntExtra("FILE_ID", 0)
         thumbId = intent.getIntExtra("THUMB_ID", 0)
