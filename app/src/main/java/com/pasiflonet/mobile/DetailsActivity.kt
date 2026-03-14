@@ -11,6 +11,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.MotionEvent
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import android.widget.SeekBar
 import androidx.activity.result.contract.ActivityResultContracts
