@@ -28,7 +28,7 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
     private val repeatDelete = object : Runnable {
         override fun run() {
             backspaceOnce()
-            handler.postDelayed(this, 65)
+            handler.postDelayed(this, 55)
         }
     }
 
@@ -42,11 +42,10 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
                 MotionEvent.ACTION_DOWN -> {
                     feedback(v)
                     backspaceOnce()
-                    handler.postDelayed(repeatDelete, 320)
+                    handler.postDelayed(repeatDelete, 280)
                     true
                 }
-                MotionEvent.ACTION_UP,
-                MotionEvent.ACTION_CANCEL -> {
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     handler.removeCallbacks(repeatDelete)
                     true
                 }
@@ -94,7 +93,7 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
             tagText == "paste" -> pasteClipboard()
             tagText == "left" -> moveCursor(-1)
             tagText == "right" -> moveCursor(1)
-            tagText == "clear" -> clearAll()
+            tagText == "clear_selection" -> clearSelectionOnly()
             tagText == "enter" -> insertText("\n")
             tagText == "space" -> insertText(" ")
         }
@@ -132,9 +131,17 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
         }
     }
 
-    private fun clearAll() {
+    private fun clearSelectionOnly() {
         val e = currentTarget() ?: return
-        e.text?.clear()
+        val editable = e.text ?: return
+        val start = max(e.selectionStart, 0)
+        val end = max(e.selectionEnd, 0)
+        if (start != end) {
+            val from = min(start, end)
+            val to = max(start, end)
+            editable.delete(from, to)
+            e.setSelection(from.coerceAtMost(editable.length))
+        }
     }
 
     private fun moveCursor(delta: Int) {

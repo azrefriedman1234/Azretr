@@ -99,7 +99,7 @@
                     android:minLines="4"
                     android:padding="10dp"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#AAB3C2" />
+                    android:textColorHint="#F3D5DA" />
 
                 <com.pasiflonet.mobile.ui.AppHebrewKeyboardView
                     android:id="@+id/appKeyboardSettings"

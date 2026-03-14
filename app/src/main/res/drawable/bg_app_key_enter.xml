@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android"><item android:state_pressed="true"><shape><solid android:color="#1C7E53"/><corners android:radius="10dp"/><stroke android:width="1dp" android:color="#B6FFD8"/></shape></item><item><shape><solid android:color="#239A64"/><corners android:radius="10dp"/><stroke android:width="1dp" android:color="#B6FFD8"/></shape></item></selector>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#1E9E6E"/>
+    <corners android:radius="12dp"/>
+    <stroke android:width="1dp" android:color="#7AE0B6"/>
+</shape>
