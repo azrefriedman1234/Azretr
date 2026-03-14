@@ -55,6 +55,30 @@ class DetailsActivity : BaseActivity() {
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
 
+        b.etCaption.showSoftInputOnFocus = false
+        b.etCaption.isFocusable = true
+        b.etCaption.isFocusableInTouchMode = true
+        b.etCaption.isClickable = true
+        b.etCaption.isLongClickable = true
+        b.etCaption.setTextIsSelectable(false)
+
+        b.etCaption.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                try {
+                    val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                } catch (_: Exception) {}
+            }
+        }
+
+        b.etCaption.setOnClickListener { v ->
+            try {
+                val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+            } catch (_: Exception) {}
+        }
+
+
         b.etCaption.isFocusable = true
         b.etCaption.isFocusableInTouchMode = true
         b.etCaption.isClickable = true
@@ -65,13 +89,6 @@ class DetailsActivity : BaseActivity() {
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
         )
-
-        b.etCaption.movementMethod = ScrollingMovementMethod()
-        b.etCaption.setOnTouchListener { _, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_MOVE -> {
-                    b.scrollRoot.requestDisallowInterceptTouchEvent(true)
-                }
                 MotionEvent.ACTION_UP,
                 MotionEvent.ACTION_CANCEL -> {
                     b.scrollRoot.requestDisallowInterceptTouchEvent(false)
