@@ -3,6 +3,7 @@ package com.pasiflonet.mobile
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.pasiflonet.mobile.databinding.ActivitySettingsBinding
