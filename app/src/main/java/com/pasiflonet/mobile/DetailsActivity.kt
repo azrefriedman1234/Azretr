@@ -55,6 +55,10 @@ class DetailsActivity : BaseActivity() {
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
 
+        b.appKeyboard.bindTo(b.etCaption)
+        b.appKeyboard.visibility = View.VISIBLE
+
+
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN

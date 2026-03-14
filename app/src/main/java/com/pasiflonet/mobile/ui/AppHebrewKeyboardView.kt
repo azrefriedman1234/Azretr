@@ -11,12 +11,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.pasiflonet.mobile.R
-import kotlin.math.max
-import kotlin.math.min
 
 class AppHebrewKeyboardView @JvmOverloads constructor(
     context: Context,
@@ -25,19 +24,6 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
 
     private var targetEditText: EditText? = null
 
-    fun setTargetEditText(editText: EditText?) {
-        targetEditText = editText
-    }
-
-    private fun resolveTargetEditText(): EditText? {
-        val direct = targetEditText
-        if (direct != null) return direct
-        val focused = rootView?.findFocus()
-        return if (focused is EditText) focused else null
-    }
-
-
-    private var target: EditText? = null
     private val handler = Handler(Looper.getMainLooper())
     private val repeatDelete = object : Runnable {
         override fun run() {
@@ -49,6 +35,7 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
     init {
         orientation = VERTICAL
         LayoutInflater.from(context).inflate(R.layout.view_app_hebrew_keyboard, this, true)
+
         bindTaggedKeys(this)
 
         findViewById<View>(R.id.keyBackspace)?.setOnTouchListener { v, event ->
@@ -69,20 +56,46 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
     }
 
     fun bindTo(editText: EditText) {
-        target = editText
-        try { editText.showSoftInputOnFocus = false } catch (_: Exception) {}
-        editText.setTextIsSelectable(true)
+        targetEditText = editText
+
+        try {
+            editText.showSoftInputOnFocus = false
+        } catch (_: Exception) {
+        }
+
+        editText.isFocusable = true
+        editText.isFocusableInTouchMode = true
+        editText.isClickable = true
         editText.isLongClickable = true
-        editText.setOnFocusChangeListener { _, hasFocus ->
+
+        editText.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
-                target = editText
+                targetEditText = editText
                 visibility = View.VISIBLE
+                hideSystemKeyboard(v)
             }
         }
-        editText.setOnClickListener {
-            target = editText
+
+        editText.setOnClickListener { v ->
+            targetEditText = editText
             visibility = View.VISIBLE
+            hideSystemKeyboard(v)
         }
+    }
+
+    private fun hideSystemKeyboard(v: View) {
+        try {
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(v.windowToken, 0)
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun resolveTargetEditText(): EditText? {
+        val direct = targetEditText
+        if (direct != null) return direct
+        val focused = rootView?.findFocus()
+        return focused as? EditText
     }
 
     private fun bindTaggedKeys(root: View) {
@@ -92,6 +105,7 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
                 root.setOnClickListener { onTagClicked(tagText, root) }
             }
         }
+
         if (root is ViewGroup) {
             for (i in 0 until root.childCount) {
                 bindTaggedKeys(root.getChildAt(i))
@@ -101,6 +115,7 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
 
     private fun onTagClicked(tagText: String, view: View) {
         feedback(view)
+
         when {
             tagText.startsWith("ins:") -> insertText(tagText.removePrefix("ins:"))
             tagText == "copy" -> copySelected()
@@ -113,35 +128,38 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
         }
     }
 
-    private fun currentTarget(): EditText? = target
-
     private fun insertText(text: String) {
         val et = resolveTargetEditText() ?: return
         et.requestFocus()
-        val editable = et.text ?: return
 
-        val start: Int = et.selectionStart
-        val end: Int = et.selectionEnd
-        val selStart: Int = if (start <= end) start else end
-        val selEnd: Int = if (start >= end) start else end
+        val editable = et.text ?: return
+        val start = et.selectionStart.coerceAtLeast(0)
+        val end = et.selectionEnd.coerceAtLeast(0)
+
+        val selStart = if (start <= end) start else end
+        val selEnd = if (start >= end) start else end
 
         editable.replace(selStart, selEnd, text)
         val newPos = selStart + text.length
-        et.setSelection(if (newPos <= editable.length) newPos else editable.length)
+        et.setSelection(newPos.coerceAtMost(editable.length))
     }
 
     private fun backspaceOnce() {
-        val e = currentTarget() ?: return
+        val e = resolveTargetEditText() ?: return
+        e.requestFocus()
+
         val editable = e.text ?: return
-        val start = max(e.selectionStart, 0)
-        val end = max(e.selectionEnd, 0)
+        val start = e.selectionStart.coerceAtLeast(0)
+        val end = e.selectionEnd.coerceAtLeast(0)
+
         if (start != end) {
-            val from = min(start, end)
-            val to = max(start, end)
+            val from = if (start <= end) start else end
+            val to = if (start >= end) start else end
             editable.delete(from, to)
             e.setSelection(from.coerceAtMost(editable.length))
             return
         }
+
         if (start > 0 && start <= editable.length) {
             editable.delete(start - 1, start)
             e.setSelection((start - 1).coerceAtLeast(0))
@@ -149,31 +167,53 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
     }
 
     private fun clearSelectionOnly() {
-        val e = currentTarget() ?: return
+        val e = resolveTargetEditText() ?: return
         val editable = e.text ?: return
-        val start = max(e.selectionStart, 0)
-        val end = max(e.selectionEnd, 0)
+
+        val start = e.selectionStart.coerceAtLeast(0)
+        val end = e.selectionEnd.coerceAtLeast(0)
+
         if (start != end) {
-            val from = min(start, end)
-            val to = max(start, end)
+            val from = if (start <= end) start else end
+            val to = if (start >= end) start else end
             editable.delete(from, to)
             e.setSelection(from.coerceAtMost(editable.length))
         }
     }
 
     private fun moveCursor(delta: Int) {
-        val e = currentTarget() ?: return
-        val pos = max(e.selectionStart, 0)
-        val newPos = (pos + delta).coerceIn(0, e.text?.length ?: 0)
+        val e = resolveTargetEditText() ?: return
+        e.requestFocus()
+
+        val start = e.selectionStart.coerceAtLeast(0)
+        val end = e.selectionEnd.coerceAtLeast(0)
+
+        val base = if (delta < 0) {
+            if (start <= end) start else end
+        } else {
+            if (start >= end) start else end
+        }
+
+        val textLen = e.text?.length ?: 0
+        val newPos = (base + delta).coerceIn(0, textLen)
         e.setSelection(newPos)
     }
 
     private fun copySelected() {
-        val e = currentTarget() ?: return
+        val e = resolveTargetEditText() ?: return
         val text = e.text?.toString().orEmpty()
-        val start = max(e.selectionStart, 0)
-        val end = max(e.selectionEnd, 0)
-        val content = if (start != end) text.substring(min(start, end), max(start, end)) else text
+
+        val start = e.selectionStart.coerceAtLeast(0)
+        val end = e.selectionEnd.coerceAtLeast(0)
+
+        val content = if (start != end) {
+            val from = if (start <= end) start else end
+            val to = if (start >= end) start else end
+            text.substring(from, to)
+        } else {
+            text
+        }
+
         val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cm.setPrimaryClip(ClipData.newPlainText("text", content))
     }
@@ -182,10 +222,15 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
         val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val item = cm.primaryClip?.getItemAt(0) ?: return
         val pasteText = item.coerceToText(context)?.toString().orEmpty()
-        if (pasteText.isNotEmpty()) insertText(pasteText)
+        if (pasteText.isNotEmpty()) {
+            insertText(pasteText)
+        }
     }
 
     private fun feedback(view: View) {
-        try { view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP) } catch (_: Exception) {}
+        try {
+            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        } catch (_: Exception) {
+        }
     }
 }
