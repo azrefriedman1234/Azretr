@@ -59,19 +59,24 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
         b.etCaption.setTextIsSelectable(true)
-        b.etCaption.setOnLongClickListener { false }
 
         b.appKeyboard.bindTo(b.etCaption)
         b.appKeyboard.visibility = View.VISIBLE
 
             b.etCaption.movementMethod = ScrollingMovementMethod()
 
-            b.etCaption.setOnTouchListener { v, event ->
-                when (event.actionMasked) {
-                    MotionEvent.ACTION_DOWN,
-                    MotionEvent.ACTION_MOVE -> {
-                        b.scrollRoot.requestDisallowInterceptTouchEvent(true)
-                    }
+            b.etCaption.setOnTouchListener { _, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_MOVE -> {
+                    b.scrollRoot.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    b.scrollRoot.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false
+        }
 
                     MotionEvent.ACTION_UP,
                     MotionEvent.ACTION_CANCEL -> {
@@ -98,11 +103,6 @@ class DetailsActivity : BaseActivity() {
 
             b.etCaption.setOnClickListener {
                 scrollCaptionIntoView()
-            }
-
-            b.etCaption.setOnLongClickListener {
-                scrollCaptionIntoView()
-                false
             }
 
 
