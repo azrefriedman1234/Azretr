@@ -53,6 +53,14 @@ class DetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
+
+        b.etCaption.isFocusable = true
+        b.etCaption.isFocusableInTouchMode = true
+        b.etCaption.isClickable = true
+        b.etCaption.isLongClickable = true
+        b.etCaption.setTextIsSelectable(true)
+        b.etCaption.setOnLongClickListener { false }
+
         b.appKeyboard.bindTo(b.etCaption)
         b.appKeyboard.visibility = View.VISIBLE
 
