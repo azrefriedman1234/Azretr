@@ -23,6 +23,20 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
 
+    private var targetEditText: EditText? = null
+
+    fun setTargetEditText(editText: EditText?) {
+        targetEditText = editText
+    }
+
+    private fun resolveTargetEditText(): EditText? {
+        val direct = targetEditText
+        if (direct != null) return direct
+        val focused = rootView?.findFocus()
+        return if (focused is EditText) focused else null
+    }
+
+
     private var target: EditText? = null
     private val handler = Handler(Looper.getMainLooper())
     private val repeatDelete = object : Runnable {
@@ -102,16 +116,18 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
     private fun currentTarget(): EditText? = target
 
     private fun insertText(text: String) {
-        val et = targetEditText ?: return
+        val et = resolveTargetEditText() ?: return
         et.requestFocus()
         val editable = et.text ?: return
-        val start = et.selectionStart.coerceAtLeast(0)
-        val end = et.selectionEnd.coerceAtLeast(0)
-        val selStart = minOf(start, end)
-        val selEnd = maxOf(start, end)
+
+        val start: Int = et.selectionStart
+        val end: Int = et.selectionEnd
+        val selStart: Int = if (start <= end) start else end
+        val selEnd: Int = if (start >= end) start else end
+
         editable.replace(selStart, selEnd, text)
         val newPos = selStart + text.length
-        et.setSelection(newPos.coerceAtMost(editable.length))
+        et.setSelection(if (newPos <= editable.length) newPos else editable.length)
     }
 
     private fun backspaceOnce() {
