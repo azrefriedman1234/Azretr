@@ -60,12 +60,13 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isLongClickable = true
         b.etCaption.setTextIsSelectable(true)
 
-        b.appKeyboard.bindTo(b.etCaption)
-        b.appKeyboard.visibility = View.VISIBLE
+        window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
+        )
 
-            b.etCaption.movementMethod = ScrollingMovementMethod()
-
-            b.etCaption.setOnTouchListener { _, event ->
+        b.etCaption.movementMethod = ScrollingMovementMethod()
+        b.etCaption.setOnTouchListener { _, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_MOVE -> {
                     b.scrollRoot.requestDisallowInterceptTouchEvent(true)
@@ -77,34 +78,6 @@ class DetailsActivity : BaseActivity() {
             }
             false
         }
-
-                    MotionEvent.ACTION_UP,
-                    MotionEvent.ACTION_CANCEL -> {
-                        b.scrollRoot.requestDisallowInterceptTouchEvent(false)
-                    }
-                }
-                false
-            }
-
-
-            window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-
-            val scrollCaptionIntoView = {
-                try {
-                    b.scrollRoot.postDelayed({
-                        b.scrollRoot.smoothScrollTo(0, b.etCaption.bottom + 260)
-                    }, 220)
-                } catch (_: Exception) {}
-            }
-
-            b.etCaption.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) scrollCaptionIntoView()
-            }
-
-            b.etCaption.setOnClickListener {
-                scrollCaptionIntoView()
-            }
-
 
         isVideo = intent.getBooleanExtra("IS_VIDEO", false)
         fileId = intent.getIntExtra("FILE_ID", 0)
