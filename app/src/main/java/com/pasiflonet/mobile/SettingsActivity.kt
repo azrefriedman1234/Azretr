@@ -40,6 +40,8 @@ class SettingsActivity : BaseActivity() {
         try {
             b = ActivitySettingsBinding.inflate(layoutInflater)
             setContentView(b.root)
+            b.appKeyboardSettings.bindTo(b.etSignature)
+            b.appKeyboardSettings.visibility = View.VISIBLE
 
             prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
 

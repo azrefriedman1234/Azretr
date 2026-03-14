@@ -101,6 +101,11 @@
                     android:textColor="#FFFFFF"
                     android:textColorHint="#AAB3C2" />
 
+                <com.pasiflonet.mobile.ui.AppHebrewKeyboardView
+                    android:id="@+id/appKeyboardSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

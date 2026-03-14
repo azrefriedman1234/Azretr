@@ -53,6 +53,8 @@ class DetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
+        b.appKeyboard.bindTo(b.etCaption)
+        b.appKeyboard.visibility = View.VISIBLE
 
             b.etCaption.movementMethod = ScrollingMovementMethod()
 

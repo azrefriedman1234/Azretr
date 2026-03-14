@@ -159,8 +159,13 @@
                         android:scrollbars="vertical"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#AAB3C2"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:lineSpacingExtra="6dp" />
+
+                    <com.pasiflonet.mobile.ui.AppHebrewKeyboardView
+                        android:id="@+id/appKeyboard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                     <View
                         android:layout_width="match_parent"
