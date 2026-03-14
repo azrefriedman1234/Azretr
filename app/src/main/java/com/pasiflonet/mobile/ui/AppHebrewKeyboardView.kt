@@ -102,15 +102,16 @@ class AppHebrewKeyboardView @JvmOverloads constructor(
     private fun currentTarget(): EditText? = target
 
     private fun insertText(text: String) {
-        val e = currentTarget() ?: return
-        val editable = e.text ?: return
-        val start = max(e.selectionStart, 0)
-        val end = max(e.selectionEnd, 0)
-        val from = min(start, end)
-        val to = max(start, end)
-        editable.replace(from, to, text)
-        val newPos = from + text.length
-        e.setSelection(newPos.coerceAtMost(editable.length))
+        val et = targetEditText ?: return
+        et.requestFocus()
+        val editable = et.text ?: return
+        val start = et.selectionStart.coerceAtLeast(0)
+        val end = et.selectionEnd.coerceAtLeast(0)
+        val selStart = minOf(start, end)
+        val selEnd = maxOf(start, end)
+        editable.replace(selStart, selEnd, text)
+        val newPos = selStart + text.length
+        et.setSelection(newPos.coerceAtMost(editable.length))
     }
 
     private fun backspaceOnce() {

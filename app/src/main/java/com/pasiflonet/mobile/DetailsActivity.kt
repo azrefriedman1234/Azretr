@@ -65,7 +65,6 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isFocusableInTouchMode = true
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
-        b.etCaption.setTextIsSelectable(true)
 
         b.etCaption.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
