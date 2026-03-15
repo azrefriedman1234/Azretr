@@ -13,10 +13,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingStart="8dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp">
+        android:padding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 app:cardBackgroundColor="#08152D"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="8dp"
                 app:strokeColor="#D8DEE8"
                 app:strokeWidth="1dp">
 
@@ -36,42 +33,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="8dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start|center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Preview"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <Space
-                            android:layout_width="10dp"
-                            android:layout_height="1dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:background="#F2F4F7"
-                            android:gravity="center"
-                            android:paddingStart="14dp"
-                            android:paddingEnd="14dp"
-                            android:text="Logo / Blur / Crop safe"
-                            android:textColor="#6B7280"
-                            android:textSize="11sp" />
-                    </LinearLayout>
+                        android:text="Preview"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="420dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         android:background="#E8EBF0">
 
                         <ImageView
@@ -103,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#08152D"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="8dp"
                 app:strokeColor="#D8DEE8"
                 app:strokeWidth="1dp">
 
@@ -111,7 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="8dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -122,30 +97,118 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:gravity="start"
-                        android:text="טקסט, תרגום, לוגו ושיטוש במקום אחד"
-                        android:textColor="#AAB3C2"
-                        android:textSize="12sp" />
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnTranslate"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="תרגום"
+                            android:textColor="#FFFFFF"
+                            app:cornerRadius="6dp"
+                            app:strokeColor="#FFFFFF" />
+
+                        <Space
+                            android:layout_width="6dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnModeBlur"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="BLUR"
+                            android:textColor="#FFFFFF"
+                            app:cornerRadius="6dp"
+                            app:strokeColor="#FFFFFF" />
+
+                        <Space
+                            android:layout_width="6dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnModeLogo"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="לוגו / סימן מים"
+                            android:textColor="#111827"
+                            app:backgroundTint="#1E6A48"
+                            app:cornerRadius="6dp" />
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="start"
+                        android:text="גודל לוגו"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <SeekBar
+                        android:id="@+id/sbLogoSize"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:max="100"
+                        android:progress="20" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnCancel"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="ביטול"
+                            android:textColor="#FFFFFF"
+                            app:cornerRadius="6dp"
+                            app:strokeColor="#FFFFFF" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSend"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="שליחה"
+                            android:textStyle="bold"
+                            app:backgroundTint="#2F67E8"
+                            app:cornerRadius="6dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="end"
                         android:text="כיתוב / טקסט"
-                        android:textColor="#2F67E8"
-                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/etCaption"
                         android:layout_width="match_parent"
                         android:layout_height="320dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         android:background="#8B1E1E"
                         android:gravity="top|right"
                         android:hint="כתוב כאן טקסט"
@@ -157,7 +220,6 @@
                         android:clickable="true"
                         android:cursorVisible="true"
                         android:longClickable="true"
-                        android:textIsSelectable="true"
                         android:layoutDirection="rtl"
                         android:textDirection="rtl"
                         android:minLines="8"
@@ -169,114 +231,6 @@
                         android:textColorHint="#F3C9C9"
                         android:textSize="20sp"
                         android:lineSpacingExtra="6dp" />
-
-                    <com.pasiflonet.mobile.ui.AppHebrewKeyboardView
-                        android:id="@+id/appKeyboard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="8dp"
-                        android:background="#31435F" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:id="@+id/btnTranslate"
-                            android:layout_width="0dp"
-                            android:layout_height="46dp"
-                            android:layout_weight="1"
-                            android:text="תרגום"
-                            android:textColor="#FFFFFF"
-                            app:cornerRadius="8dp"
-                            app:strokeColor="#FFFFFF" />
-
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="1dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:id="@+id/btnModeBlur"
-                            android:layout_width="0dp"
-                            android:layout_height="46dp"
-                            android:layout_weight="1"
-                            android:text="BLUR"
-                            android:textColor="#FFFFFF"
-                            app:cornerRadius="8dp"
-                            app:strokeColor="#FFFFFF" />
-
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="1dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnModeLogo"
-                            android:layout_width="0dp"
-                            android:layout_height="46dp"
-                            android:layout_weight="1"
-                            android:text="LOGO"
-                            android:textColor="#111827"
-                            app:backgroundTint="#1E6A48"
-                            app:cornerRadius="8dp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:gravity="start"
-                        android:text="גודל לוגו"
-                        android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <SeekBar
-                        android:id="@+id/sbLogoSize"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:max="100"
-                        android:progress="20" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:id="@+id/btnCancel"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:text="ביטול"
-                            android:textColor="#FFFFFF"
-                            app:cornerRadius="8dp"
-                            app:strokeColor="#FFFFFF" />
-
-                        <Space
-                            android:layout_width="10dp"
-                            android:layout_height="1dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnSend"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:text="שליחה"
-                            android:textStyle="bold"
-                            app:backgroundTint="#2F67E8"
-                            app:cornerRadius="8dp" />
-                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

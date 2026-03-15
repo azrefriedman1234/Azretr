@@ -55,38 +55,16 @@ class DetailsActivity : BaseActivity() {
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
 
-        b.appKeyboard.bindTo(b.etCaption)
-        b.appKeyboard.visibility = View.VISIBLE
-
-
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
         )
 
-        b.etCaption.showSoftInputOnFocus = false
+        b.etCaption.showSoftInputOnFocus = true
         b.etCaption.isFocusable = true
         b.etCaption.isFocusableInTouchMode = true
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
-
-        b.etCaption.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                try {
-                    val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-                    imm.hideSoftInputFromWindow(v.windowToken, 0)
-                } catch (_: Exception) {
-                }
-            }
-        }
-
-        b.etCaption.setOnClickListener { v ->
-            try {
-                val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-                imm.hideSoftInputFromWindow(v.windowToken, 0)
-            } catch (_: Exception) {
-            }
-        }
 
         isVideo = intent.getBooleanExtra("IS_VIDEO", false)
         fileId = intent.getIntExtra("FILE_ID", 0)
