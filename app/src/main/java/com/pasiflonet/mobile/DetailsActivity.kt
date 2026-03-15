@@ -69,12 +69,24 @@ class DetailsActivity : BaseActivity() {
 
         b.etCaption.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                b.scrollRoot.postDelayed({ scrollCaptionAboveKeyboard() }, 120)
+                b.scrollRoot.postDelayed({ forceShowCaptionArea() }, 150)
             }
         }
 
         b.etCaption.setOnClickListener {
-            b.scrollRoot.postDelayed({ scrollCaptionAboveKeyboard() }, 120)
+            b.scrollRoot.postDelayed({ forceShowCaptionArea() }, 120)
+        }
+
+        b.root.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            b.root.getWindowVisibleDisplayFrame(r)
+            val screenHeight = b.root.rootView.height
+            val keyboardHeight = screenHeight - r.height()
+            if (keyboardHeight > screenHeight * 0.15 && b.etCaption.hasFocus()) {
+                forceShowCaptionArea()
+            }
+        }
+
         }
 
         b.root.viewTreeObserver.addOnGlobalLayoutListener {
@@ -516,12 +528,21 @@ var logoUri: Uri? = null
             }
         }
     }
+    }
 
 
-    private fun scrollCaptionAboveKeyboard() {
+    private fun forceShowCaptionArea() {
         try {
-            val y = (b.etCaption.top - 24).coerceAtLeast(0)
-            b.scrollRoot.smoothScrollTo(0, y)
+            val rect = Rect()
+            b.etCaption.getDrawingRect(rect)
+            b.scrollRoot.offsetDescendantRectToMyCoords(b.etCaption, rect)
+            rect.top -= 24
+            rect.bottom += 260
+            b.scrollRoot.requestChildRectangleOnScreen(b.etCaption, rect, true)
+            b.scrollRoot.post {
+                val y = (b.etCaption.top - 16).coerceAtLeast(0)
+                b.scrollRoot.smoothScrollTo(0, y)
+            }
         } catch (_: Exception) {
         }
     }
