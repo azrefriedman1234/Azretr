@@ -331,11 +331,11 @@ private fun restoreLogoPosition() {
         // keep it inside bounds after size change
         restoreLogoPosition()
     }
+    
     private fun performStrictSend() {
         val rawPath = rawMediaPath
-        if (rawPath == null || !File(rawPath).exists()) {
 
-            // ✅ TEXT-ONLY message: no media ids + not video -> send text immediately
+        if (rawPath == null || !File(rawPath).exists()) {
             if (!isVideo && fileId == 0 && thumbId == 0) {
                 val textToSend = b.etCaption.text?.toString()?.trim().orEmpty()
                 if (textToSend.isEmpty()) {
@@ -344,142 +344,173 @@ private fun restoreLogoPosition() {
                 }
 
                 val target = getSharedPreferences("app_prefs", MODE_PRIVATE)
-                    .getString("target_username", "") ?: ""
+                    .getString("target_username", "")
+                    .orEmpty()
+
+                if (target.isBlank()) {
+                    safeToast("אין יעד לשליחה בהגדרות")
+                    return
+                }
 
                 b.btnSend.isEnabled = false
-                try { b.loadingOverlay.visibility = View.GONE } catch (_: Exception) {}
-
-                safeToast("שולח טקסט…")
-
-                // go back to main table immediately
                 try {
-                    startActivity(
-                        Intent(this, MainActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        }
-                    )
-                } catch (_: Exception) {}
+                    b.loadingOverlay.visibility = View.GONE
+                } catch (_: Exception) {
+                }
+
+                jumpBackToMain("שולח טקסט ברקע…")
 
                 CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
-                    // TdLibManager already supports filePath=null -> InputMessageText
-                    TdLibManager.sendFinalMessage(target, textToSend, null, false)
+                    try {
+                        TdLibManager.sendFinalMessage(target, textToSend, null, false)
+                        safeToast("✅ נשלח")
+                    } catch (e: Exception) {
+                        safeToast("❌ ${e.message ?: "שליחה נכשלה"}")
+                    }
                 }
                 return
             }
 
             pendingSendWhileDownloading = true
-            try { b.loadingOverlay.visibility = View.GONE } catch (_: Exception) {}
+            try {
+                b.loadingOverlay.visibility = View.GONE
+            } catch (_: Exception) {
+            }
+
             jumpBackToMain("המדיה עדיין יורדת. חוזר למסך הראשי והשליחה תמשיך אוטומטית ברקע…")
             return
         }
 
-        // Snapshot ALL UI data now (so we can immediately go back to main)
-        val rects = ArrayList<BlurRect>()
-        for (r in b.drawingView.rects) rects.add(BlurRect(r.left, r.top, r.right, r.bottom))
+        continueBackgroundSend()
+    }
 
-        val caption = b.etCaption.text?.toString() ?: ""
+    private fun continueBackgroundSend() {
+        val rawPath = rawMediaPath ?: return
+        if (!File(rawPath).exists()) return
+
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        val target = prefs.getString("target_username", "") ?: ""
+        val target = prefs.getString("target_username", "").orEmpty()
+        if (target.isBlank()) {
+            safeToast("אין יעד לשליחה בהגדרות")
+            return
+        }
 
-        // --- logo params snapshot (POSITION FROM UI, not old prefs) ---
-        var logoRelX = prefs.getFloat("logo_rel_x", 0.02f)
-        var logoRelY = prefs.getFloat("logo_rel_y", 0.02f)
-        var logoRelW = prefs.getFloat("logo_rel_w", savedLogoRelW).coerceIn(0.05f, 0.8f)
+        val caption = b.etCaption.text?.toString().orEmpty()
 
-        // make sure imageBounds are valid
-        if (imageBounds.width() <= 0f || imageBounds.height() <= 0f) calculateMatrixBounds()
+        val rects = ArrayList<BlurRect>()
+        for (r in b.drawingView.rects) {
+            rects.add(BlurRect(r.left, r.top, r.right, r.bottom))
+        }
 
-        if (b.ivDraggableLogo.visibility == View.VISIBLE && imageBounds.width() > 0f && imageBounds.height() > 0f) {
-            val lx = b.ivDraggableLogo.x
-            val ly = b.ivDraggableLogo.y
+        var outLogoRelX = prefs.getFloat("logo_rel_x", logoRelX)
+        var outLogoRelY = prefs.getFloat("logo_rel_y", logoRelY)
+        var outLogoRelW = prefs.getFloat("logo_rel_w", savedLogoRelW).coerceIn(0.05f, 0.8f)
 
-            logoRelX = ((lx - imageBounds.left) / imageBounds.width()).coerceIn(0f, 1f)
-            logoRelY = ((ly - imageBounds.top) / imageBounds.height()).coerceIn(0f, 1f)
-            logoRelW = (b.ivDraggableLogo.width.toFloat() / imageBounds.width()).coerceIn(0.05f, 0.8f)
+        if (imageBounds.width() <= 0f || imageBounds.height() <= 0f) {
+            calculateMatrixBounds()
+        }
+
+        if (b.ivDraggableLogo.visibility == View.VISIBLE &&
+            imageBounds.width() > 0f &&
+            imageBounds.height() > 0f
+        ) {
+            val rangeX = (imageBounds.width() - b.ivDraggableLogo.width).coerceAtLeast(1f)
+            val rangeY = (imageBounds.height() - b.ivDraggableLogo.height).coerceAtLeast(1f)
+
+            outLogoRelX = ((b.ivDraggableLogo.x - imageBounds.left) / rangeX).coerceIn(0f, 1f)
+            outLogoRelY = ((b.ivDraggableLogo.y - imageBounds.top) / rangeY).coerceIn(0f, 1f)
+            outLogoRelW = (b.ivDraggableLogo.width.toFloat() / imageBounds.width()).coerceIn(0.05f, 0.8f)
 
             prefs.edit()
-                .putFloat("logo_rel_x", logoRelX)
-                .putFloat("logo_rel_y", logoRelY)
-                .putFloat("logo_rel_w", logoRelW)
+                .putFloat("logo_rel_x", outLogoRelX)
+                .putFloat("logo_rel_y", outLogoRelY)
+                .putFloat("logo_rel_w", outLogoRelW)
                 .apply()
         }
-var logoUri: Uri? = null
-        var relW = logoRelW
 
+        var logoUri: Uri? = null
         if (b.ivDraggableLogo.visibility == View.VISIBLE) {
             try {
                 val d = b.ivDraggableLogo.drawable
                 if (d is BitmapDrawable) {
-                    val f = File(applicationContext.cacheDir, "temp_logo.png")
-                    FileOutputStream(f).use { out -> d.bitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
-                    logoUri = Uri.fromFile(f)
+                    val logoFile = File(applicationContext.cacheDir, "temp_logo.png")
+                    FileOutputStream(logoFile).use { out ->
+                        d.bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    }
+                    logoUri = Uri.fromFile(logoFile)
                 }
-                if (imageBounds.width() > 0) {
-                    relW = logoRelW
-                }
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
 
-        // No loading overlay anymore
-        try { b.loadingOverlay.visibility = View.GONE } catch (_: Exception) {}
         b.btnSend.isEnabled = false
-
-        // Jump immediately to main table
         try {
-            safeToast("שולח ברקע…")
-            startActivity(
-                Intent(this, MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                }
-            )
-        } catch (_: Exception) {}
+            b.loadingOverlay.visibility = View.GONE
+        } catch (_: Exception) {
+        }
 
-        // Continue processing + send in background (not tied to lifecycleScope)
+        jumpBackToMain("שולח ברקע…")
+
         val appCtx = applicationContext
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val safeInputFile = File(appCtx.cacheDir, "safe_input.${if (isVideo) "mp4" else "jpg"}")
+                val safeInputFile = File(
+                    appCtx.cacheDir,
+                    "safe_input.${if (isVideo) "mp4" else "jpg"}"
+                )
                 File(rawPath).copyTo(safeInputFile, overwrite = true)
-                val safeInputPath = safeInputFile.absolutePath
 
-                val outPath = File(appCtx.cacheDir, "safe_out_${System.currentTimeMillis()}.${if (isVideo) "mp4" else "jpg"}").absolutePath
+                val safeInputPath = safeInputFile.absolutePath
+                val outPath = File(
+                    appCtx.cacheDir,
+                    "safe_out_${System.currentTimeMillis()}.${if (isVideo) "mp4" else "jpg"}"
+                ).absolutePath
 
                 val success = if (isVideo) {
                     try {
                         suspendCoroutine { cont ->
-                            MediaProcessor.processContent(appCtx, safeInputPath, outPath, isVideo, rects,
-                                logoUri, logoRelX, logoRelY, relW
-                            ) { cont.resume(it) }
+                            MediaProcessor.processContent(
+                                appCtx,
+                                safeInputPath,
+                                outPath,
+                                true,
+                                rects,
+                                logoUri,
+                                outLogoRelX,
+                                outLogoRelY,
+                                outLogoRelW
+                            ) { ok ->
+                                cont.resume(ok)
+                            }
                         }
-                    } catch (_: Exception) { false }
+                    } catch (_: Exception) {
+                        false
+                    }
                 } else {
                     ImageUtils.processImage(
-                        appCtx, safeInputPath, outPath, rects,
-                        logoUri, logoRelX, logoRelY, relW
+                        appCtx,
+                        safeInputPath,
+                        outPath,
+                        rects,
+                        logoUri,
+                        outLogoRelX,
+                        outLogoRelY,
+                        outLogoRelW
                     )
                 }
 
-                if (success && File(outPath).exists() && File(outPath).length() > 0) {
+                if (success && File(outPath).exists() && File(outPath).length() > 0L) {
                     TdLibManager.sendFinalMessage(target, caption, outPath, isVideo)
                     safeToast("✅ נשלח")
-                    runOnUiThread { try { finish() } catch (_: Exception) {} }
                 } else {
-                    safeToast("❌ Edit Failed. Not sent.")
-                    runOnUiThread {
-                        if (!isFinishing && !isDestroyed) b.btnSend.isEnabled = true
-                    }
+                    safeToast("❌ העריכה נכשלה")
                 }
             } catch (e: Exception) {
-                safeToast("Error: ${e.message}")
-                runOnUiThread {
-                    if (!isFinishing && !isDestroyed) b.btnSend.isEnabled = true
-                }
+                safeToast("❌ ${e.message ?: "שליחה נכשלה"}")
             }
         }
     }
 
-    // שימוש ב-applicationContext ליתר ביטחון
-    
     private fun jumpBackToMain(message: String? = null) {
         runOnUiThread {
             try {
@@ -495,14 +526,13 @@ var logoUri: Uri? = null
             }
         }
     }
-    }
-        } catch (_: Exception) {
-        }
-    }
 
-private fun safeToast(msg: String) { 
-        runOnUiThread { 
-            try { Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show() } catch(e: Exception) {} 
-        } 
+    private fun safeToast(msg: String) {
+        runOnUiThread {
+            try {
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+            }
+        }
     }
 }
