@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
@@ -66,39 +65,7 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isFocusableInTouchMode = true
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
-
-        b.etCaption.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                b.scrollRoot.postDelayed({ forceShowCaptionArea() }, 150)
-            }
-        }
-
-        b.etCaption.setOnClickListener {
-            b.scrollRoot.postDelayed({ forceShowCaptionArea() }, 120)
-        }
-
-        b.root.viewTreeObserver.addOnGlobalLayoutListener {
-            val r = Rect()
-            b.root.getWindowVisibleDisplayFrame(r)
-            val screenHeight = b.root.rootView.height
-            val keyboardHeight = screenHeight - r.height()
-            if (keyboardHeight > screenHeight * 0.15 && b.etCaption.hasFocus()) {
-                forceShowCaptionArea()
-            }
-        }
-
-        }
-
-        b.root.viewTreeObserver.addOnGlobalLayoutListener {
-            val r = Rect()
-            b.root.getWindowVisibleDisplayFrame(r)
-            val screenHeight = b.root.rootView.height
-            val keyboardHeight = screenHeight - r.height()
-            if (keyboardHeight > screenHeight * 0.15 && b.etCaption.hasFocus()) {
-                scrollCaptionAboveKeyboard()
-            }
-        }
-
+        b.etCaption.setHorizontallyScrolling(false)
 
         isVideo = intent.getBooleanExtra("IS_VIDEO", false)
         fileId = intent.getIntExtra("FILE_ID", 0)
@@ -529,20 +496,6 @@ var logoUri: Uri? = null
         }
     }
     }
-
-
-    private fun forceShowCaptionArea() {
-        try {
-            val rect = Rect()
-            b.etCaption.getDrawingRect(rect)
-            b.scrollRoot.offsetDescendantRectToMyCoords(b.etCaption, rect)
-            rect.top -= 24
-            rect.bottom += 260
-            b.scrollRoot.requestChildRectangleOnScreen(b.etCaption, rect, true)
-            b.scrollRoot.post {
-                val y = (b.etCaption.top - 16).coerceAtLeast(0)
-                b.scrollRoot.smoothScrollTo(0, y)
-            }
         } catch (_: Exception) {
         }
     }
