@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
