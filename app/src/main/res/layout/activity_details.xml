@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEF1F5"
-    tools:context=".DetailsActivity">
+    android:background="#EEF1F5">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollRoot"
@@ -21,6 +19,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPreview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -29,52 +28,36 @@
                 app:strokeColor="#D8DEE8"
                 app:strokeWidth="1dp">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:padding="8dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Preview"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <FrameLayout
+                    <ImageView
+                        android:id="@+id/ivPreview"
                         android:layout_width="match_parent"
                         android:layout_height="420dp"
-                        android:layout_marginTop="8dp"
-                        android:background="#E8EBF0">
+                        android:adjustViewBounds="false"
+                        android:background="#E8EBF0"
+                        android:scaleType="fitCenter" />
 
-                        <ImageView
-                            android:id="@+id/ivPreview"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:adjustViewBounds="false"
-                            android:background="#E8EBF0"
-                            android:scaleType="fitCenter" />
+                    <com.pasiflonet.mobile.ui.DrawingView
+                        android:id="@+id/drawingView"
+                        android:layout_width="match_parent"
+                        android:layout_height="420dp"
+                        android:visibility="gone" />
 
-                        <com.pasiflonet.mobile.ui.DrawingView
-                            android:id="@+id/drawingView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:visibility="gone" />
-
-                        <ImageView
-                            android:id="@+id/ivDraggableLogo"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:layout_gravity="top|start"
-                            android:visibility="gone"
-                            tools:src="@mipmap/ic_launcher" />
-                    </FrameLayout>
-                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/ivDraggableLogo"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="top|start"
+                        android:visibility="gone" />
+                </FrameLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardEditor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#08152D"
@@ -104,15 +87,14 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:id="@+id/btnTranslate"
+                            android:id="@+id/btnModeLogo"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:text="תרגום"
-                            android:textColor="#FFFFFF"
-                            app:cornerRadius="6dp"
-                            app:strokeColor="#FFFFFF" />
+                            android:text="לוגו / סימן"
+                            android:textColor="#111827"
+                            app:backgroundTint="#1E6A48"
+                            app:cornerRadius="6dp" />
 
                         <Space
                             android:layout_width="6dp"
@@ -134,21 +116,22 @@
                             android:layout_height="1dp" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnModeLogo"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:id="@+id/btnTranslate"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:text="לוגו / סימן מים"
-                            android:textColor="#111827"
-                            app:backgroundTint="#1E6A48"
-                            app:cornerRadius="6dp" />
+                            android:text="תרגום"
+                            android:textColor="#FFFFFF"
+                            app:cornerRadius="6dp"
+                            app:strokeColor="#FFFFFF" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:gravity="start"
+                        android:gravity="end"
                         android:text="גודל לוגו"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"
@@ -169,6 +152,20 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSend"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="שליחה"
+                            android:textStyle="bold"
+                            app:backgroundTint="#2F67E8"
+                            app:cornerRadius="6dp" />
+
+                        <Space
+                            android:layout_width="8dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:id="@+id/btnCancel"
                             android:layout_width="0dp"
@@ -178,27 +175,13 @@
                             android:textColor="#FFFFFF"
                             app:cornerRadius="6dp"
                             app:strokeColor="#FFFFFF" />
-
-                        <Space
-                            android:layout_width="8dp"
-                            android:layout_height="1dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnSend"
-                            android:layout_width="0dp"
-                            android:layout_height="42dp"
-                            android:layout_weight="1"
-                            android:text="שליחה"
-                            android:textStyle="bold"
-                            app:backgroundTint="#2F67E8"
-                            app:cornerRadius="6dp" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:gravity="end"
+                        android:gravity="start"
                         android:text="כיתוב / טקסט"
                         android:textColor="#FFFFFF"
                         android:textSize="15sp"
@@ -207,14 +190,13 @@
                     <EditText
                         android:id="@+id/etCaption"
                         android:layout_width="match_parent"
-                        android:layout_height="210dp"
+                        android:layout_height="200dp"
                         android:layout_marginTop="8dp"
                         android:background="#8B1E1E"
                         android:gravity="top|right"
                         android:hint="כתוב כאן טקסט"
                         android:imeOptions="flagNoExtractUi"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:isScrollContainer="true"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:clickable="true"

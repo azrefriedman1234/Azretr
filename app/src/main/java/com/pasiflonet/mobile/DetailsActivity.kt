@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
@@ -54,6 +55,8 @@ class DetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
+        installKeyboardAwareEditor()
+
 
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
@@ -527,7 +530,58 @@ private fun restoreLogoPosition() {
         }
     }
 
-    private fun safeToast(msg: String) {
+    
+    private fun installKeyboardAwareEditor() {
+        window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
+        )
+
+        b.etCaption.showSoftInputOnFocus = true
+        b.etCaption.isFocusable = true
+        b.etCaption.isFocusableInTouchMode = true
+        b.etCaption.isClickable = true
+        b.etCaption.isLongClickable = true
+        b.etCaption.setHorizontallyScrolling(false)
+
+        b.etCaption.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                b.scrollRoot.postDelayed({
+                    b.cardPreview.visibility = View.GONE
+                    b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
+                }, 120)
+            } else {
+                b.cardPreview.visibility = View.VISIBLE
+            }
+        }
+
+        b.etCaption.setOnClickListener {
+            b.scrollRoot.postDelayed({
+                b.cardPreview.visibility = View.GONE
+                b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
+            }, 80)
+        }
+
+        b.root.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            b.root.getWindowVisibleDisplayFrame(r)
+            val screenHeight = b.root.rootView.height
+            val keyboardOpen = (screenHeight - r.height()) > (screenHeight * 0.18f)
+
+            if (keyboardOpen) {
+                b.cardPreview.visibility = View.GONE
+                if (b.etCaption.hasFocus()) {
+                    b.scrollRoot.post {
+                        b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
+                    }
+                }
+            } else {
+                b.cardPreview.visibility = View.VISIBLE
+            }
+        }
+    }
+
+private fun safeToast(msg: String) {
         runOnUiThread {
             try {
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
