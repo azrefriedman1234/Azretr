@@ -66,6 +66,27 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
 
+        b.etCaption.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                b.scrollRoot.postDelayed({ scrollCaptionAboveKeyboard() }, 120)
+            }
+        }
+
+        b.etCaption.setOnClickListener {
+            b.scrollRoot.postDelayed({ scrollCaptionAboveKeyboard() }, 120)
+        }
+
+        b.root.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            b.root.getWindowVisibleDisplayFrame(r)
+            val screenHeight = b.root.rootView.height
+            val keyboardHeight = screenHeight - r.height()
+            if (keyboardHeight > screenHeight * 0.15 && b.etCaption.hasFocus()) {
+                scrollCaptionAboveKeyboard()
+            }
+        }
+
+
         isVideo = intent.getBooleanExtra("IS_VIDEO", false)
         fileId = intent.getIntExtra("FILE_ID", 0)
         thumbId = intent.getIntExtra("THUMB_ID", 0)
@@ -492,6 +513,15 @@ var logoUri: Uri? = null
                 )
             } catch (_: Exception) {
             }
+        }
+    }
+
+
+    private fun scrollCaptionAboveKeyboard() {
+        try {
+            val y = (b.etCaption.top - 24).coerceAtLeast(0)
+            b.scrollRoot.smoothScrollTo(0, y)
+        } catch (_: Exception) {
         }
     }
 
