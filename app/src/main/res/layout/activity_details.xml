@@ -36,7 +36,7 @@
                     <ImageView
                         android:id="@+id/ivPreview"
                         android:layout_width="match_parent"
-                        android:layout_height="260dp"
+                        android:layout_height="180dp"
                         android:adjustViewBounds="false"
                         android:background="@color/cy_bg_2"
                         android:scaleType="fitCenter" />
@@ -44,7 +44,7 @@
                     <com.pasiflonet.mobile.ui.DrawingView
                         android:id="@+id/drawingView"
                         android:layout_width="match_parent"
-                        android:layout_height="260dp"
+                        android:layout_height="180dp"
                         android:visibility="gone" />
 
                     <ImageView
@@ -190,7 +190,7 @@
                     <EditText
                         android:id="@+id/etCaption"
                         android:layout_width="match_parent"
-                        android:layout_height="260dp"
+                        android:layout_height="240dp"
                         android:layout_marginTop="2dp"
                         android:background="#0F1B12"
                         android:gravity="top|right"
@@ -205,7 +205,7 @@
                         android:longClickable="true"
                         android:layoutDirection="rtl"
                         android:textDirection="rtl"
-                        android:minLines="6"
+                        android:minLines="7"
                         android:maxLines="200"
                         android:overScrollMode="always"
                         android:padding="6dp"
