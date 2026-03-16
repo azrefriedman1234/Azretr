@@ -194,8 +194,8 @@ class FfmpegIsolatedService : Service() {
             g.append("[1:v]format=rgba,scale=w='").append(logoPxExpr).append("':h=-2[logoS];")
             g.append(cur).append("[logoS]")
                 .append("overlay=")
-                .append("x='min(max(main_w*").append(f(safeLogoX)).append(",0),main_w-overlay_w)':")
-                .append("y='min(max(main_h*").append(f(safeLogoY)).append(",0),main_h-overlay_h)'")
+                .append("x='min(max((main_w-overlay_w)*").append(f(safeLogoX)).append(",0),main_w-overlay_w)':")
+                .append("y='min(max((main_h-overlay_h)*").append(f(safeLogoY)).append(",0),main_h-overlay_h)'")
                 .append("[vout];")
         } else {
             g.append(cur).append("format=yuv420p[vout];")
