@@ -55,6 +55,8 @@ class DetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
+        setupCaptionEditorBehavior()
+
 
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
@@ -84,18 +86,6 @@ class DetailsActivity : BaseActivity() {
             } catch (_: Exception) {
             }
         }
-
-        b.etCaption.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                b.etCaption.post {
-                    try {
-                        val txtLen = b.etCaption.text?.length ?: 0
-                        b.etCaption.setSelection(txtLen)
-                        if (b.etCaption.layout != null) {
-                            val scrollY = (b.etCaption.layout.getLineTop(b.etCaption.lineCount) - b.etCaption.height)
-                                .coerceAtLeast(0)
-                            b.etCaption.scrollTo(0, scrollY)
-                        }
                     } catch (_: Exception) {
                     }
                 }
@@ -572,9 +562,16 @@ private fun restoreLogoPosition() {
             }
         }
     }
+        }
+                }
+            } else {
+                b.cardPreview.visibility = View.VISIBLE
+            }
+        }
+    }
 
-    
-    private fun installKeyboardAwareEditor() {
+
+    private fun setupCaptionEditorBehavior() {
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
@@ -586,40 +583,97 @@ private fun restoreLogoPosition() {
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
         b.etCaption.setHorizontallyScrolling(false)
+        b.etCaption.movementMethod = ScrollingMovementMethod.getInstance()
+        b.etCaption.isVerticalScrollBarEnabled = true
+        b.etCaption.overScrollMode = View.OVER_SCROLL_ALWAYS
+
+        fun moveEditorAboveKeyboard() {
+            b.scrollRoot.post {
+                try {
+                    // hide preview while editing so text area gets the space
+                    b.cardPreview.visibility = View.GONE
+
+                    // jump the outer scroll to editor area
+                    b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top - 8).coerceAtLeast(0))
+
+                    // put cursor at end
+                    val txtLen = b.etCaption.text?.length ?: 0
+                    b.etCaption.setSelection(txtLen)
+
+                    // scroll INSIDE the EditText to the end
+                    b.etCaption.post {
+                        try {
+                            val layout = b.etCaption.layout
+                            if (layout != null) {
+                                val lineTop = layout.getLineTop(b.etCaption.lineCount)
+                                val targetScroll = (lineTop - b.etCaption.height + b.etCaption.paddingBottom)
+                                    .coerceAtLeast(0)
+                                b.etCaption.scrollTo(0, targetScroll)
+                            }
+                        } catch (_: Exception) {
+                        }
+                    }
+                } catch (_: Exception) {
+                }
+            }
+        }
 
         b.etCaption.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                b.scrollRoot.postDelayed({
-                    b.cardPreview.visibility = View.GONE
-                    b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
-                }, 120)
+                moveEditorAboveKeyboard()
             } else {
                 b.cardPreview.visibility = View.VISIBLE
             }
         }
 
         b.etCaption.setOnClickListener {
-            b.scrollRoot.postDelayed({
-                b.cardPreview.visibility = View.GONE
-                b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
-            }, 80)
+            moveEditorAboveKeyboard()
+        }
+
+        b.etCaption.setOnTouchListener { _, event ->
+            when (event.actionMasked) {
+                android.view.MotionEvent.ACTION_DOWN,
+                android.view.MotionEvent.ACTION_MOVE -> {
+                    b.scrollRoot.requestDisallowInterceptTouchEvent(true)
+                }
+                android.view.MotionEvent.ACTION_UP,
+                android.view.MotionEvent.ACTION_CANCEL -> {
+                    b.scrollRoot.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false
         }
 
         b.root.viewTreeObserver.addOnGlobalLayoutListener {
-            val r = Rect()
-            b.root.getWindowVisibleDisplayFrame(r)
-            val screenHeight = b.root.rootView.height
-            val keyboardOpen = (screenHeight - r.height()) > (screenHeight * 0.18f)
+            try {
+                val r = Rect()
+                b.root.getWindowVisibleDisplayFrame(r)
+                val screenHeight = b.root.rootView.height
+                val keyboardHeight = screenHeight - r.height()
+                val keyboardOpen = keyboardHeight > (screenHeight * 0.15f)
 
-            if (keyboardOpen) {
-                b.cardPreview.visibility = View.GONE
-                if (b.etCaption.hasFocus()) {
-                    b.scrollRoot.post {
-                        b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
-                    }
+                if (keyboardOpen && b.etCaption.hasFocus()) {
+                    moveEditorAboveKeyboard()
+                } else if (!keyboardOpen && !b.etCaption.hasFocus()) {
+                    b.cardPreview.visibility = View.VISIBLE
                 }
-            } else {
-                b.cardPreview.visibility = View.VISIBLE
+            } catch (_: Exception) {
+            }
+        }
+
+        // also handle long message immediately on first layout
+        b.etCaption.post {
+            try {
+                val txtLen = b.etCaption.text?.length ?: 0
+                b.etCaption.setSelection(txtLen)
+                val layout = b.etCaption.layout
+                if (layout != null) {
+                    val lineTop = layout.getLineTop(b.etCaption.lineCount)
+                    val targetScroll = (lineTop - b.etCaption.height + b.etCaption.paddingBottom)
+                        .coerceAtLeast(0)
+                    b.etCaption.scrollTo(0, targetScroll)
+                }
+            } catch (_: Exception) {
             }
         }
     }
