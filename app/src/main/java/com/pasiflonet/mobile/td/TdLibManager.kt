@@ -109,7 +109,7 @@ object TdLibManager {
         val c = client ?: return
         if (!isAuthorized) return
 
-        c.send(TdApi.GetChats(TdApi.ChatListMain(), Long.MAX_VALUE, 0, 40)) { res ->
+        c.send(TdApi.GetChats(TdApi.ChatListMain(), 40)) { res ->
             if (res !is TdApi.Chats) return@send
             res.chatIds.take(30).forEach { chatId ->
                 c.send(TdApi.GetChatHistory(chatId, 0, 0, 12, false)) { history ->
