@@ -55,6 +55,8 @@ class DetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
+        installKeyboardAwareEditor()
+
 
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
@@ -527,8 +529,15 @@ private fun restoreLogoPosition() {
             }
         }
     }
+        }
+                }
+            } else {
+                b.cardPreview.visibility = View.VISIBLE
+            }
+        }
+    }
 
-    
+
     private fun installKeyboardAwareEditor() {
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
@@ -541,12 +550,13 @@ private fun restoreLogoPosition() {
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
         b.etCaption.setHorizontallyScrolling(false)
+        b.etCaption.movementMethod = ScrollingMovementMethod()
 
         b.etCaption.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
+                b.cardPreview.visibility = View.GONE
                 b.scrollRoot.postDelayed({
-                    b.cardPreview.visibility = View.GONE
-                    b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
+                    b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top - 8).coerceAtLeast(0))
                 }, 120)
             } else {
                 b.cardPreview.visibility = View.VISIBLE
@@ -554,9 +564,9 @@ private fun restoreLogoPosition() {
         }
 
         b.etCaption.setOnClickListener {
+            b.cardPreview.visibility = View.GONE
             b.scrollRoot.postDelayed({
-                b.cardPreview.visibility = View.GONE
-                b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
+                b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top - 8).coerceAtLeast(0))
             }, 80)
         }
 
@@ -566,14 +576,12 @@ private fun restoreLogoPosition() {
             val screenHeight = b.root.rootView.height
             val keyboardOpen = (screenHeight - r.height()) > (screenHeight * 0.18f)
 
-            if (keyboardOpen) {
+            if (keyboardOpen && b.etCaption.hasFocus()) {
                 b.cardPreview.visibility = View.GONE
-                if (b.etCaption.hasFocus()) {
-                    b.scrollRoot.post {
-                        b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top).coerceAtLeast(0))
-                    }
+                b.scrollRoot.post {
+                    b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top - 8).coerceAtLeast(0))
                 }
-            } else {
+            } else if (!keyboardOpen && !b.etCaption.hasFocus()) {
                 b.cardPreview.visibility = View.VISIBLE
             }
         }
