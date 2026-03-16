@@ -140,11 +140,19 @@ class MainActivity : BaseActivity() {
                 is TdApi.MessagePhoto -> {
                     val c = msg.content as TdApi.MessagePhoto
                     miniThumbData = c.photo.minithumbnail?.data
-                    val mediumPhoto = c.photo.sizes.find { it.type == "m" } ?: c.photo.sizes.firstOrNull()
-                    if (mediumPhoto != null) {
-                        thumbPath = mediumPhoto.photo.local.path
-                        thumbId = mediumPhoto.photo.id
+
+                    val previewPhoto =
+                        c.photo.sizes.find { it.type == "x" } ?:
+                        c.photo.sizes.find { it.type == "y" } ?:
+                        c.photo.sizes.find { it.type == "w" } ?:
+                        c.photo.sizes.lastOrNull() ?:
+                        c.photo.sizes.firstOrNull()
+
+                    if (previewPhoto != null) {
+                        thumbPath = previewPhoto.photo.local.path
+                        thumbId = previewPhoto.photo.id
                     }
+
                     fullId = if (c.photo.sizes.isNotEmpty()) c.photo.sizes.last().photo.id else 0
                     caption = c.caption.text
                 }
@@ -163,6 +171,7 @@ class MainActivity : BaseActivity() {
                 is TdApi.MessageText -> caption = (msg.content as TdApi.MessageText).text.text
             }
 
+            if (thumbId != 0) TdLibManager.downloadFile(thumbId)
             if (fullId != 0) TdLibManager.downloadFile(fullId)
 
             val intent = Intent(this, DetailsActivity::class.java)
