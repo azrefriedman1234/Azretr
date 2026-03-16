@@ -45,4 +45,13 @@
 
     <color name="accent_primary">#00E676</color>
     <color name="surface_chip">#0D2214</color>
+
+    <color name="surface_input">#0F1B12</color>
+    <color name="accent_soft">#0D2214</color>
+    <color name="cyber_white">#E9FFF0</color>
+    <color name="purple_200">#00E676</color>
+    <color name="purple_500">#00E676</color>
+    <color name="purple_700">#00C853</color>
+    <color name="teal_200">#2CFF88</color>
+    <color name="teal_700">#1A8F51</color>
 </resources>
