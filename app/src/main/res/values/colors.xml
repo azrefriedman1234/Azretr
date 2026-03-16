@@ -42,4 +42,7 @@
     <color name="ui_bg_bottom">#050A06</color>
     <color name="ui_text_primary">#E9FFF0</color>
     <color name="ui_text_secondary">#A8CDB2</color>
+
+    <color name="accent_primary">#00E676</color>
+    <color name="surface_chip">#0D2214</color>
 </resources>
