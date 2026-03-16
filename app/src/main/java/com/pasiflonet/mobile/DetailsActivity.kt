@@ -72,41 +72,43 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isVerticalScrollBarEnabled = true
         b.etCaption.overScrollMode = View.OVER_SCROLL_ALWAYS
 
-        fun keepCaptionVisible() {
-            b.etCaption.post {
+        fun scrollEditorAboveKeyboard() {
+            b.scrollRoot.post {
                 try {
-                    val txtLen = b.etCaption.text?.length ?: 0
-                    b.etCaption.setSelection(txtLen)
+                    b.cardPreview.visibility = View.GONE
 
-                    val layout = b.etCaption.layout
-                    if (layout != null) {
-                        val innerScrollY = (layout.getLineTop(b.etCaption.lineCount) - b.etCaption.height)
-                            .coerceAtLeast(0)
-                        b.etCaption.scrollTo(0, innerScrollY)
-                    }
+                    val textLen = b.etCaption.text?.length ?: 0
+                    b.etCaption.setSelection(textLen)
 
                     val r = Rect()
                     b.etCaption.getDrawingRect(r)
                     b.scrollRoot.offsetDescendantRectToMyCoords(b.etCaption, r)
                     r.top -= 24
-                    r.bottom += 260
+                    r.bottom += 220
                     b.scrollRoot.requestChildRectangleOnScreen(b.etCaption, r, true)
-                    b.scrollRoot.smoothScrollTo(0, (b.etCaption.bottom + 120).coerceAtLeast(0))
+
+                    b.scrollRoot.smoothScrollTo(0, (b.cardEditor.top - 8).coerceAtLeast(0))
                 } catch (_: Exception) {
                 }
             }
         }
 
         b.etCaption.post {
-            keepCaptionVisible()
+            try {
+                val textLen = b.etCaption.text?.length ?: 0
+                b.etCaption.setSelection(textLen)
+            } catch (_: Exception) {
+            }
         }
 
         b.etCaption.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) keepCaptionVisible()
+            if (hasFocus) {
+                scrollEditorAboveKeyboard()
+            }
         }
 
         b.etCaption.setOnClickListener {
-            keepCaptionVisible()
+            scrollEditorAboveKeyboard()
         }
 
         b.etCaption.setOnTouchListener { _, event ->
@@ -121,17 +123,35 @@ class DetailsActivity : BaseActivity() {
 
         b.root.viewTreeObserver.addOnGlobalLayoutListener {
             try {
-                val visible = Rect()
-                b.root.getWindowVisibleDisplayFrame(visible)
+                val visibleRect = Rect()
+                b.root.getWindowVisibleDisplayFrame(visibleRect)
                 val screenHeight = b.root.rootView.height
-                val keyboardHeight = screenHeight - visible.height()
-                if (keyboardHeight > screenHeight * 0.15f && b.etCaption.hasFocus()) {
-                    keepCaptionVisible()
+                val keyboardHeight = screenHeight - visibleRect.height()
+                val keyboardOpen = keyboardHeight > (screenHeight * 0.15f)
+
+                if (keyboardOpen) {
+                    b.cardPreview.visibility = View.GONE
+                    b.scrollRoot.setPadding(
+                        b.scrollRoot.paddingLeft,
+                        b.scrollRoot.paddingTop,
+                        b.scrollRoot.paddingRight,
+                        keyboardHeight + 24
+                    )
+                    if (b.etCaption.hasFocus()) {
+                        scrollEditorAboveKeyboard()
+                    }
+                } else {
+                    b.cardPreview.visibility = View.VISIBLE
+                    b.scrollRoot.setPadding(
+                        b.scrollRoot.paddingLeft,
+                        b.scrollRoot.paddingTop,
+                        b.scrollRoot.paddingRight,
+                        0
+                    )
                 }
             } catch (_: Exception) {
             }
         }
-
 
         isVideo = intent.getBooleanExtra("IS_VIDEO", false)
         fileId = intent.getIntExtra("FILE_ID", 0)
