@@ -68,38 +68,45 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isLongClickable = true
         b.etCaption.setHorizontallyScrolling(false)
 
-        b.etCaption.movementMethod = ScrollingMovementMethod()
+        b.etCaption.movementMethod = ScrollingMovementMethod.getInstance()
         b.etCaption.isVerticalScrollBarEnabled = true
         b.etCaption.overScrollMode = View.OVER_SCROLL_ALWAYS
 
-        b.etCaption.post {
-            try {
-                val txtLen = b.etCaption.text?.length ?: 0
-                b.etCaption.setSelection(txtLen)
-                if (b.etCaption.layout != null) {
-                    val scrollY = (b.etCaption.layout.getLineTop(b.etCaption.lineCount) - b.etCaption.height)
-                        .coerceAtLeast(0)
-                    b.etCaption.scrollTo(0, scrollY)
+        fun keepCaptionVisible() {
+            b.etCaption.post {
+                try {
+                    val txtLen = b.etCaption.text?.length ?: 0
+                    b.etCaption.setSelection(txtLen)
+
+                    val layout = b.etCaption.layout
+                    if (layout != null) {
+                        val innerScrollY = (layout.getLineTop(b.etCaption.lineCount) - b.etCaption.height)
+                            .coerceAtLeast(0)
+                        b.etCaption.scrollTo(0, innerScrollY)
+                    }
+
+                    val r = Rect()
+                    b.etCaption.getDrawingRect(r)
+                    b.scrollRoot.offsetDescendantRectToMyCoords(b.etCaption, r)
+                    r.top -= 24
+                    r.bottom += 260
+                    b.scrollRoot.requestChildRectangleOnScreen(b.etCaption, r, true)
+                    b.scrollRoot.smoothScrollTo(0, (b.etCaption.bottom + 120).coerceAtLeast(0))
+                } catch (_: Exception) {
                 }
-            } catch (_: Exception) {
             }
         }
 
+        b.etCaption.post {
+            keepCaptionVisible()
+        }
+
         b.etCaption.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                b.etCaption.post {
-                    try {
-                        val txtLen = b.etCaption.text?.length ?: 0
-                        b.etCaption.setSelection(txtLen)
-                        if (b.etCaption.layout != null) {
-                            val scrollY = (b.etCaption.layout.getLineTop(b.etCaption.lineCount) - b.etCaption.height)
-                                .coerceAtLeast(0)
-                            b.etCaption.scrollTo(0, scrollY)
-                        }
-                    } catch (_: Exception) {
-                    }
-                }
-            }
+            if (hasFocus) keepCaptionVisible()
+        }
+
+        b.etCaption.setOnClickListener {
+            keepCaptionVisible()
         }
 
         b.etCaption.setOnTouchListener { _, event ->
@@ -110,6 +117,19 @@ class DetailsActivity : BaseActivity() {
                 MotionEvent.ACTION_CANCEL -> b.scrollRoot.requestDisallowInterceptTouchEvent(false)
             }
             false
+        }
+
+        b.root.viewTreeObserver.addOnGlobalLayoutListener {
+            try {
+                val visible = Rect()
+                b.root.getWindowVisibleDisplayFrame(visible)
+                val screenHeight = b.root.rootView.height
+                val keyboardHeight = screenHeight - visible.height()
+                if (keyboardHeight > screenHeight * 0.15f && b.etCaption.hasFocus()) {
+                    keepCaptionVisible()
+                }
+            } catch (_: Exception) {
+            }
         }
 
 
