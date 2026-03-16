@@ -18,8 +18,8 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#111827"
-            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/cy_text"
+            app:cardCornerRadius="6dp"
             app:strokeColor="#D9DEE5"
             app:strokeWidth="1dp">
 
@@ -27,21 +27,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:padding="7dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:text="הגדרות"
-                    android:textColor="#111827"
+                    android:textColor="@color/cy_text"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="end"
                     android:text="יעד, לוגו וחתימה קבועה לטקסט"
                     android:textColor="#6B7280"
@@ -50,37 +50,37 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:gravity="end"
                     android:text="יעד לשליחה"
-                    android:textColor="#111827"
+                    android:textColor="@color/cy_text"
                     android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/etTargetUsername"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     android:backgroundTint="#D9DEE5"
                     android:hint="@channel_username"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:textColor="#E9FFF0"
-                    android:textColorHint="#AAB3C2" />
+                    android:textColorHint="@color/cy_text_dim" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:gravity="end"
                     android:text="חתימה קבועה לכל הודעת טקסט"
-                    android:textColor="#111827"
+                    android:textColor="@color/cy_text"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="end"
                     android:text="אפשר לשים קישורים. לא תוצג להם תצוגה מקדימה."
                     android:textColor="#6B7280"
@@ -90,14 +90,14 @@
                     android:id="@+id/etSignature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     android:backgroundTint="#D9DEE5"
                     android:gravity="top|start"
                     android:hint="לדוגמה:\nהצטרפו: https://t.me/yourchannel"
                     android:imeOptions="flagNoExtractUi"
                     android:inputType="textMultiLine|textUri"
                     android:minLines="4"
-                    android:padding="10dp"
+                    android:padding="7dp"
                     android:textColor="#E9FFF0"
                     android:textColorHint="#F3D5DA" />
 
@@ -105,10 +105,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:gravity="end"
                     android:text="לוגו נוכחי"
-                    android:textColor="#111827"
+                    android:textColor="@color/cy_text"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -116,7 +116,7 @@
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_gravity="end"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     android:background="#F3F4F6"
                     android:scaleType="fitCenter" />
 
@@ -124,31 +124,31 @@
                     android:id="@+id/btnSelectLogo"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     android:text="בחירת לוגו"
                     app:backgroundTint="#EAF1FF"
-                    app:cornerRadius="8dp" />
+                    app:cornerRadius="6dp" />
 
                 <com.google.android.material.button.MaterialButton
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:id="@+id/btnClearCache"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="3dp"
                     android:text="ניקוי קאש"
-                    android:textColor="#111827"
-                    app:cornerRadius="8dp"
+                    android:textColor="@color/cy_text"
+                    app:cornerRadius="6dp"
                     app:strokeColor="#D9DEE5" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSaveSettings"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     android:text="שמירת הגדרות"
                     android:textStyle="bold"
                     app:backgroundTint="#2563EB"
-                    app:cornerRadius="8dp" />
+                    app:cornerRadius="6dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

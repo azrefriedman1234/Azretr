@@ -14,7 +14,7 @@
         android:layout_marginBottom="4dp"
         android:visibility="gone"
         app:cardBackgroundColor="@color/cy_card"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="6dp"
         app:strokeColor="@color/cy_stroke_soft"
         app:strokeWidth="1dp">
 
@@ -39,7 +39,7 @@
                 android:id="@+id/etApiHash"
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:backgroundTint="@color/cy_stroke_soft"
                 android:hint="API HASH"
                 android:paddingHorizontal="10dp"
@@ -50,7 +50,7 @@
                 android:id="@+id/btnSaveApi"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:text="שמירה"
                 android:textStyle="bold"
                 app:backgroundTint="@color/cy_accent_dark"
@@ -65,7 +65,7 @@
         android:layout_marginBottom="4dp"
         android:visibility="gone"
         app:cardBackgroundColor="@color/cy_card"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="6dp"
         app:strokeColor="@color/cy_stroke_soft"
         app:strokeWidth="1dp">
 
@@ -97,7 +97,7 @@
                     android:id="@+id/btnSendCode"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:text="SEND CODE"
                     app:backgroundTint="@color/cy_accent_dark"
                     app:cornerRadius="6dp" />
@@ -125,7 +125,7 @@
                     android:id="@+id/btnVerify"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:text="אימות"
                     app:backgroundTint="@color/cy_accent_dark"
                     app:cornerRadius="6dp" />
@@ -153,7 +153,7 @@
                     android:id="@+id/btnVerifyPassword"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:text="כניסה"
                     app:backgroundTint="@color/cy_accent_dark"
                     app:cornerRadius="6dp" />
@@ -213,7 +213,7 @@
             android:gravity="end"
             android:text="הודעות זמינות לעריכה"
             android:textColor="@color/cy_stroke"
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
