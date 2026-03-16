@@ -3,6 +3,7 @@ package com.pasiflonet.mobile
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.RectF
@@ -158,17 +159,38 @@ class DetailsActivity : BaseActivity() {
         thumbId = intent.getIntExtra("THUMB_ID", 0)
         
         val passedThumbPath = intent.getStringExtra("THUMB_PATH")
+        val miniThumbData = intent.getByteArrayExtra("MINI_THUMB")
         b.etCaption.setText(intent.getStringExtra("CAPTION") ?: "")
 
         if (passedThumbPath != null && File(passedThumbPath).exists()) {
             loadPreview(passedThumbPath)
-        } else if (thumbId != 0) {
-            startThumbHunter(thumbId)
+        } else {
+            if (miniThumbData != null && miniThumbData.isNotEmpty()) {
+                loadMiniThumb(miniThumbData)
+            }
+            if (thumbId != 0) {
+                startThumbHunter(thumbId)
+            }
         }
 
         if (fileId != 0) startFullMediaHunter(fileId)
 
         setupTools()
+    }
+
+    private fun loadMiniThumb(data: ByteArray) {
+        if (isFinishing || isDestroyed) return
+        try {
+            val bmp = BitmapFactory.decodeByteArray(data, 0, data.size) ?: return
+            b.ivPreview.setImageBitmap(bmp)
+            b.ivPreview.post {
+                if (!isFinishing) {
+                    calculateMatrixBounds()
+                    if (b.ivDraggableLogo.visibility == View.VISIBLE) restoreLogoPosition()
+                }
+            }
+        } catch (_: Exception) {
+        }
     }
 
     private fun loadPreview(path: String) {
@@ -188,14 +210,14 @@ class DetailsActivity : BaseActivity() {
     private fun startThumbHunter(tId: Int) {
         TdLibManager.downloadFile(tId)
         lifecycleScope.launch(Dispatchers.IO) {
-            for (i in 0..10) {
-                if (isFinishing) break
+            for (i in 0..60) {
+                if (isFinishing || isDestroyed) break
                 val path = TdLibManager.getFilePath(tId)
                 if (path != null && File(path).exists()) {
                     withContext(Dispatchers.Main) { loadPreview(path) }
                     break
                 }
-                delay(500)
+                delay(250)
             }
         }
     }
