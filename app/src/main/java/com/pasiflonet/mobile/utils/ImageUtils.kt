@@ -70,8 +70,8 @@ object ImageUtils {
                 val targetH = (targetW * ratio).roundToInt().coerceAtLeast(24)
                 val scaled = Bitmap.createScaledBitmap(logo, targetW, targetH, true)
 
-                val x = (bmp.width * logoRelX).roundToInt().coerceIn(0, max(0, bmp.width - targetW))
-                val y = (bmp.height * logoRelY).roundToInt().coerceIn(0, max(0, bmp.height - targetH))
+                val x = ((bmp.width - targetW) * logoRelX).roundToInt().coerceIn(0, max(0, bmp.width - targetW))
+                val y = ((bmp.height - targetH) * logoRelY).roundToInt().coerceIn(0, max(0, bmp.height - targetH))
 
                 val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { alpha = 230 }
                 canvas.drawBitmap(scaled, x.toFloat(), y.toFloat(), p)
