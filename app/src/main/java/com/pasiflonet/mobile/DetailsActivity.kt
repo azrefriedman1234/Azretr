@@ -212,11 +212,22 @@ class DetailsActivity : BaseActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             for (i in 0..60) {
                 if (isFinishing || isDestroyed) break
-                val path = TdLibManager.getFilePath(tId)
-                if (path != null && File(path).exists()) {
-                    withContext(Dispatchers.Main) { loadPreview(path) }
+
+                val thumbPath = TdLibManager.getFilePath(tId)
+                if (thumbPath != null && File(thumbPath).exists()) {
+                    withContext(Dispatchers.Main) { loadPreview(thumbPath) }
                     break
                 }
+
+                val fullPath = if (fileId != 0) TdLibManager.getFilePath(fileId) else null
+                if (fullPath != null && File(fullPath).exists()) {
+                    val f = File(fullPath)
+                    if (!isVideo || f.length() > 50000) {
+                        withContext(Dispatchers.Main) { loadPreview(fullPath) }
+                        break
+                    }
+                }
+
                 delay(250)
             }
         }
