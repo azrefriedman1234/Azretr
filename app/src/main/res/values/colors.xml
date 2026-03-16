@@ -1,43 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <!-- Light / square UI -->
-    <color name="accent_primary">#FFFFFF</color>
-    <color name="accent_soft">#EAF1FF</color>
-    <color name="surface_card">#FFFFFFFF</color>
-    <color name="surface_input">#FFF8FAFC</color>
-    <color name="surface_chip">#FFF3F4F6</color>
-    <color name="stroke_soft">#FFD9DEE5</color>
-    <color name="text_primary">#FF111827</color>
-    <color name="text_secondary">#FF6B7280</color>
-
-    <color name="cyber_primary">#2563EB</color>
-    <color name="cyber_primary_dark">#1D4ED8</color>
-    <color name="cyber_secondary">#111111</color>
-    <color name="cyber_secondary_dark">#111827</color>
-    <color name="cyber_black">#FFF5F6F8</color>
-    <color name="cyber_white">#FF111827</color>
-    <color name="cyber_card">#FFFFFFFF</color>
-    <color name="cyber_border_dim">#FFD9DEE5</color>
-
-    <color name="btn_gradient_start">#FFFFFF</color>
-    <color name="btn_gradient_end">#FFFFFF</color>
-
-    <color name="ui_accent">#2563EB</color>
-    <color name="ui_card_alt">#F3F4F6</color>
-    <color name="ui_stroke">#D9DEE5</color>
-    <color name="ui_card">#FFFFFF</color>
-
-    <color name="ui_bg_top">#F8FAFC</color>
-    <color name="ui_bg_bottom">#EEF2F7</color>
-    <color name="ui_bg">#F5F6F8</color>
-    <color name="ui_text_primary">#111827</color>
-    <color name="ui_text_secondary">#6B7280</color>
+    <color name="cy_bg">#050A06</color>
+    <color name="cy_bg_2">#08110A</color>
+    <color name="cy_card">#0B150D</color>
+    <color name="cy_card_2">#0F1B12</color>
+    <color name="cy_text">#E9FFF0</color>
+    <color name="cy_text_dim">#A8CDB2</color>
+    <color name="cy_stroke">#2CFF88</color>
+    <color name="cy_stroke_soft">#1A8F51</color>
+    <color name="cy_accent">#00E676</color>
+    <color name="cy_accent_dark">#00C853</color>
+    <color name="cy_chip">#0D2214</color>
 </resources>

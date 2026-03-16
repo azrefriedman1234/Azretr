@@ -65,7 +65,7 @@
                     android:hint="@channel_username"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#E9FFF0"
                     android:textColorHint="#AAB3C2" />
 
                 <TextView
@@ -98,7 +98,7 @@
                     android:inputType="textMultiLine|textUri"
                     android:minLines="4"
                     android:padding="10dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#E9FFF0"
                     android:textColorHint="#F3D5DA" />
 
 

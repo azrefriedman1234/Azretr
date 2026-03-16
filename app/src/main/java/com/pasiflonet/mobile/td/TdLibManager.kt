@@ -12,12 +12,10 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 object TdLibManager {
-
     private var client: Client? = null
     private var appContext: Context? = null
-    private var isAuthorized: Boolean = false
-
-    private const val MAX_MESSAGES = 100
+    private var isAuthorized = false
+    private const val MAX_MESSAGES = 160
 
     private val _authState = MutableStateFlow<TdApi.AuthorizationState?>(null)
     val authState: StateFlow<TdApi.AuthorizationState?> = _authState
@@ -27,44 +25,31 @@ object TdLibManager {
 
     fun init(context: Context, apiId: Int, apiHash: String) {
         if (client != null) return
-
         appContext = context.applicationContext
+
         Client.execute(TdApi.SetLogVerbosityLevel(0))
 
         client = Client.create({ update ->
             when (update) {
                 is TdApi.UpdateAuthorizationState -> handleAuth(update.authorizationState, apiId, apiHash)
-                is TdApi.UpdateNewMessage -> {
-                    val current = _currentMessages.value.toMutableList()
-                    current.add(update.message)
-                    current.sortWith(compareByDescending<TdApi.Message> { it.date }.thenByDescending { it.id })
-
-                    while (current.size > MAX_MESSAGES) {
-                        val removed = current.removeAt(current.size - 1)
-                        appContext?.let { ctx ->
-                            try {
-                                CacheManager.deleteTempForMessage(ctx, removed)
-                                CacheManager.pruneAppTempFiles(ctx, 250)
-                            } catch (_: Exception) {
-                            }
-                        }
-                    }
-
-                    _currentMessages.value = current.toList()
+                is TdApi.UpdateNewMessage -> upsertMessage(update.message)
+                is TdApi.UpdateMessageSendSucceeded -> {
+                    removeMessage(update.message.chatId, update.oldMessageId)
+                    upsertMessage(update.message)
                 }
+                is TdApi.UpdateMessageSendFailed -> upsertMessage(update.message)
+                is TdApi.UpdateDeleteMessages -> removeMessages(update.chatId, update.messageIds)
             }
         }, null, null)
     }
 
     private fun handleAuth(state: TdApi.AuthorizationState, apiId: Int, apiHash: String) {
         _authState.value = state
-
         when (state) {
             is TdApi.AuthorizationStateWaitTdlibParameters -> {
                 val ctx = appContext ?: return
                 val dbDir = File(ctx.filesDir, "tdlib_db").absolutePath
                 val filesDir = File(ctx.filesDir, "tdlib_files").absolutePath
-
                 val p = TdApi.SetTdlibParameters(
                     false,
                     dbDir,
@@ -83,9 +68,62 @@ object TdLibManager {
                 )
                 client?.send(p) {}
             }
-
-            is TdApi.AuthorizationStateReady -> isAuthorized = true
+            is TdApi.AuthorizationStateReady -> {
+                isAuthorized = true
+                setOnline(true)
+                refreshRecentMessages()
+            }
             is TdApi.AuthorizationStateClosed -> isAuthorized = false
+        }
+    }
+
+    private fun upsertMessage(message: TdApi.Message) {
+        val current = _currentMessages.value.toMutableList()
+        val idx = current.indexOfFirst { it.chatId == message.chatId && it.id == message.id }
+        if (idx >= 0) current[idx] = message else current.add(message)
+
+        current.sortWith(compareByDescending<TdApi.Message> { it.date }.thenByDescending { it.id })
+        while (current.size > MAX_MESSAGES) {
+            val removed = current.removeAt(current.size - 1)
+            appContext?.let { ctx ->
+                try {
+                    CacheManager.deleteTempForMessage(ctx, removed)
+                    CacheManager.pruneAppTempFiles(ctx, 250)
+                } catch (_: Exception) {
+                }
+            }
+        }
+        _currentMessages.value = current.toList()
+    }
+
+    private fun removeMessage(chatId: Long, messageId: Long) {
+        _currentMessages.value = _currentMessages.value.filterNot { it.chatId == chatId && it.id == messageId }
+    }
+
+    private fun removeMessages(chatId: Long, messageIds: LongArray) {
+        val ids = messageIds.toSet()
+        _currentMessages.value = _currentMessages.value.filterNot { it.chatId == chatId && ids.contains(it.id) }
+    }
+
+    fun refreshRecentMessages() {
+        val c = client ?: return
+        if (!isAuthorized) return
+
+        c.send(TdApi.GetChats(TdApi.ChatListMain(), Long.MAX_VALUE, 0, 40)) { res ->
+            if (res !is TdApi.Chats) return@send
+            res.chatIds.take(30).forEach { chatId ->
+                c.send(TdApi.GetChatHistory(chatId, 0, 0, 12, false)) { history ->
+                    if (history is TdApi.Messages) {
+                        val merged = _currentMessages.value.toMutableList()
+                        history.messages.forEach { msg ->
+                            val idx = merged.indexOfFirst { it.chatId == msg.chatId && it.id == msg.id }
+                            if (idx >= 0) merged[idx] = msg else merged.add(msg)
+                        }
+                        merged.sortWith(compareByDescending<TdApi.Message> { it.date }.thenByDescending { it.id })
+                        _currentMessages.value = merged.take(MAX_MESSAGES)
+                    }
+                }
+            }
         }
     }
 
@@ -114,15 +152,12 @@ object TdLibManager {
     fun getFilePath(fileId: Int): String? {
         if (fileId == 0) return null
         val c = client ?: return null
-
         val latch = CountDownLatch(1)
         var out: String? = null
-
         c.send(TdApi.GetFile(fileId)) { r ->
             if (r is TdApi.File) out = r.local?.path
             latch.countDown()
         }
-
         latch.await(1500, TimeUnit.MILLISECONDS)
         return out
     }
@@ -132,7 +167,6 @@ object TdLibManager {
             onResult(null)
             return
         }
-
         c.send(TdApi.GetFile(fileId)) { r ->
             if (r is TdApi.File) onResult(r.local?.path) else onResult(null)
         }
@@ -141,7 +175,6 @@ object TdLibManager {
     private fun buildCaptionWithSignature(text: String): String {
         val base = text.trim()
         if (base.isBlank()) return ""
-
         val signature = appContext
             ?.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
             ?.getString("text_signature", "")
@@ -183,7 +216,6 @@ object TdLibManager {
                     onError(chatRes.message)
                     return@send
                 }
-
                 !is TdApi.Chat -> {
                     onError("Chat not found")
                     return@send
@@ -196,13 +228,8 @@ object TdLibManager {
             val content: TdApi.InputMessageContent =
                 if (filePath.isNullOrBlank()) {
                     val linkPreviewOptions = TdApi.LinkPreviewOptions(
-                        true,
-                        "",
-                        false,
-                        false,
-                        false
+                        true, "", false, false, false
                     )
-
                     TdApi.InputMessageText(
                         TdApi.FormattedText(finalCaption, null),
                         linkPreviewOptions,
@@ -215,31 +242,12 @@ object TdLibManager {
 
                     if (filePath.endsWith(".mp4", true)) {
                         TdApi.InputMessageVideo(
-                            input,
-                            null,
-                            null,
-                            0,
-                            intArrayOf(),
-                            0,
-                            0,
-                            0,
-                            true,
-                            ft,
-                            false,
-                            null,
-                            false
+                            input, null, null, 0, intArrayOf(),
+                            0, 0, 0, true, ft, false, null, false
                         )
                     } else {
                         TdApi.InputMessagePhoto(
-                            input,
-                            null,
-                            intArrayOf(),
-                            0,
-                            0,
-                            ft,
-                            false,
-                            null,
-                            false
+                            input, null, intArrayOf(), 0, 0, ft, false, null, false
                         )
                     }
                 }

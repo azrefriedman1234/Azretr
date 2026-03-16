@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEF1F5"
+    android:background="@color/cy_bg"
     android:orientation="vertical"
-    android:paddingStart="6dp"
-    android:paddingTop="6dp"
-    android:paddingEnd="6dp"
-    android:paddingBottom="4dp"
-    tools:context=".MainActivity">
+    android:padding="4dp">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/apiContainer"
@@ -18,49 +13,47 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:visibility="gone"
-        app:cardBackgroundColor="#08152D"
+        app:cardBackgroundColor="@color/cy_card"
         app:cardCornerRadius="8dp"
-        app:strokeColor="#D8DEE8"
+        app:strokeColor="@color/cy_stroke_soft"
         app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="6dp">
 
             <EditText
                 android:id="@+id/etApiId"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:backgroundTint="#D8DEE8"
+                android:layout_height="38dp"
+                android:backgroundTint="@color/cy_stroke_soft"
                 android:hint="API ID"
                 android:inputType="number"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#AAB3C2" />
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/cy_text"
+                android:textColorHint="@color/cy_text_dim" />
 
             <EditText
                 android:id="@+id/etApiHash"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="4dp"
-                android:backgroundTint="#D8DEE8"
+                android:backgroundTint="@color/cy_stroke_soft"
                 android:hint="API HASH"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#AAB3C2" />
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/cy_text"
+                android:textColorHint="@color/cy_text_dim" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveApi"
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="6dp"
+                android:layout_height="34dp"
+                android:layout_marginTop="4dp"
                 android:text="שמירה"
                 android:textStyle="bold"
-                app:backgroundTint="#2F67E8"
+                app:backgroundTint="@color/cy_accent_dark"
                 app:cornerRadius="6dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -71,16 +64,16 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:visibility="gone"
-        app:cardBackgroundColor="#08152D"
+        app:cardBackgroundColor="@color/cy_card"
         app:cardCornerRadius="8dp"
-        app:strokeColor="#D8DEE8"
+        app:strokeColor="@color/cy_stroke_soft"
         app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="6dp">
 
             <LinearLayout
                 android:id="@+id/phoneLayout"
@@ -92,22 +85,21 @@
                 <EditText
                     android:id="@+id/etPhone"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:backgroundTint="#D8DEE8"
+                    android:layout_height="38dp"
+                    android:backgroundTint="@color/cy_stroke_soft"
                     android:hint="מספר טלפון"
                     android:inputType="phone"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#AAB3C2" />
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/cy_text"
+                    android:textColorHint="@color/cy_text_dim" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSendCode"
                     android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="4dp"
                     android:text="SEND CODE"
-                    app:backgroundTint="#2F67E8"
+                    app:backgroundTint="@color/cy_accent_dark"
                     app:cornerRadius="6dp" />
             </LinearLayout>
 
@@ -121,22 +113,21 @@
                 <EditText
                     android:id="@+id/etCode"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:backgroundTint="#D8DEE8"
+                    android:layout_height="38dp"
+                    android:backgroundTint="@color/cy_stroke_soft"
                     android:hint="קוד"
                     android:inputType="number"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#AAB3C2" />
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/cy_text"
+                    android:textColorHint="@color/cy_text_dim" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerify"
                     android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="4dp"
                     android:text="אימות"
-                    app:backgroundTint="#2F67E8"
+                    app:backgroundTint="@color/cy_accent_dark"
                     app:cornerRadius="6dp" />
             </LinearLayout>
 
@@ -150,22 +141,21 @@
                 <EditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:backgroundTint="#D8DEE8"
+                    android:layout_height="38dp"
+                    android:backgroundTint="@color/cy_stroke_soft"
                     android:hint="סיסמה"
                     android:inputType="textPassword"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#AAB3C2" />
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/cy_text"
+                    android:textColorHint="@color/cy_text_dim" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnVerifyPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_marginTop="6dp"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="4dp"
                     android:text="כניסה"
-                    app:backgroundTint="#2F67E8"
+                    app:backgroundTint="@color/cy_accent_dark"
                     app:cornerRadius="6dp" />
             </LinearLayout>
         </LinearLayout>
@@ -179,56 +169,51 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            app:cardBackgroundColor="#08152D"
-            app:cardCornerRadius="8dp"
-            app:strokeColor="#D8DEE8"
-            app:strokeWidth="1dp">
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="6dp">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClearCache"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="ניקוי קאש"
+                android:textStyle="bold"
+                android:textColor="@color/cy_text"
+                app:backgroundTint="@color/cy_chip"
+                app:cornerRadius="6dp"
+                app:strokeColor="@color/cy_stroke_soft"
+                app:strokeWidth="1dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnClearCache"
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="1"
-                    android:text="ניקוי קאש"
-                    android:textStyle="bold"
-                    app:backgroundTint="#DCE3EE"
-                    app:cornerRadius="6dp" />
+            <Space
+                android:layout_width="4dp"
+                android:layout_height="1dp" />
 
-                <Space
-                    android:layout_width="6dp"
-                    android:layout_height="1dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSettings"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_weight="1"
-                    android:text="הגדרות"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="6dp"
-                    app:strokeColor="#FFFFFF" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSettings"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:text="הגדרות"
+                android:textStyle="bold"
+                android:textColor="@color/cy_text"
+                app:backgroundTint="@color/cy_chip"
+                app:cornerRadius="6dp"
+                app:strokeColor="@color/cy_stroke"
+                app:strokeWidth="1dp" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="3dp"
             android:gravity="end"
             android:text="הודעות זמינות לעריכה"
-            android:textColor="#111827"
-            android:textSize="16sp"
+            android:textColor="@color/cy_stroke"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -237,7 +222,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="2dp"
-            tools:listitem="@layout/item_message_row" />
+            android:paddingBottom="2dp" />
     </LinearLayout>
 </LinearLayout>

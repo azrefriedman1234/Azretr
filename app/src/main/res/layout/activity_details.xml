@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEF1F5">
+    android:background="#050A06">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollRoot"
@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="#08152D"
+                app:cardBackgroundColor="#07130A"
                 app:cardCornerRadius="8dp"
                 app:strokeColor="#D8DEE8"
                 app:strokeWidth="1dp">
@@ -60,7 +60,7 @@
                 android:id="@+id/cardEditor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#08152D"
+                app:cardBackgroundColor="#07130A"
                 app:cardCornerRadius="8dp"
                 app:strokeColor="#D8DEE8"
                 app:strokeWidth="1dp">
@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="end"
                         android:text="Edit"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#E9FFF0"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -93,7 +93,7 @@
                             android:layout_weight="1"
                             android:text="לוגו / סימן"
                             android:textColor="#111827"
-                            app:backgroundTint="#1E6A48"
+                            app:backgroundTint="#00E676"
                             app:cornerRadius="6dp" />
 
                         <Space
@@ -107,9 +107,9 @@
                             android:layout_height="40dp"
                             android:layout_weight="1"
                             android:text="BLUR"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#E9FFF0"
                             app:cornerRadius="6dp"
-                            app:strokeColor="#FFFFFF" />
+                            app:strokeColor="#E9FFF0" />
 
                         <Space
                             android:layout_width="6dp"
@@ -122,9 +122,9 @@
                             android:layout_height="40dp"
                             android:layout_weight="1"
                             android:text="תרגום"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#E9FFF0"
                             app:cornerRadius="6dp"
-                            app:strokeColor="#FFFFFF" />
+                            app:strokeColor="#E9FFF0" />
                     </LinearLayout>
 
                     <TextView
@@ -133,7 +133,7 @@
                         android:layout_marginTop="10dp"
                         android:gravity="end"
                         android:text="גודל לוגו"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#E9FFF0"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -158,7 +158,7 @@
                             android:layout_weight="1"
                             android:text="שליחה"
                             android:textStyle="bold"
-                            app:backgroundTint="#2F67E8"
+                            app:backgroundTint="#00C853"
                             app:cornerRadius="6dp" />
 
                         <Space
@@ -172,9 +172,9 @@
                             android:layout_height="42dp"
                             android:layout_weight="1"
                             android:text="ביטול"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#E9FFF0"
                             app:cornerRadius="6dp"
-                            app:strokeColor="#FFFFFF" />
+                            app:strokeColor="#E9FFF0" />
                     </LinearLayout>
 
                     <TextView
@@ -183,7 +183,7 @@
                         android:layout_marginTop="10dp"
                         android:gravity="start"
                         android:text="כיתוב / טקסט"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#E9FFF0"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -192,7 +192,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginTop="8dp"
-                        android:background="#8B1E1E"
+                        android:background="#0F1B12"
                         android:gravity="top|right"
                         android:hint="כתוב כאן טקסט"
                         android:imeOptions="flagNoExtractUi"
@@ -210,8 +210,8 @@
                         android:overScrollMode="always"
                         android:padding="14dp"
                         android:scrollbars="vertical"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#F3C9C9"
+                        android:textColor="#E9FFF0"
+                        android:textColorHint="#7FD9A4"
                         android:textSize="20sp"
                         android:lineSpacingExtra="6dp" />
                 </LinearLayout>
