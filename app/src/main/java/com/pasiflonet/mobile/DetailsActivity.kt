@@ -55,8 +55,6 @@ class DetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(b.root)
-        installKeyboardAwareEditor()
-
 
         window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
@@ -69,31 +67,6 @@ class DetailsActivity : BaseActivity() {
         b.etCaption.isClickable = true
         b.etCaption.isLongClickable = true
         b.etCaption.setHorizontallyScrolling(false)
-
-        b.etCaption.movementMethod = ScrollingMovementMethod()
-
-        b.etCaption.setOnTouchListener { v, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN,
-                MotionEvent.ACTION_MOVE -> {
-                    b.scrollRoot.requestDisallowInterceptTouchEvent(true)
-                }
-                MotionEvent.ACTION_UP,
-                MotionEvent.ACTION_CANCEL -> {
-                    b.scrollRoot.requestDisallowInterceptTouchEvent(false)
-                }
-            }
-            v.performClick()
-            false
-        }
-
-                MotionEvent.ACTION_UP,
-                MotionEvent.ACTION_CANCEL -> {
-                    b.scrollRoot.requestDisallowInterceptTouchEvent(false)
-                }
-            }
-            false
-        }
 
         isVideo = intent.getBooleanExtra("IS_VIDEO", false)
         fileId = intent.getIntExtra("FILE_ID", 0)
