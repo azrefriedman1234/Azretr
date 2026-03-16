@@ -69,6 +69,23 @@ class MainActivity : BaseActivity() {
         }
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        try {
+            TdLibManager.setOnline(true)
+        } catch (_: Exception) {
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        try {
+            TdLibManager.setOnline(true)
+        } catch (_: Exception) {
+        }
+    }
+
     private fun setupUI() {
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
 

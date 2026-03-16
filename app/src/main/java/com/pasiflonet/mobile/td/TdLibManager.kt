@@ -33,6 +33,15 @@ object TdLibManager {
             when (update) {
                 is TdApi.UpdateAuthorizationState -> handleAuth(update.authorizationState, apiId, apiHash)
                 is TdApi.UpdateNewMessage -> upsertMessage(update.message)
+                is TdApi.UpdateMessageContent -> refreshMessage(update.chatId, update.messageId)
+                is TdApi.UpdateMessageEdited -> refreshMessage(update.chatId, update.messageId)
+                is TdApi.UpdateChatLastMessage -> refreshRecentMessages()
+                is TdApi.UpdateConnectionState -> {
+                    if (update.state is TdApi.ConnectionStateReady) {
+                        setOnline(true)
+                        refreshRecentMessages()
+                    }
+                }
                 is TdApi.UpdateMessageSendSucceeded -> {
                     removeMessage(update.message.chatId, update.oldMessageId)
                     upsertMessage(update.message)
@@ -94,6 +103,16 @@ object TdLibManager {
             }
         }
         _currentMessages.value = current.toList()
+    }
+
+
+    private fun refreshMessage(chatId: Long, messageId: Long) {
+        val c = client ?: return
+        c.send(TdApi.GetMessage(chatId, messageId)) { res ->
+            if (res is TdApi.Message) {
+                upsertMessage(res)
+            }
+        }
     }
 
     private fun removeMessage(chatId: Long, messageId: Long) {
