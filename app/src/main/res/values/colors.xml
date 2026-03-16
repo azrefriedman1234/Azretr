@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- New neon cyber green palette -->
+    <!-- core neon cyber green palette -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
     <color name="cy_bg">#050A06</color>
     <color name="cy_bg_2">#08110A</color>
     <color name="cy_card">#0B150D</color>
@@ -13,25 +16,26 @@
     <color name="cy_accent_dark">#00C853</color>
     <color name="cy_chip">#0D2214</color>
 
-    <!-- Basic compatibility -->
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="cyber_black">#050A06</color>
-
-    <!-- Old cyber names still used by themes/layouts -->
+    <!-- old theme names still referenced -->
     <color name="cyber_primary">#00E676</color>
     <color name="cyber_primary_dark">#00C853</color>
     <color name="cyber_secondary">#2CFF88</color>
+    <color name="cyber_black">#050A06</color>
+    <color name="cyber_white">#E9FFF0</color>
     <color name="cyber_card">#0F1B12</color>
     <color name="cyber_border_dim">#1A8F51</color>
 
-    <!-- Old button/drawable names -->
-    <color name="btn_gradient_start">#00E676</color>
-    <color name="btn_gradient_end">#00C853</color>
-    <color name="stroke_soft">#1A8F51</color>
+    <!-- common drawable/layout aliases -->
+    <color name="accent_primary">#00E676</color>
+    <color name="accent_soft">#0D2214</color>
+    <color name="surface_chip">#0D2214</color>
+    <color name="surface_input">#0F1B12</color>
     <color name="surface_card">#0F1B12</color>
+    <color name="stroke_soft">#1A8F51</color>
     <color name="text_primary">#E9FFF0</color>
     <color name="text_secondary">#A8CDB2</color>
+    <color name="btn_gradient_start">#00E676</color>
+    <color name="btn_gradient_end">#00C853</color>
 
     <!-- ui_* aliases -->
     <color name="ui_accent">#00E676</color>
@@ -43,13 +47,8 @@
     <color name="ui_text_primary">#E9FFF0</color>
     <color name="ui_text_secondary">#A8CDB2</color>
 
-    <color name="accent_primary">#00E676</color>
-    <color name="surface_chip">#0D2214</color>
-
-    <color name="surface_input">#0F1B12</color>
-    <color name="accent_soft">#0D2214</color>
-    <color name="cyber_white">#E9FFF0</color>
-    <color name="purple_200">#00E676</color>
+    <!-- legacy Material placeholders -->
+    <color name="purple_200">#2CFF88</color>
     <color name="purple_500">#00E676</color>
     <color name="purple_700">#00C853</color>
     <color name="teal_200">#2CFF88</color>
