@@ -162,14 +162,26 @@ class DetailsActivity : BaseActivity() {
         val miniThumbData = intent.getByteArrayExtra("MINI_THUMB")
         b.etCaption.setText(intent.getStringExtra("CAPTION") ?: "")
 
-        if (passedThumbPath != null && File(passedThumbPath).exists()) {
-            loadPreview(passedThumbPath)
-        } else {
-            if (miniThumbData != null && miniThumbData.isNotEmpty()) {
-                loadMiniThumb(miniThumbData)
+        val instantThumbPath = if (thumbId != 0) TdLibManager.getFilePath(thumbId) else null
+        val instantFullPath = if (fileId != 0) TdLibManager.getFilePath(fileId) else null
+
+        when {
+            passedThumbPath != null && File(passedThumbPath).exists() -> {
+                loadPreview(passedThumbPath)
             }
-            if (thumbId != 0) {
-                startThumbHunter(thumbId)
+            instantThumbPath != null && File(instantThumbPath).exists() -> {
+                loadPreview(instantThumbPath)
+            }
+            !isVideo && instantFullPath != null && File(instantFullPath).exists() -> {
+                loadPreview(instantFullPath)
+            }
+            else -> {
+                if (miniThumbData != null && miniThumbData.isNotEmpty()) {
+                    loadMiniThumb(miniThumbData)
+                }
+                if (thumbId != 0) {
+                    startThumbHunter(thumbId)
+                }
             }
         }
 
@@ -210,7 +222,7 @@ class DetailsActivity : BaseActivity() {
     private fun startThumbHunter(tId: Int) {
         TdLibManager.downloadFile(tId)
         lifecycleScope.launch(Dispatchers.IO) {
-            for (i in 0..60) {
+            for (i in 0..120) {
                 if (isFinishing || isDestroyed) break
 
                 val thumbPath = TdLibManager.getFilePath(tId)
@@ -228,7 +240,7 @@ class DetailsActivity : BaseActivity() {
                     }
                 }
 
-                delay(250)
+                delay(100)
             }
         }
     }
