@@ -139,7 +139,6 @@ class MainActivity : BaseActivity() {
             when (msg.content) {
                 is TdApi.MessagePhoto -> {
                     val c = msg.content as TdApi.MessagePhoto
-                    miniThumbData = c.photo.minithumbnail?.data
 
                     val previewPhoto =
                         c.photo.sizes.find { it.type == "x" } ?:
@@ -158,7 +157,6 @@ class MainActivity : BaseActivity() {
                 }
                 is TdApi.MessageVideo -> {
                     val c = msg.content as TdApi.MessageVideo
-                    miniThumbData = c.video.minithumbnail?.data
                     val thumb = c.video.thumbnail
                     if (thumb != null) {
                         thumbPath = thumb.file.local.path
@@ -176,7 +174,6 @@ class MainActivity : BaseActivity() {
 
             val intent = Intent(this, DetailsActivity::class.java)
             if (thumbPath != null) intent.putExtra("THUMB_PATH", thumbPath)
-            if (miniThumbData != null) intent.putExtra("MINI_THUMB", miniThumbData)
             intent.putExtra("THUMB_ID", thumbId)
             intent.putExtra("FILE_ID", fullId)
             intent.putExtra("IS_VIDEO", isVideo)

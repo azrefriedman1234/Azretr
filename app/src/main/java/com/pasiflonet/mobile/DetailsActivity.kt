@@ -159,7 +159,6 @@ class DetailsActivity : BaseActivity() {
         thumbId = intent.getIntExtra("THUMB_ID", 0)
         
         val passedThumbPath = intent.getStringExtra("THUMB_PATH")
-        val miniThumbData = intent.getByteArrayExtra("MINI_THUMB")
         b.etCaption.setText(intent.getStringExtra("CAPTION") ?: "")
 
         val instantThumbPath = if (thumbId != 0) TdLibManager.getFilePath(thumbId) else null
@@ -175,13 +174,8 @@ class DetailsActivity : BaseActivity() {
             !isVideo && instantFullPath != null && File(instantFullPath).exists() -> {
                 loadPreview(instantFullPath)
             }
-            else -> {
-                if (miniThumbData != null && miniThumbData.isNotEmpty()) {
-                    loadMiniThumb(miniThumbData)
-                }
-                if (thumbId != 0) {
-                    startThumbHunter(thumbId)
-                }
+            thumbId != 0 -> {
+                startThumbHunter(thumbId)
             }
         }
 
