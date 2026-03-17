@@ -267,12 +267,28 @@ class MainActivity : BaseActivity() {
                     adapter.updateList(m)
                 }
                 m.forEach { msg ->
-                    val fileIdToDownload = when (val c = msg.content) {
+                    val previewIdToDownload = when (val c = msg.content) {
+                        is TdApi.MessagePhoto -> {
+                            val previewPhoto =
+                                c.photo.sizes.find { it.type == "x" } ?:
+                                c.photo.sizes.find { it.type == "y" } ?:
+                                c.photo.sizes.find { it.type == "w" } ?:
+                                c.photo.sizes.lastOrNull() ?:
+                                c.photo.sizes.firstOrNull()
+                            previewPhoto?.photo?.id ?: 0
+                        }
+                        is TdApi.MessageVideo -> c.video.thumbnail?.file?.id ?: 0
+                        else -> 0
+                    }
+
+                    val fullIdToDownload = when (val c = msg.content) {
                         is TdApi.MessagePhoto -> c.photo.sizes.lastOrNull()?.photo?.id ?: 0
                         is TdApi.MessageVideo -> c.video.video.id
                         else -> 0
                     }
-                    if (fileIdToDownload != 0) TdLibManager.downloadFile(fileIdToDownload)
+
+                    if (previewIdToDownload != 0) TdLibManager.downloadFile(previewIdToDownload)
+                    if (fullIdToDownload != 0) TdLibManager.downloadFile(fullIdToDownload)
                 }
             }
         }
