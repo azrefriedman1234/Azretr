@@ -102,7 +102,28 @@ object TdLibManager {
                 }
             }
         }
+
         _currentMessages.value = current.toList()
+
+        try {
+            val previewId = when (val c = message.content) {
+                is TdApi.MessagePhoto -> {
+                    val previewPhoto =
+                        c.photo.sizes.find { it.type == "x" } ?:
+                        c.photo.sizes.find { it.type == "y" } ?:
+                        c.photo.sizes.find { it.type == "w" } ?:
+                        c.photo.sizes.lastOrNull() ?:
+                        c.photo.sizes.firstOrNull()
+                    previewPhoto?.photo?.id ?: 0
+                }
+                is TdApi.MessageVideo -> c.video.thumbnail?.file?.id ?: 0
+                else -> 0
+            }
+            if (previewId != 0) {
+                downloadFile(previewId)
+            }
+        } catch (_: Exception) {
+        }
     }
 
 

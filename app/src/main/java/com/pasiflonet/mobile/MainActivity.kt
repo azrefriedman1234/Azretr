@@ -172,13 +172,30 @@ class MainActivity : BaseActivity() {
             if (thumbId != 0) TdLibManager.downloadFile(thumbId)
             if (fullId != 0) TdLibManager.downloadFile(fullId)
 
-            val intent = Intent(this, DetailsActivity::class.java)
-            if (thumbPath != null) intent.putExtra("THUMB_PATH", thumbPath)
-            intent.putExtra("THUMB_ID", thumbId)
-            intent.putExtra("FILE_ID", fullId)
-            intent.putExtra("IS_VIDEO", isVideo)
-            intent.putExtra("CAPTION", caption)
-            startActivity(intent)
+            lifecycleScope.launch(Dispatchers.IO) {
+                var resolvedThumbPath = thumbPath
+
+                if ((resolvedThumbPath == null || !java.io.File(resolvedThumbPath).exists()) && thumbId != 0) {
+                    for (i in 0..20) {
+                        val pth = TdLibManager.getFilePath(thumbId)
+                        if (pth != null && java.io.File(pth).exists()) {
+                            resolvedThumbPath = pth
+                            break
+                        }
+                        kotlinx.coroutines.delay(100)
+                    }
+                }
+
+                withContext(Dispatchers.Main) {
+                    val intent = Intent(this@MainActivity, DetailsActivity::class.java)
+                    if (resolvedThumbPath != null) intent.putExtra("THUMB_PATH", resolvedThumbPath)
+                    intent.putExtra("THUMB_ID", thumbId)
+                    intent.putExtra("FILE_ID", fullId)
+                    intent.putExtra("IS_VIDEO", isVideo)
+                    intent.putExtra("CAPTION", caption)
+                    startActivity(intent)
+                }
+            }
         }
 
         b.rvMessages.layoutManager = LinearLayoutManager(this)
@@ -278,14 +295,7 @@ class MainActivity : BaseActivity() {
                         else -> 0
                     }
 
-                    val fullIdToDownload = when (val c = msg.content) {
-                        is TdApi.MessagePhoto -> c.photo.sizes.lastOrNull()?.photo?.id ?: 0
-                        is TdApi.MessageVideo -> c.video.video.id
-                        else -> 0
-                    }
-
                     if (previewIdToDownload != 0) TdLibManager.downloadFile(previewIdToDownload)
-                    if (fullIdToDownload != 0) TdLibManager.downloadFile(fullIdToDownload)
                 }
             }
         }
