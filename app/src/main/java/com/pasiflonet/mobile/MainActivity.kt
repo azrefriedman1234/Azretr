@@ -29,7 +29,7 @@ import org.drinkless.tdlib.TdApi
 class MainActivity : BaseActivity() {
     private lateinit var b: ActivityMainBinding
     private lateinit var adapter: ChatAdapter
-    private var tvPlayer: ExoPlayer? = null
+   
 
     private data class TvChannel(
         val name: String,
@@ -48,7 +48,7 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         CrashLogger.install(application)
         try {
             b = ActivityMainBinding.inflate(layoutInflater)
@@ -84,7 +84,7 @@ class MainActivity : BaseActivity() {
             if (::adapter.isInitialized) {
                 adapter.updateList(TdLibManager.currentMessages.value)
             }
-            tvPlayer?.playWhenReady = true
+           
         } catch (_: Exception) { }
     }
 
@@ -92,7 +92,7 @@ class MainActivity : BaseActivity() {
         super.onPause()
         try {
             TdLibManager.setOnline(true)
-            tvPlayer?.playWhenReady = false
+           
         } catch (_: Exception) { }
     }
 
@@ -100,7 +100,7 @@ class MainActivity : BaseActivity() {
         super.onStop()
         try {
             TdLibManager.setOnline(true)
-            tvPlayer?.playWhenReady = false
+           
         } catch (_: Exception) { }
     }
 
@@ -247,10 +247,10 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        setupTvPanelIfPresent()
+       
     }
 
-    private fun setupTvPanelIfPresent() {
+    private fun {
         val playerView = findViewById<androidx.media3.ui.PlayerView?>(R.id.playerView) ?: return
         val spinner = findViewById<Spinner?>(R.id.tvChannelSpinner) ?: return
 
