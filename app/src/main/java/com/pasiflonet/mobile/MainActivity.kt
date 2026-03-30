@@ -7,15 +7,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pasiflonet.mobile.databinding.ActivityMainBinding
 import com.pasiflonet.mobile.td.TdLibManager
@@ -31,16 +25,7 @@ class MainActivity : BaseActivity() {
     private lateinit var adapter: ChatAdapter
    
 
-    private data class TvChannel(
-        val name: String,
-        val url: String
-    )
 
-    private val tvChannels = listOf(
-        TvChannel("Demo Live 1", "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"),
-        TvChannel("Demo Live 2", "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8"),
-        TvChannel("Demo Live 3", "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8")
-    )
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -105,10 +90,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        try {
-            tvPlayer?.release()
-            tvPlayer = null
-        } catch (_: Exception) { }
         super.onDestroy()
     }
 
