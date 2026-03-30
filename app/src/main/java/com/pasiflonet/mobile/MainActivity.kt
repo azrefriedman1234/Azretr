@@ -1,22 +1,21 @@
 package com.pasiflonet.mobile
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pasiflonet.mobile.databinding.ActivityMainBinding
 import com.pasiflonet.mobile.td.TdLibManager
@@ -26,11 +25,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.drinkless.tdlib.TdApi
-import java.io.File
 
 class MainActivity : BaseActivity() {
     private lateinit var b: ActivityMainBinding
     private lateinit var adapter: ChatAdapter
+    private var tvPlayer: ExoPlayer? = null
 
     private data class TvChannel(
         val name: String,
@@ -38,12 +37,9 @@ class MainActivity : BaseActivity() {
     )
 
     private val tvChannels = listOf(
-        TvChannel("כאן 11", "https://www.kan.org.il/live/"),
-        TvChannel("ערוץ הכנסת", "https://www.knesset.tv/live/"),
-        TvChannel("i24NEWS", "https://video.i24news.tv/"),
-        TvChannel("ערוץ 13", "https://13tv.co.il/live/"),
-        TvChannel("ערוץ 12", "https://www.mako.co.il/mako-vod-live-tv"),
-        TvChannel("כאן חינוכית", "https://www.kan.org.il/content/kan/kan-educational/p-12239/")
+        TvChannel("Demo Live 1", "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"),
+        TvChannel("Demo Live 2", "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8"),
+        TvChannel("Demo Live 3", "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8")
     )
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -52,30 +48,27 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         CrashLogger.install(application)
-
         try {
             b = ActivityMainBinding.inflate(layoutInflater)
             setContentView(b.root)
         } catch (e: Exception) {
             Log.e("UI_CRASH", "Layout Inflation Failed", e)
-            val errorView = android.widget.TextView(this).apply {
-                text = "CRITICAL UI ERROR:\n${e.message}\n\nCheck Logcat for details."
-                textSize = 20f
-                setTextColor(android.graphics.Color.RED)
-                setPadding(50, 50, 50, 50)
-            }
+            val errorView = android.widget.TextView(this)
+            errorView.text = "CRITICAL UI ERROR:\n${e.message}\n\nCheck Logcat for details."
+            errorView.textSize = 20f
+            errorView.setTextColor(android.graphics.Color.RED)
+            errorView.setPadding(50, 50, 50, 50)
             setContentView(errorView)
             return
         }
-
         try {
             startService(Intent(this, KeepAliveService::class.java))
             b.apiContainer.visibility = View.GONE
             b.loginContainer.visibility = View.GONE
             b.mainContent.visibility = View.GONE
             setupUI()
-            setupTvPanel()
             checkPermissions()
             checkApiAndInit()
         } catch (e: Exception) {
@@ -91,41 +84,31 @@ class MainActivity : BaseActivity() {
             if (::adapter.isInitialized) {
                 adapter.updateList(TdLibManager.currentMessages.value)
             }
-            if (::b.isInitialized) {
-                b.tvWebView.onResume()
-            }
-        } catch (_: Exception) {
-        }
+            tvPlayer?.playWhenReady = true
+        } catch (_: Exception) { }
     }
 
     override fun onPause() {
         super.onPause()
         try {
             TdLibManager.setOnline(true)
-            if (::b.isInitialized) {
-                b.tvWebView.onPause()
-            }
-        } catch (_: Exception) {
-        }
+            tvPlayer?.playWhenReady = false
+        } catch (_: Exception) { }
     }
 
     override fun onStop() {
         super.onStop()
         try {
             TdLibManager.setOnline(true)
-        } catch (_: Exception) {
-        }
+            tvPlayer?.playWhenReady = false
+        } catch (_: Exception) { }
     }
 
     override fun onDestroy() {
         try {
-            if (::b.isInitialized) {
-                b.tvWebView.stopLoading()
-                b.tvWebView.loadUrl("about:blank")
-                b.tvWebView.destroy()
-            }
-        } catch (_: Exception) {
-        }
+            tvPlayer?.release()
+            tvPlayer = null
+        } catch (_: Exception) { }
         super.onDestroy()
     }
 
@@ -208,9 +191,7 @@ class MainActivity : BaseActivity() {
                     isVideo = true
                     caption = c.caption.text
                 }
-                is TdApi.MessageText -> {
-                    caption = (msg.content as TdApi.MessageText).text.text
-                }
+                is TdApi.MessageText -> caption = (msg.content as TdApi.MessageText).text.text
             }
 
             if (thumbId != 0) TdLibManager.downloadFile(thumbId)
@@ -218,10 +199,10 @@ class MainActivity : BaseActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 var resolvedThumbPath = thumbPath
-                if ((resolvedThumbPath == null || !File(resolvedThumbPath).exists()) && thumbId != 0) {
+                if ((resolvedThumbPath == null || !java.io.File(resolvedThumbPath).exists()) && thumbId != 0) {
                     for (i in 0..20) {
                         val pth = TdLibManager.getFilePath(thumbId)
-                        if (pth != null && File(pth).exists()) {
+                        if (pth != null && java.io.File(pth).exists()) {
                             resolvedThumbPath = pth
                             break
                         }
@@ -265,60 +246,54 @@ class MainActivity : BaseActivity() {
                 Toast.makeText(this, "Settings Error", Toast.LENGTH_SHORT).show()
             }
         }
+
+        setupTvPanelIfPresent()
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setupTvPanel() {
-        val names = tvChannels.map { it.name }
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, names)
-        b.tvSpinner.adapter = spinnerAdapter
+    private fun setupTvPanelIfPresent() {
+        val playerView = findViewById<androidx.media3.ui.PlayerView?>(R.id.playerView) ?: return
+        val spinner = findViewById<Spinner?>(R.id.tvChannelSpinner) ?: return
 
-        val webView = b.tvWebView
-        webView.settings.javaScriptEnabled = true
-        webView.settings.domStorageEnabled = true
-        webView.settings.loadsImagesAutomatically = true
-        webView.settings.mediaPlaybackRequiresUserGesture = false
-        webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
-        webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        webView.settings.useWideViewPort = true
-        webView.settings.loadWithOverviewMode = true
-        webView.settings.builtInZoomControls = false
-        webView.settings.displayZoomControls = false
-        webView.webChromeClient = WebChromeClient()
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                return false
-            }
+        val labels = tvChannels.map { it.name }
+        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
 
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                b.tvLoading.visibility = View.VISIBLE
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                b.tvLoading.visibility = View.GONE
-            }
+        tvPlayer?.release()
+        tvPlayer = ExoPlayer.Builder(this).build().also { player ->
+            player.repeatMode = Player.REPEAT_MODE_ALL
+            player.trackSelectionParameters = player.trackSelectionParameters
+                .buildUpon()
+                .setPreferredAudioLanguage("heb")
+                .setPreferredTextLanguage("heb")
+                .build()
+            playerView.player = player
+            playerView.setShowSubtitleButton(true)
+            playerView.setShowBuffering(androidx.media3.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+            player.volume = 1f
+            player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
         }
 
-        b.tvSpinner.setSelection(0, false)
-        b.tvSpinner.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
+        spinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
-                loadChannel(position)
+                playChannel(position)
             }
-
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) = Unit
-        })
+        }
 
-        b.btnReloadTv.setOnClickListener {
-            b.tvWebView.reload()
+        if (tvChannels.isNotEmpty()) {
+            playChannel(0)
         }
     }
 
-    private fun loadChannel(position: Int) {
-        val channel = tvChannels.getOrNull(position) ?: tvChannels.first()
-        b.tvTitle.text = "שידור חי: ${channel.name}"
-        b.tvWebView.loadUrl(channel.url)
+    private fun playChannel(index: Int) {
+        val player = tvPlayer ?: return
+        val channel = tvChannels.getOrNull(index) ?: return
+        val mediaItem = MediaItem.Builder()
+            .setUri(channel.url)
+            .setMediaId(channel.name)
+            .build()
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.playWhenReady = true
     }
 
     private fun checkApiAndInit() {
