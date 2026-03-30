@@ -1,11 +1,19 @@
 package com.pasiflonet.mobile
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -18,13 +26,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.drinkless.tdlib.TdApi
+import java.io.File
 
 class MainActivity : BaseActivity() {
     private lateinit var b: ActivityMainBinding
     private lateinit var adapter: ChatAdapter
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
+    private data class TvChannel(
+        val name: String,
+        val url: String
+    )
+
+    private val tvChannels = listOf(
+        TvChannel("כאן 11", "https://www.kan.org.il/live/"),
+        TvChannel("ערוץ הכנסת", "https://www.knesset.tv/live/"),
+        TvChannel("i24NEWS", "https://video.i24news.tv/"),
+        TvChannel("ערוץ 13", "https://13tv.co.il/live/"),
+        TvChannel("ערוץ 12", "https://www.mako.co.il/mako-vod-live-tv"),
+        TvChannel("כאן חינוכית", "https://www.kan.org.il/content/kan/kan-educational/p-12239/")
+    )
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +59,12 @@ class MainActivity : BaseActivity() {
             setContentView(b.root)
         } catch (e: Exception) {
             Log.e("UI_CRASH", "Layout Inflation Failed", e)
-            val errorView = android.widget.TextView(this)
-            errorView.text = "CRITICAL UI ERROR:\n${e.message}\n\nCheck Logcat for details."
-            errorView.textSize = 20f
-            errorView.setTextColor(android.graphics.Color.RED)
-            errorView.setPadding(50, 50, 50, 50)
+            val errorView = android.widget.TextView(this).apply {
+                text = "CRITICAL UI ERROR:\n${e.message}\n\nCheck Logcat for details."
+                textSize = 20f
+                setTextColor(android.graphics.Color.RED)
+                setPadding(50, 50, 50, 50)
+            }
             setContentView(errorView)
             return
         }
@@ -50,6 +75,7 @@ class MainActivity : BaseActivity() {
             b.loginContainer.visibility = View.GONE
             b.mainContent.visibility = View.GONE
             setupUI()
+            setupTvPanel()
             checkPermissions()
             checkApiAndInit()
         } catch (e: Exception) {
@@ -65,15 +91,20 @@ class MainActivity : BaseActivity() {
             if (::adapter.isInitialized) {
                 adapter.updateList(TdLibManager.currentMessages.value)
             }
+            if (::b.isInitialized) {
+                b.tvWebView.onResume()
+            }
         } catch (_: Exception) {
         }
     }
-
 
     override fun onPause() {
         super.onPause()
         try {
             TdLibManager.setOnline(true)
+            if (::b.isInitialized) {
+                b.tvWebView.onPause()
+            }
         } catch (_: Exception) {
         }
     }
@@ -84,6 +115,18 @@ class MainActivity : BaseActivity() {
             TdLibManager.setOnline(true)
         } catch (_: Exception) {
         }
+    }
+
+    override fun onDestroy() {
+        try {
+            if (::b.isInitialized) {
+                b.tvWebView.stopLoading()
+                b.tvWebView.loadUrl("about:blank")
+                b.tvWebView.destroy()
+            }
+        } catch (_: Exception) {
+        }
+        super.onDestroy()
     }
 
     private fun setupUI() {
@@ -116,7 +159,9 @@ class MainActivity : BaseActivity() {
             val c = b.etCode.text.toString()
             if (c.isNotEmpty()) {
                 TdLibManager.sendCode(c) { e ->
-                    runOnUiThread { Toast.makeText(this, e, Toast.LENGTH_LONG).show() }
+                    runOnUiThread {
+                        Toast.makeText(this, e, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -124,13 +169,14 @@ class MainActivity : BaseActivity() {
         b.btnVerifyPassword.setOnClickListener {
             val pa = b.etPassword.text.toString()
             TdLibManager.sendPassword(pa) { e ->
-                runOnUiThread { Toast.makeText(this, e, Toast.LENGTH_LONG).show() }
+                runOnUiThread {
+                    Toast.makeText(this, e, Toast.LENGTH_LONG).show()
+                }
             }
         }
 
         adapter = ChatAdapter(emptyList()) { msg ->
             var thumbPath: String? = null
-            var miniThumbData: ByteArray? = null
             var fullId = 0
             var isVideo = false
             var caption = ""
@@ -139,19 +185,15 @@ class MainActivity : BaseActivity() {
             when (msg.content) {
                 is TdApi.MessagePhoto -> {
                     val c = msg.content as TdApi.MessagePhoto
-
-                    val previewPhoto =
-                        c.photo.sizes.find { it.type == "x" } ?:
-                        c.photo.sizes.find { it.type == "y" } ?:
-                        c.photo.sizes.find { it.type == "w" } ?:
-                        c.photo.sizes.lastOrNull() ?:
-                        c.photo.sizes.firstOrNull()
-
+                    val previewPhoto = c.photo.sizes.find { it.type == "x" }
+                        ?: c.photo.sizes.find { it.type == "y" }
+                        ?: c.photo.sizes.find { it.type == "w" }
+                        ?: c.photo.sizes.lastOrNull()
+                        ?: c.photo.sizes.firstOrNull()
                     if (previewPhoto != null) {
                         thumbPath = previewPhoto.photo.local.path
                         thumbId = previewPhoto.photo.id
                     }
-
                     fullId = if (c.photo.sizes.isNotEmpty()) c.photo.sizes.last().photo.id else 0
                     caption = c.caption.text
                 }
@@ -166,7 +208,9 @@ class MainActivity : BaseActivity() {
                     isVideo = true
                     caption = c.caption.text
                 }
-                is TdApi.MessageText -> caption = (msg.content as TdApi.MessageText).text.text
+                is TdApi.MessageText -> {
+                    caption = (msg.content as TdApi.MessageText).text.text
+                }
             }
 
             if (thumbId != 0) TdLibManager.downloadFile(thumbId)
@@ -174,18 +218,16 @@ class MainActivity : BaseActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 var resolvedThumbPath = thumbPath
-
-                if ((resolvedThumbPath == null || !java.io.File(resolvedThumbPath).exists()) && thumbId != 0) {
+                if ((resolvedThumbPath == null || !File(resolvedThumbPath).exists()) && thumbId != 0) {
                     for (i in 0..20) {
                         val pth = TdLibManager.getFilePath(thumbId)
-                        if (pth != null && java.io.File(pth).exists()) {
+                        if (pth != null && File(pth).exists()) {
                             resolvedThumbPath = pth
                             break
                         }
                         kotlinx.coroutines.delay(100)
                     }
                 }
-
                 withContext(Dispatchers.Main) {
                     val intent = Intent(this@MainActivity, DetailsActivity::class.java)
                     if (resolvedThumbPath != null) intent.putExtra("THUMB_PATH", resolvedThumbPath)
@@ -225,11 +267,64 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupTvPanel() {
+        val names = tvChannels.map { it.name }
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, names)
+        b.tvSpinner.adapter = spinnerAdapter
+
+        val webView = b.tvWebView
+        webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
+        webView.settings.loadsImagesAutomatically = true
+        webView.settings.mediaPlaybackRequiresUserGesture = false
+        webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
+        webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        webView.settings.useWideViewPort = true
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.builtInZoomControls = false
+        webView.settings.displayZoomControls = false
+        webView.webChromeClient = WebChromeClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                return false
+            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                b.tvLoading.visibility = View.VISIBLE
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                b.tvLoading.visibility = View.GONE
+            }
+        }
+
+        b.tvSpinner.setSelection(0, false)
+        b.tvSpinner.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+                loadChannel(position)
+            }
+
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) = Unit
+        })
+
+        b.btnReloadTv.setOnClickListener {
+            b.tvWebView.reload()
+        }
+    }
+
+    private fun loadChannel(position: Int) {
+        val channel = tvChannels.getOrNull(position) ?: tvChannels.first()
+        b.tvTitle.text = "שידור חי: ${channel.name}"
+        b.tvWebView.loadUrl(channel.url)
+    }
+
     private fun checkApiAndInit() {
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val i = prefs.getInt("api_id", 0)
         val h = prefs.getString("api_hash", "")
-
         if (i != 0 && !h.isNullOrEmpty()) {
             b.apiContainer.visibility = View.GONE
             TdLibManager.init(this@MainActivity, i, h)
@@ -283,18 +378,16 @@ class MainActivity : BaseActivity() {
                 m.forEach { msg ->
                     val previewIdToDownload = when (val c = msg.content) {
                         is TdApi.MessagePhoto -> {
-                            val previewPhoto =
-                                c.photo.sizes.find { it.type == "x" } ?:
-                                c.photo.sizes.find { it.type == "y" } ?:
-                                c.photo.sizes.find { it.type == "w" } ?:
-                                c.photo.sizes.lastOrNull() ?:
-                                c.photo.sizes.firstOrNull()
+                            val previewPhoto = c.photo.sizes.find { it.type == "x" }
+                                ?: c.photo.sizes.find { it.type == "y" }
+                                ?: c.photo.sizes.find { it.type == "w" }
+                                ?: c.photo.sizes.lastOrNull()
+                                ?: c.photo.sizes.firstOrNull()
                             previewPhoto?.photo?.id ?: 0
                         }
                         is TdApi.MessageVideo -> c.video.thumbnail?.file?.id ?: 0
                         else -> 0
                     }
-
                     if (previewIdToDownload != 0) TdLibManager.downloadFile(previewIdToDownload)
                 }
             }
@@ -306,18 +399,15 @@ class MainActivity : BaseActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             perms.clear()
             perms.add(Manifest.permission.READ_MEDIA_IMAGES)
             perms.add(Manifest.permission.READ_MEDIA_VIDEO)
             perms.add(Manifest.permission.POST_NOTIFICATIONS)
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             perms.add(Manifest.permission.FOREGROUND_SERVICE)
         }
-
         requestPermissionLauncher.launch(perms.toTypedArray())
     }
 }
