@@ -175,47 +175,7 @@
                 android:text="Clear Cache" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="שידור חי: כאן 11"
-            android:textColor="#39FF14"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/tvSpinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#1B2530" />
-
-            <Button
-                android:id="@+id/btnReloadTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="טען מחדש" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:layout_marginTop="8dp"
-            android:background="#111111">
-
-            <WebView
-                android:id="@+id/tvWebView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+        
 
             <ProgressBar
                 android:id="@+id/tvLoading"
