@@ -21,11 +21,9 @@ import kotlinx.coroutines.withContext
 import org.drinkless.tdlib.TdApi
 
 class MainActivity : BaseActivity() {
+
     private lateinit var b: ActivityMainBinding
     private lateinit var adapter: ChatAdapter
-   
-
-
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -34,7 +32,9 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
         CrashLogger.install(application)
+
         try {
             b = ActivityMainBinding.inflate(layoutInflater)
             setContentView(b.root)
@@ -48,6 +48,7 @@ class MainActivity : BaseActivity() {
             setContentView(errorView)
             return
         }
+
         try {
             startService(Intent(this, KeepAliveService::class.java))
             b.apiContainer.visibility = View.GONE
@@ -69,24 +70,24 @@ class MainActivity : BaseActivity() {
             if (::adapter.isInitialized) {
                 adapter.updateList(TdLibManager.currentMessages.value)
             }
-           
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     override fun onPause() {
         super.onPause()
         try {
             TdLibManager.setOnline(true)
-           
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     override fun onStop() {
         super.onStop()
         try {
             TdLibManager.setOnline(true)
-           
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     override fun onDestroy() {
@@ -154,6 +155,7 @@ class MainActivity : BaseActivity() {
                         ?: c.photo.sizes.find { it.type == "w" }
                         ?: c.photo.sizes.lastOrNull()
                         ?: c.photo.sizes.firstOrNull()
+
                     if (previewPhoto != null) {
                         thumbPath = previewPhoto.photo.local.path
                         thumbId = previewPhoto.photo.id
@@ -161,6 +163,7 @@ class MainActivity : BaseActivity() {
                     fullId = if (c.photo.sizes.isNotEmpty()) c.photo.sizes.last().photo.id else 0
                     caption = c.caption.text
                 }
+
                 is TdApi.MessageVideo -> {
                     val c = msg.content as TdApi.MessageVideo
                     val thumb = c.video.thumbnail
@@ -172,7 +175,10 @@ class MainActivity : BaseActivity() {
                     isVideo = true
                     caption = c.caption.text
                 }
-                is TdApi.MessageText -> caption = (msg.content as TdApi.MessageText).text.text
+
+                is TdApi.MessageText -> {
+                    caption = (msg.content as TdApi.MessageText).text.text
+                }
             }
 
             if (thumbId != 0) TdLibManager.downloadFile(thumbId)
@@ -190,6 +196,7 @@ class MainActivity : BaseActivity() {
                         kotlinx.coroutines.delay(100)
                     }
                 }
+
                 withContext(Dispatchers.Main) {
                     val intent = Intent(this@MainActivity, DetailsActivity::class.java)
                     if (resolvedThumbPath != null) intent.putExtra("THUMB_PATH", resolvedThumbPath)
@@ -227,60 +234,13 @@ class MainActivity : BaseActivity() {
                 Toast.makeText(this, "Settings Error", Toast.LENGTH_SHORT).show()
             }
         }
-
-       
-    }
-
-    private fun {
-        val playerView = findViewById<androidx.media3.ui.PlayerView?>(R.id.playerView) ?: return
-        val spinner = findViewById<Spinner?>(R.id.tvChannelSpinner) ?: return
-
-        val labels = tvChannels.map { it.name }
-        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
-
-        tvPlayer?.release()
-        tvPlayer = ExoPlayer.Builder(this).build().also { player ->
-            player.repeatMode = Player.REPEAT_MODE_ALL
-            player.trackSelectionParameters = player.trackSelectionParameters
-                .buildUpon()
-                .setPreferredAudioLanguage("heb")
-                .setPreferredTextLanguage("heb")
-                .build()
-            playerView.player = player
-            playerView.setShowSubtitleButton(true)
-            playerView.setShowBuffering(androidx.media3.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
-            player.volume = 1f
-            player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
-        }
-
-        spinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
-                playChannel(position)
-            }
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) = Unit
-        }
-
-        if (tvChannels.isNotEmpty()) {
-            playChannel(0)
-        }
-    }
-
-    private fun playChannel(index: Int) {
-        val player = tvPlayer ?: return
-        val channel = tvChannels.getOrNull(index) ?: return
-        val mediaItem = MediaItem.Builder()
-            .setUri(channel.url)
-            .setMediaId(channel.name)
-            .build()
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.playWhenReady = true
     }
 
     private fun checkApiAndInit() {
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val i = prefs.getInt("api_id", 0)
         val h = prefs.getString("api_hash", "")
+
         if (i != 0 && !h.isNullOrEmpty()) {
             b.apiContainer.visibility = View.GONE
             TdLibManager.init(this@MainActivity, i, h)
@@ -305,16 +265,19 @@ class MainActivity : BaseActivity() {
                             b.btnSendCode.isEnabled = true
                             b.btnSendCode.text = "SEND CODE"
                         }
+
                         is TdApi.AuthorizationStateWaitCode -> {
                             b.loginContainer.visibility = View.VISIBLE
                             b.phoneLayout.visibility = View.GONE
                             b.codeLayout.visibility = View.VISIBLE
                         }
+
                         is TdApi.AuthorizationStateWaitPassword -> {
                             b.loginContainer.visibility = View.VISIBLE
                             b.codeLayout.visibility = View.GONE
                             b.passwordLayout.visibility = View.VISIBLE
                         }
+
                         is TdApi.AuthorizationStateReady -> {
                             b.loginContainer.visibility = View.GONE
                             b.mainContent.visibility = View.VISIBLE
@@ -331,6 +294,7 @@ class MainActivity : BaseActivity() {
                 withContext(Dispatchers.Main) {
                     adapter.updateList(m)
                 }
+
                 m.forEach { msg ->
                     val previewIdToDownload = when (val c = msg.content) {
                         is TdApi.MessagePhoto -> {
@@ -341,9 +305,11 @@ class MainActivity : BaseActivity() {
                                 ?: c.photo.sizes.firstOrNull()
                             previewPhoto?.photo?.id ?: 0
                         }
+
                         is TdApi.MessageVideo -> c.video.thumbnail?.file?.id ?: 0
                         else -> 0
                     }
+
                     if (previewIdToDownload != 0) TdLibManager.downloadFile(previewIdToDownload)
                 }
             }
@@ -355,15 +321,18 @@ class MainActivity : BaseActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             perms.clear()
             perms.add(Manifest.permission.READ_MEDIA_IMAGES)
             perms.add(Manifest.permission.READ_MEDIA_VIDEO)
             perms.add(Manifest.permission.POST_NOTIFICATIONS)
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             perms.add(Manifest.permission.FOREGROUND_SERVICE)
         }
+
         requestPermissionLauncher.launch(perms.toTypedArray())
     }
 }
