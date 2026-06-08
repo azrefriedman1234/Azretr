@@ -89,7 +89,7 @@ object TdLibManager {
     private fun upsertMessage(message: TdApi.Message) {
         val current = _currentMessages.value.toMutableList()
         val idx = current.indexOfFirst { it.chatId == message.chatId && it.id == message.id }
-        if (idx >= 0) current[idx] = message else current.add(message) appContext?.let { com.pasiflonet.mobile.utils.KeywordNotificationHelper.notifyIfMatches(it, message) }
+        if (idx >= 0) current[idx] = message else current.add(message)
 
         current.sortWith(compareByDescending<TdApi.Message> { it.date }.thenByDescending { it.id })
         while (current.size > MAX_MESSAGES) {

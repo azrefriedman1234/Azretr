@@ -12,53 +12,48 @@ object KeywordNotificationHelper {
     private const val CHANNEL_ID = "azretr_keyword_alerts"
 
     fun notifyIfMatches(context: Context, message: TdApi.Message) {
-        try {
-            if (message.isOutgoing) return
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val rawKeywords = prefs.getString("alert_keywords", "") ?: ""
+        val keywords = rawKeywords
+            .split(",", "\n", ";", "|")
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
 
-            val now = System.currentTimeMillis() / 1000L
-            if (message.date > 0 && now - message.date > 180) return
+        if (keywords.isEmpty()) return
 
-            val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-            val raw = prefs.getString("alert_keywords", "") ?: ""
-            val keywords = raw
-                .split(",", "\n", ";", "|")
-                .map { it.trim() }
-                .filter { it.isNotEmpty() }
+        val text = extractText(message)
+        if (text.isBlank()) return
 
-            if (keywords.isEmpty()) return
+        val lowerText = text.lowercase(Locale.getDefault())
+        val matched = keywords.firstOrNull { lowerText.contains(it.lowercase(Locale.getDefault())) } ?: return
 
-            val text = extractText(message)
-            if (text.isBlank()) return
+        createChannel(context)
 
-            val lower = text.lowercase(Locale.getDefault())
-            val matched = keywords.firstOrNull { lower.contains(it.lowercase(Locale.getDefault())) } ?: return
+        val title = "נמצאה מילת מפתח: $matched"
+        val shortText = if (text.length > 120) text.take(120) + "..." else text
 
-            createChannel(context)
-
-            val shortText = if (text.length > 180) text.take(180) + "..." else text
-            val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val builder =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Notification.Builder(context, CHANNEL_ID)
             } else {
                 Notification.Builder(context)
-                    .setPriority(Notification.PRIORITY_HIGH)
             }
 
-            val notification = builder
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle("Azretr: נמצאה מילת מפתח")
-                .setContentText("$matched — $shortText")
-                .setStyle(Notification.BigTextStyle().bigText(shortText))
-                .setAutoCancel(true)
-                .build()
+        val notification = builder
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle(title)
+            .setContentText(shortText)
+            .setStyle(Notification.BigTextStyle().bigText(shortText))
+            .setAutoCancel(true)
+            .build()
 
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.notify((message.chatId xor message.id).toInt(), notification)
-        } catch (_: Exception) {
-        }
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify((message.id and 0x7fffffff).toInt(), notification)
     }
 
     private fun createChannel(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (manager.getNotificationChannel(CHANNEL_ID) != null) return
 
@@ -67,21 +62,19 @@ object KeywordNotificationHelper {
             "התראות לפי מילות מפתח",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "התראה כשנכנסת הודעה שמכילה מילת מפתח שהוגדרה"
+            description = "התראה כאשר הודעה חדשה מכילה מילת מפתח שהוגדרה בהגדרות"
         }
 
         manager.createNotificationChannel(channel)
     }
 
-    private fun extractText(message: TdApi.Message): String {
-        return when (val c = message.content) {
+    private fun extractText(m: TdApi.Message): String {
+        return when (val c = m.content) {
             is TdApi.MessageText -> c.text.text
             is TdApi.MessagePhoto -> c.caption.text
             is TdApi.MessageVideo -> c.caption.text
             is TdApi.MessageAnimation -> c.caption.text
             is TdApi.MessageDocument -> c.caption.text
-            is TdApi.MessageAudio -> c.caption.text
-            is TdApi.MessageVoiceNote -> c.caption.text
             else -> ""
         }
     }
