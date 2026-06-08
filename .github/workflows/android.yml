@@ -3,6 +3,8 @@ name: Android Build CI
 on:
   push:
     branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -20,9 +22,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: '8.2'
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Validate local AAR files
         run: |
@@ -31,10 +31,10 @@ jobs:
           ls -lh app/libs
 
       - name: Build debug APK
-        run: gradle assembleDebug --stacktrace --no-daemon --refresh-dependencies
+        run: ./gradlew assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Azretr-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/*.apk

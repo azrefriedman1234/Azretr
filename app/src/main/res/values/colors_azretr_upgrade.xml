@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="azretr_background">#F5F7FB</color>
+    <color name="azretr_text">#151922</color>
+    <color name="azretr_text_secondary">#5C6470</color>
+</resources>

@@ -1,5 +1,7 @@
 package com.pasiflonet.mobile
 
+import com.pasiflonet.mobile.utils.NotificationHelper
+
 import android.Manifest
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -31,7 +33,10 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        
+        NotificationHelper.createChannels(this)
+        NotificationPermission.requestIfNeeded(this)
+requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
         CrashLogger.install(application)
 

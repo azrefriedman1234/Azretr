@@ -45,5 +45,10 @@
             android:exported="false"
             android:process=":ffmpeg" />
 
+    
+        <activity
+            android:name=".MediaActivity"
+            android:exported="false"
+            android:screenOrientation="unspecified" />
     </application>
 </manifest>

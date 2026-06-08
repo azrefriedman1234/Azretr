@@ -66,6 +66,9 @@ android {
 }
 
 dependencies {
+    // Media player support
+    implementation 'androidx.media3:media3-exoplayer:1.4.1'
+    implementation 'androidx.media3:media3-ui:1.4.1'
     // Required by FFmpegKit when using a local .aar (fix NoClassDefFoundError)
     implementation 'com.arthenica:smart-exception-common:0.2.1'
     implementation 'com.arthenica:smart-exception-java:0.2.1'
