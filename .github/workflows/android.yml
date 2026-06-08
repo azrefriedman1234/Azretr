@@ -24,10 +24,10 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: current
+          gradle-version: '8.10'
 
       - name: Build Debug APK
-        run: gradle assembleDebug --stacktrace --no-daemon
+        run: gradle assembleDebug --stacktrace --warning-mode all --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
