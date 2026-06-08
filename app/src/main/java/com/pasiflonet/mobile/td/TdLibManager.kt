@@ -32,7 +32,7 @@ object TdLibManager {
         client = Client.create({ update ->
             when (update) {
                 is TdApi.UpdateAuthorizationState -> handleAuth(update.authorizationState, apiId, apiHash)
-                is TdApi.UpdateNewMessage -> upsertMessage(update.message)
+                is TdApi.UpdateNewMessage -> { upsertMessage(update.message); appContext?.let { com.pasiflonet.mobile.utils.KeywordNotificationHelper.notifyIfMatches(it, update.message) } }
                 is TdApi.UpdateMessageContent -> refreshMessage(update.chatId, update.messageId)
                 is TdApi.UpdateMessageEdited -> refreshMessage(update.chatId, update.messageId)
                 is TdApi.UpdateChatLastMessage -> refreshRecentMessages()
