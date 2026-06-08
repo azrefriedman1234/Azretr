@@ -4,7 +4,6 @@ import com.pasiflonet.mobile.utils.NotificationHelper
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -36,7 +35,7 @@ class MainActivity : BaseActivity() {
         
         NotificationHelper.createChannels(this)
         NotificationPermission.requestIfNeeded(this)
-requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+// Orientation unlocked: portrait and landscape supported
 
         CrashLogger.install(application)
 
