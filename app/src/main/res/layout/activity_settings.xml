@@ -1,155 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F6F8"
-    android:fillViewport="true"
-    android:paddingStart="10dp"
-    android:paddingTop="8dp"
-    android:paddingEnd="10dp"
-    android:paddingBottom="10dp">
+    android:background="@color/azretr_background"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="18dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/cy_text"
-            app:cardCornerRadius="6dp"
-            app:strokeColor="#D9DEE5"
-            app:strokeWidth="1dp">
+            android:text="הגדרות Azretr"
+            android:textColor="@color/azretr_primary"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:gravity="center" />
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="18dp"
+            android:padding="16dp"
+            android:background="@color/azretr_card"
+            android:elevation="3dp">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="7dp">
+                android:text="ערוץ יעד"
+                android:textColor="@color/azretr_text"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="הגדרות"
-                    android:textColor="@color/cy_text"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+            <EditText
+                android:id="@+id/etTargetUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@username או שם ערוץ"
+                android:inputType="text"
+                android:textColor="@color/azretr_text"
+                android:textColorHint="@color/azretr_text_secondary" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:gravity="end"
-                    android:text="יעד, לוגו וחתימה קבועה לטקסט"
-                    android:textColor="#6B7280"
-                    android:textSize="13sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="מילות מפתח להתראות"
+                android:textColor="@color/azretr_text"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="end"
-                    android:text="יעד לשליחה"
-                    android:textColor="@color/cy_text"
-                    android:textStyle="bold" />
+            <EditText
+                android:id="@+id/etKeywords"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="לדוגמה: מבצע, דחוף, מחיר"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:textColor="@color/azretr_text"
+                android:textColorHint="@color/azretr_text_secondary" />
 
-                <EditText
-                    android:id="@+id/etTargetUsername"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="2dp"
-                    android:backgroundTint="#D9DEE5"
-                    android:hint="@channel_username"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:textColor="#E9FFF0"
-                    android:textColorHint="@color/cy_text_dim" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="חתימה לטקסט"
+                android:textColor="@color/azretr_text"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="end"
-                    android:text="חתימה קבועה לכל הודעת טקסט"
-                    android:textColor="@color/cy_text"
-                    android:textStyle="bold" />
+            <EditText
+                android:id="@+id/etSignature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="חתימה שתתווסף להודעות"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:textColor="@color/azretr_text"
+                android:textColorHint="@color/azretr_text_secondary" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:gravity="end"
-                    android:text="אפשר לשים קישורים. לא תוצג להם תצוגה מקדימה."
-                    android:textColor="#6B7280"
-                    android:textSize="12sp" />
+            <ImageView
+                android:id="@+id/ivCurrentLogo"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp"
+                android:background="@color/azretr_divider"
+                android:contentDescription="Current logo" />
 
-                <EditText
-                    android:id="@+id/etSignature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:backgroundTint="#D9DEE5"
-                    android:gravity="top|start"
-                    android:hint="לדוגמה:\nהצטרפו: https://t.me/yourchannel"
-                    android:imeOptions="flagNoExtractUi"
-                    android:inputType="textMultiLine|textUri"
-                    android:minLines="4"
-                    android:padding="7dp"
-                    android:textColor="#E9FFF0"
-                    android:textColorHint="#F3D5DA" />
+            <Button
+                android:id="@+id/btnSelectLogo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="בחר לוגו" />
 
+            <Button
+                android:id="@+id/btnSaveSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="שמור הגדרות" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:gravity="end"
-                    android:text="לוגו נוכחי"
-                    android:textColor="@color/cy_text"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/ivCurrentLogo"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="2dp"
-                    android:background="#F3F4F6"
-                    android:scaleType="fitCenter" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSelectLogo"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="2dp"
-                    android:text="בחירת לוגו"
-                    app:backgroundTint="#EAF1FF"
-                    app:cornerRadius="6dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:id="@+id/btnClearCache"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="3dp"
-                    android:text="ניקוי קאש"
-                    android:textColor="@color/cy_text"
-                    app:cornerRadius="6dp"
-                    app:strokeColor="#D9DEE5" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSaveSettings"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="2dp"
-                    android:text="שמירת הגדרות"
-                    android:textStyle="bold"
-                    app:backgroundTint="#2563EB"
-                    app:cornerRadius="6dp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <Button
+                android:id="@+id/btnClearCache"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="ניקוי קאש" />
+        </LinearLayout>
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</ScrollView>
