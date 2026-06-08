@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="הגדרות Azretr"
+            android:text="הגדרות"
             android:textColor="@color/azretr_primary"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -40,7 +40,7 @@
                 android:id="@+id/etTargetUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@username או שם ערוץ"
+                android:hint="@username"
                 android:inputType="text"
                 android:textColor="@color/azretr_text"
                 android:textColorHint="@color/azretr_text_secondary" />
@@ -57,7 +57,7 @@
                 android:id="@+id/etKeywords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="לדוגמה: מבצע, דחוף, מחיר"
+                android:hint="לדוגמה: דחוף, מבצע, מחיר"
                 android:inputType="textMultiLine"
                 android:minLines="2"
                 android:textColor="@color/azretr_text"
@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:text="חתימה לטקסט"
+                android:text="חתימה"
                 android:textColor="@color/azretr_text"
                 android:textStyle="bold" />
 
@@ -75,7 +75,7 @@
                 android:id="@+id/etSignature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="חתימה שתתווסף להודעות"
+                android:hint="חתימה להודעות"
                 android:inputType="textMultiLine"
                 android:minLines="2"
                 android:textColor="@color/azretr_text"
@@ -88,7 +88,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="18dp"
                 android:background="@color/azretr_divider"
-                android:contentDescription="Current logo" />
+                android:contentDescription="logo" />
 
             <Button
                 android:id="@+id/btnSelectLogo"
