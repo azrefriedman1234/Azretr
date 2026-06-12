@@ -99,6 +99,20 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setupUI() {
+        try {
+            val dashboard = b.mainContent as? android.widget.LinearLayout
+            if (dashboard != null && dashboard.findViewWithTag<android.view.View>("azretr_military_button") == null) {
+                val btnMilitary = android.widget.Button(this).apply {
+                    tag = "azretr_military_button"
+                    text = "מעקב מטוסים צבאיים"
+                    setOnClickListener {
+                        startActivity(android.content.Intent(this@MainActivity, MilitaryFlightMonitorActivity::class.java))
+                    }
+                }
+                dashboard.addView(btnMilitary, 1)
+            }
+        } catch (_: Exception) { }
+
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
 
         b.btnSaveApi.setOnClickListener {

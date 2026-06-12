@@ -53,5 +53,6 @@
             <activity android:name=".CurrentIntelActivity" android:exported="false" />
         <activity android:name=".VerifyIntelActivity" android:exported="false" />
         <activity android:name=".FlightTrackerActivity" android:exported="false" />
+            <activity android:name=".MilitaryFlightMonitorActivity" android:exported="false" />
     </application>
 </manifest>
