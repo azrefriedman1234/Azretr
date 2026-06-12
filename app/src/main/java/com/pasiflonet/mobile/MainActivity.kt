@@ -98,7 +98,57 @@ class MainActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    private fun setupUI() { try { com.pasiflonet.mobile.utils.CyberUiHelper.wireMapSearch(b.root); com.pasiflonet.mobile.utils.CyberUiHelper.wireVerifyBox(b.root) } catch (_: Exception) { }
+    private fun setupUI() {
+
+        try {
+            b.rvMessages.layoutManager = LinearLayoutManager(this)
+            adapter = ChatAdapter(emptyList<TdApi.Message>()) { msg ->
+                try {
+                    val intent = Intent(this, DetailsActivity::class.java)
+
+                    var caption = ""
+                    var fileId = 0
+                    var thumbId = 0
+                    var isVideo = false
+
+                    when (val c = msg.content) {
+                        is TdApi.MessageText -> {
+                            caption = c.text.text
+                        }
+                        is TdApi.MessagePhoto -> {
+                            caption = c.caption.text
+                            val best = c.photo.sizes.maxByOrNull { it.width * it.height }
+                            fileId = best?.photo?.id ?: 0
+                            thumbId = fileId
+                        }
+                        is TdApi.MessageVideo -> {
+                            caption = c.caption.text
+                            fileId = c.video.video.id
+                            thumbId = c.video.thumbnail?.file?.id ?: 0
+                            isVideo = true
+                        }
+                        is TdApi.MessageAnimation -> {
+                            caption = c.caption.text
+                            fileId = c.animation.animation.id
+                            thumbId = c.animation.thumbnail?.file?.id ?: 0
+                        }
+                        is TdApi.MessageDocument -> {
+                            caption = c.caption.text
+                            fileId = c.document.document.id
+                        }
+                    }
+
+                    intent.putExtra("CAPTION", caption)
+                    intent.putExtra("FILE_ID", fileId)
+                    intent.putExtra("THUMB_ID", thumbId)
+                    intent.putExtra("IS_VIDEO", isVideo)
+                    startActivity(intent)
+                } catch (_: Exception) { }
+            }
+            b.rvMessages.adapter = adapter
+            adapter.updateList(TdLibManager.currentMessages.value)
+        } catch (_: Exception) { }
+ try { com.pasiflonet.mobile.utils.CyberUiHelper.wireMapSearch(b.root); com.pasiflonet.mobile.utils.CyberUiHelper.wireVerifyBox(b.root) } catch (_: Exception) { }
         
 
 
@@ -182,7 +232,7 @@ class MainActivity : BaseActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             TdLibManager.currentMessages.collect { m ->
                 withContext(Dispatchers.Main) {
-                    try { adapter.updateList(m); com.pasiflonet.mobile.utils.CyberAlertCounter.updateFromMessages(this@MainActivity, m); com.pasiflonet.mobile.utils.CyberUiHelper.refreshMapCounters(b.root); com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root) } catch (_: Exception) { }; com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root)
+                    try { if (::adapter.isInitialized) { adapter.updateList(m); com.pasiflonet.mobile.utils.CyberAlertCounter.updateFromMessages(this@MainActivity, m); com.pasiflonet.mobile.utils.CyberUiHelper.refreshMapCounters(b.root); com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root) } } catch (_: Exception) { }; com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root)
                 }
 
                 m.forEach { msg ->
