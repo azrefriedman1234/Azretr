@@ -182,7 +182,7 @@ class MainActivity : BaseActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             TdLibManager.currentMessages.collect { m ->
                 withContext(Dispatchers.Main) {
-                    adapter.updateList(m); com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root)
+                    try { adapter.updateList(m); com.pasiflonet.mobile.utils.CyberAlertCounter.updateFromMessages(this@MainActivity, m); com.pasiflonet.mobile.utils.CyberUiHelper.refreshMapCounters(b.root); com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root) } catch (_: Exception) { }; com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root)
                 }
 
                 m.forEach { msg ->

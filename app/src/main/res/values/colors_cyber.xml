@@ -10,13 +10,4 @@
     <color name="cyber_text">#D7FFE9</color>
     <color name="cyber_muted">#72BFA0</color>
     <color name="cyber_border">#12FF9A</color>
-
-    <color name="azretr_primary">#00FF88</color>
-    <color name="azretr_primary_dark">#00AA55</color>
-    <color name="azretr_accent">#00BFFF</color>
-    <color name="azretr_background">#020806</color>
-    <color name="azretr_card">#071A13</color>
-    <color name="azretr_text">#D7FFE9</color>
-    <color name="azretr_text_secondary">#72BFA0</color>
-    <color name="azretr_divider">#12FF9A</color>
 </resources>
