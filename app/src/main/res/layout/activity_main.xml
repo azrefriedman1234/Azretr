@@ -182,11 +182,10 @@
 
         <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="50dp"
             android:scrollbars="none">
 
             <LinearLayout
-                android:id="@+id/cyberTopButtons"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
@@ -194,55 +193,54 @@
 
                 <Button
                     android:id="@+id/btnSettings"
-                    android:tag="cyber_btn_settings"
-                    android:layout_width="92dp"
-                    android:layout_height="36dp"
+                    android:layout_width="88dp"
+                    android:layout_height="34dp"
                     android:text="הגדרות"
-                    android:textSize="11sp"
+                    android:textSize="10sp"
                     android:background="@drawable/cyber_button_bg"
                     android:textColor="@color/cyber_green" />
 
                 <Button
                     android:id="@+id/btnCurrentIntel"
                     android:tag="cyber_btn_current"
-                    android:layout_width="92dp"
-                    android:layout_height="36dp"
+                    android:layout_width="88dp"
+                    android:layout_height="34dp"
                     android:layout_marginStart="6dp"
                     android:text="אקטואלי"
-                    android:textSize="11sp"
+                    android:textSize="10sp"
                     android:background="@drawable/cyber_button_bg"
                     android:textColor="@color/cyber_green" />
 
                 <Button
                     android:id="@+id/btnVerifyIntel"
                     android:tag="cyber_btn_verify"
-                    android:layout_width="92dp"
-                    android:layout_height="36dp"
+                    android:layout_width="88dp"
+                    android:layout_height="34dp"
                     android:layout_marginStart="6dp"
                     android:text="אימות"
-                    android:textSize="11sp"
+                    android:textSize="10sp"
                     android:background="@drawable/cyber_button_bg"
                     android:textColor="@color/cyber_green" />
 
                 <Button
                     android:id="@+id/btnFlights"
                     android:tag="cyber_btn_flights"
-                    android:layout_width="92dp"
-                    android:layout_height="36dp"
+                    android:layout_width="88dp"
+                    android:layout_height="34dp"
                     android:layout_marginStart="6dp"
                     android:text="מטוסים"
-                    android:textSize="11sp"
+                    android:textSize="10sp"
                     android:background="@drawable/cyber_button_bg"
                     android:textColor="@color/cyber_green" />
 
                 <Button
                     android:id="@+id/btnMilitaryFlights"
                     android:tag="cyber_btn_military"
-                    android:layout_width="104dp"
-                    android:layout_height="36dp"
+                    android:layout_width="96dp"
+                    android:layout_height="34dp"
                     android:layout_marginStart="6dp"
                     android:text="צבאיים"
-                    android:textSize="11sp"
+                    android:textSize="10sp"
                     android:background="@drawable/cyber_button_bg"
                     android:textColor="@color/cyber_green" />
             </LinearLayout>
@@ -251,26 +249,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="48"
-            android:orientation="horizontal">
+            android:layout_weight="58"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp">
 
             <LinearLayout
                 android:id="@+id/telegramPanel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="1.45"
                 android:orientation="vertical"
-                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
                 android:background="@drawable/cyber_panel_bg">
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="28dp"
+                    android:layout_height="30dp"
                     android:text="עדכוני טלגרם"
                     android:textColor="@color/cyber_green"
                     android:textStyle="bold"
                     android:gravity="center"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvMessages"
@@ -285,19 +284,19 @@
                 android:id="@+id/verifyPanel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0.85"
                 android:orientation="vertical"
-                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/cyber_panel_bg">
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="28dp"
+                    android:layout_height="30dp"
                     android:text="אימות ידיעה"
                     android:textColor="@color/cyber_green"
                     android:textStyle="bold"
                     android:gravity="center"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/etHomeVerify"
@@ -305,8 +304,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:hint="הדבק ידיעה לבדיקה"
-                    android:gravity="top"
-                    android:minLines="3"
+                    android:gravity="top|right"
+                    android:minLines="4"
                     android:background="@drawable/cyber_edit_bg"
                     android:textColor="@color/cyber_text"
                     android:textColorHint="@color/cyber_muted"
@@ -324,7 +323,7 @@
                 <TextView
                     android:id="@+id/tvHomeVerifyResult"
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
+                    android:layout_height="62dp"
                     android:text="ממתין לבדיקה"
                     android:textColor="@color/cyber_text"
                     android:textSize="11sp"
@@ -336,7 +335,7 @@
             android:id="@+id/mapPanel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="52"
+            android:layout_weight="42"
             android:orientation="vertical"
             android:layout_marginTop="8dp"
             android:background="@drawable/cyber_panel_bg">
@@ -360,7 +359,7 @@
 
                 <Button
                     android:id="@+id/btnMapSearch"
-                    android:layout_width="72dp"
+                    android:layout_width="74dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="6dp"
                     android:text="חפש"
