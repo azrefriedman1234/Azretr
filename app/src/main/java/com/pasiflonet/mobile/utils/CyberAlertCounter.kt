@@ -11,7 +11,7 @@ object CyberAlertCounter {
     private const val DATE_KEY = "counter_date"
     private const val SEEN_KEY = "seen_ids"
 
-    private val regions = mapOf(
+    private val regions: Map<String, List<String>> = mapOf(
         "iran" to listOf("איראן", "טהרן", "iran", "tehran", "طهران", "إيران", "ايران"),
         "yemen" to listOf("תימן", "צנעא", "yemen", "sanaa", "صنعاء", "اليمن", "يمن"),
         "syria" to listOf("סוריה", "דמשק", "syria", "damascus", "سوريا", "دمشق"),
@@ -21,56 +21,82 @@ object CyberAlertCounter {
     )
 
     fun updateFromMessages(context: Context, messages: List<TdApi.Message>) {
-        val prefs = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-        resetIfNewDay(prefs)
+        try {
+            val prefs = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+            resetIfNewDay(prefs)
 
-        val seen = prefs.getStringSet(SEEN_KEY, emptySet())?.toMutableSet() ?: mutableSetOf()
-        val edit = prefs.edit()
-        var changed = FalseFlag()
+            val seenOld = prefs.getStringSet(SEEN_KEY, emptySet()) ?: emptySet()
+            val seen = seenOld.toMutableSet()
+            val edit = prefs.edit()
+            var changed = false
 
-        for (msg in messages.take(80)) {
-            val id = "${msg.chatId}_${msg.id}"
-            if (seen.contains(id)) continue
+            val limited = if (messages.size > 80) messages.take(80) else messages
 
-            val text = extractText(msg).lowercase(Locale.getDefault())
-            if (text.isBlank()) continue
+            for (msg in limited) {
+                val id = msg.chatId.toString() + "_" + msg.id.toString()
+                if (seen.contains(id)) continue
 
-            val matched = regions.filterValues { keys ->
-                keys.any { text.contains(it.lowercase(Locale.getDefault())) }
-            }.keys
+                val text = extractText(msg).lowercase(Locale.getDefault())
+                if (text.isBlank()) continue
 
-            if (matched.isNotEmpty()) {
-                seen.add(id)
-                for (region in matched) {
-                    val old = prefs.getInt("count_$region", 0)
-                    edit.putInt("count_$region", old + 1)
+                val matchedRegions = mutableListOf<String>()
+
+                for ((region, words) in regions) {
+                    for (word in words) {
+                        if (text.contains(word.lowercase(Locale.getDefault()))) {
+                            matchedRegions.add(region)
+                            break
+                        }
+                    }
                 }
-                changed.value = true
-            }
-        }
 
-        if (changed.value) {
-            edit.putStringSet(SEEN_KEY, seen.takeLastSafe(600).toSet())
-            edit.apply()
+                if (matchedRegions.isNotEmpty()) {
+                    seen.add(id)
+                    for (region in matchedRegions) {
+                        val oldCount = prefs.getInt("count_$region", 0)
+                        edit.putInt("count_$region", oldCount + 1)
+                    }
+                    changed = true
+                }
+            }
+
+            if (changed) {
+                val trimmed = seen.toList().takeLast(600).toSet()
+                edit.putStringSet(SEEN_KEY, trimmed)
+                edit.apply()
+            }
+        } catch (_: Exception) {
         }
     }
 
     fun getCounts(context: Context): Map<String, Int> {
-        val prefs = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-        resetIfNewDay(prefs)
-        return mapOf(
-            "iran" to prefs.getInt("count_iran", 0),
-            "yemen" to prefs.getInt("count_yemen", 0),
-            "syria" to prefs.getInt("count_syria", 0),
-            "iraq" to prefs.getInt("count_iraq", 0),
-            "israel" to prefs.getInt("count_israel", 0),
-            "gulf" to prefs.getInt("count_gulf", 0)
-        )
+        return try {
+            val prefs = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+            resetIfNewDay(prefs)
+            mapOf(
+                "iran" to prefs.getInt("count_iran", 0),
+                "yemen" to prefs.getInt("count_yemen", 0),
+                "syria" to prefs.getInt("count_syria", 0),
+                "iraq" to prefs.getInt("count_iraq", 0),
+                "israel" to prefs.getInt("count_israel", 0),
+                "gulf" to prefs.getInt("count_gulf", 0)
+            )
+        } catch (_: Exception) {
+            mapOf(
+                "iran" to 0,
+                "yemen" to 0,
+                "syria" to 0,
+                "iraq" to 0,
+                "israel" to 0,
+                "gulf" to 0
+            )
+        }
     }
 
     private fun resetIfNewDay(prefs: android.content.SharedPreferences) {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
         val saved = prefs.getString(DATE_KEY, "")
+
         if (saved != today) {
             prefs.edit()
                 .putString(DATE_KEY, today)
@@ -97,11 +123,4 @@ object CyberAlertCounter {
             else -> ""
         }
     }
-
-    private fun <T> Collection<T>.takeLastSafe(n: Int): List<T> {
-        val list = this.toList()
-        return if (list.size <= n) list else list.takeLast(n)
-    }
-
-    private class FalseFlag(var value: Boolean = false)
 }
