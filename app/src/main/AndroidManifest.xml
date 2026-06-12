@@ -50,5 +50,8 @@
             android:name=".MediaActivity"
             android:exported="false"
             android:screenOrientation="unspecified" />
+            <activity android:name=".CurrentIntelActivity" android:exported="false" />
+        <activity android:name=".VerifyIntelActivity" android:exported="false" />
+        <activity android:name=".FlightTrackerActivity" android:exported="false" />
     </application>
 </manifest>

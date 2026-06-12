@@ -231,7 +231,39 @@ class MainActivity : BaseActivity() {
             ).show()
         }
 
-        b.btnSettings.setOnClickListener {
+        
+        try {
+            val dashboard = b.mainContent as? android.widget.LinearLayout
+            if (dashboard != null && dashboard.findViewWithTag<android.view.View>("azretr_intel_buttons") == null) {
+                val box = android.widget.LinearLayout(this).apply {
+                    tag = "azretr_intel_buttons"
+                    orientation = android.widget.LinearLayout.VERTICAL
+                    setPadding(16, 12, 16, 12)
+                }
+
+                val btnIntel = android.widget.Button(this).apply {
+                    text = "מידע אקטואלי"
+                    setOnClickListener { startActivity(android.content.Intent(this@MainActivity, CurrentIntelActivity::class.java)) }
+                }
+
+                val btnVerify = android.widget.Button(this).apply {
+                    text = "אימות מידע"
+                    setOnClickListener { startActivity(android.content.Intent(this@MainActivity, VerifyIntelActivity::class.java)) }
+                }
+
+                val btnFlights = android.widget.Button(this).apply {
+                    text = "מעקב מטוסים"
+                    setOnClickListener { startActivity(android.content.Intent(this@MainActivity, FlightTrackerActivity::class.java)) }
+                }
+
+                box.addView(btnIntel)
+                box.addView(btnVerify)
+                box.addView(btnFlights)
+                dashboard.addView(box, 1)
+            }
+        } catch (_: Exception) { }
+
+b.btnSettings.setOnClickListener {
             try {
                 startActivity(Intent(this, SettingsActivity::class.java))
             } catch (_: Exception) {
