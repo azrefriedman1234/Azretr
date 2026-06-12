@@ -2,7 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/azretr_background">
+    android:background="@color/cyber_bg"
+    android:layoutDirection="rtl"
+    android:textDirection="rtl">
 
     <ScrollView
         android:id="@+id/apiContainer"
@@ -15,61 +17,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="22dp"
+            android:gravity="center_horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Azretr"
-                android:textColor="@color/azretr_primary"
-                android:textSize="32sp"
+                android:text="AZRETR CYBER"
+                android:textColor="@color/cyber_green"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:gravity="center" />
 
-            <TextView
+            <EditText
+                android:id="@+id/etApiId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="התחברות API"
-                android:textColor="@color/azretr_text_secondary"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:layout_marginTop="6dp" />
+                android:hint="API ID"
+                android:inputType="number"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/cyber_edit_bg"
+                android:textColor="@color/cyber_text"
+                android:textColorHint="@color/cyber_muted" />
 
-            <LinearLayout
+            <EditText
+                android:id="@+id/etApiHash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="24dp"
-                android:padding="18dp"
-                android:background="@color/azretr_card"
-                android:elevation="3dp">
+                android:hint="API HASH"
+                android:inputType="text"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/cyber_edit_bg"
+                android:textColor="@color/cyber_text"
+                android:textColorHint="@color/cyber_muted" />
 
-                <EditText
-                    android:id="@+id/etApiId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="API ID"
-                    android:inputType="number"
-                    android:textColor="@color/azretr_text"
-                    android:textColorHint="@color/azretr_text_secondary" />
-
-                <EditText
-                    android:id="@+id/etApiHash"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="API HASH"
-                    android:inputType="text"
-                    android:textColor="@color/azretr_text"
-                    android:textColorHint="@color/azretr_text_secondary" />
-
-                <Button
-                    android:id="@+id/btnSaveApi"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:text="שמירה" />
-            </LinearLayout>
+            <Button
+                android:id="@+id/btnSaveApi"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="14dp"
+                android:text="שמירה"
+                android:background="@drawable/cyber_button_bg"
+                android:textColor="@color/cyber_green" />
         </LinearLayout>
     </ScrollView>
 
@@ -84,14 +73,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="22dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="התחברות"
-                android:textColor="@color/azretr_primary"
-                android:textSize="30sp"
+                android:textColor="@color/cyber_green"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:gravity="center" />
 
@@ -100,10 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="24dp"
-                android:padding="18dp"
-                android:background="@color/azretr_card"
-                android:elevation="3dp">
+                android:layout_marginTop="18dp"
+                android:background="@drawable/cyber_panel_bg">
 
                 <EditText
                     android:id="@+id/etPhone"
@@ -111,15 +98,18 @@
                     android:layout_height="wrap_content"
                     android:hint="מספר טלפון"
                     android:inputType="phone"
-                    android:textColor="@color/azretr_text"
-                    android:textColorHint="@color/azretr_text_secondary" />
+                    android:background="@drawable/cyber_edit_bg"
+                    android:textColor="@color/cyber_text"
+                    android:textColorHint="@color/cyber_muted" />
 
                 <Button
                     android:id="@+id/btnSendCode"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="שלח קוד" />
+                    android:layout_height="42dp"
+                    android:layout_marginTop="10dp"
+                    android:text="שלח קוד"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
             </LinearLayout>
 
             <LinearLayout
@@ -127,11 +117,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="24dp"
-                android:padding="18dp"
-                android:background="@color/azretr_card"
-                android:elevation="3dp"
-                android:visibility="gone">
+                android:layout_marginTop="18dp"
+                android:visibility="gone"
+                android:background="@drawable/cyber_panel_bg">
 
                 <EditText
                     android:id="@+id/etCode"
@@ -139,15 +127,18 @@
                     android:layout_height="wrap_content"
                     android:hint="קוד אימות"
                     android:inputType="number"
-                    android:textColor="@color/azretr_text"
-                    android:textColorHint="@color/azretr_text_secondary" />
+                    android:background="@drawable/cyber_edit_bg"
+                    android:textColor="@color/cyber_text"
+                    android:textColorHint="@color/cyber_muted" />
 
                 <Button
                     android:id="@+id/btnVerify"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="אימות" />
+                    android:layout_height="42dp"
+                    android:layout_marginTop="10dp"
+                    android:text="אימות"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
             </LinearLayout>
 
             <LinearLayout
@@ -155,11 +146,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="24dp"
-                android:padding="18dp"
-                android:background="@color/azretr_card"
-                android:elevation="3dp"
-                android:visibility="gone">
+                android:layout_marginTop="18dp"
+                android:visibility="gone"
+                android:background="@drawable/cyber_panel_bg">
 
                 <EditText
                     android:id="@+id/etPassword"
@@ -167,15 +156,18 @@
                     android:layout_height="wrap_content"
                     android:hint="סיסמת 2FA"
                     android:inputType="textPassword"
-                    android:textColor="@color/azretr_text"
-                    android:textColorHint="@color/azretr_text_secondary" />
+                    android:background="@drawable/cyber_edit_bg"
+                    android:textColor="@color/cyber_text"
+                    android:textColorHint="@color/cyber_muted" />
 
                 <Button
                     android:id="@+id/btnVerifyPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="אימות סיסמה" />
+                    android:layout_height="42dp"
+                    android:layout_marginTop="10dp"
+                    android:text="אימות סיסמה"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -185,59 +177,212 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:padding="8dp"
         android:visibility="gone">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/cyberTopButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/btnSettings"
+                    android:tag="cyber_btn_settings"
+                    android:layout_width="92dp"
+                    android:layout_height="36dp"
+                    android:text="הגדרות"
+                    android:textSize="11sp"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
+
+                <Button
+                    android:id="@+id/btnCurrentIntel"
+                    android:tag="cyber_btn_current"
+                    android:layout_width="92dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="6dp"
+                    android:text="אקטואלי"
+                    android:textSize="11sp"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
+
+                <Button
+                    android:id="@+id/btnVerifyIntel"
+                    android:tag="cyber_btn_verify"
+                    android:layout_width="92dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="6dp"
+                    android:text="אימות"
+                    android:textSize="11sp"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
+
+                <Button
+                    android:id="@+id/btnFlights"
+                    android:tag="cyber_btn_flights"
+                    android:layout_width="92dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="6dp"
+                    android:text="מטוסים"
+                    android:textSize="11sp"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
+
+                <Button
+                    android:id="@+id/btnMilitaryFlights"
+                    android:tag="cyber_btn_military"
+                    android:layout_width="104dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="6dp"
+                    android:text="צבאיים"
+                    android:textSize="11sp"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="@color/azretr_primary"
-            android:elevation="5dp">
+            android:layout_height="0dp"
+            android:layout_weight="48"
+            android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/telegramPanel"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Azretr"
-                android:textColor="#FFFFFF"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/cyber_panel_bg">
 
-            <Button
-                android:id="@+id/btnSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:text="הגדרות" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="28dp"
+                    android:text="עדכוני טלגרם"
+                    android:textColor="@color/cyber_green"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="14sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMessages"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:padding="4dp"
+                    android:clipToPadding="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/verifyPanel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/cyber_panel_bg">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="28dp"
+                    android:text="אימות ידיעה"
+                    android:textColor="@color/cyber_green"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/etHomeVerify"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:hint="הדבק ידיעה לבדיקה"
+                    android:gravity="top"
+                    android:minLines="3"
+                    android:background="@drawable/cyber_edit_bg"
+                    android:textColor="@color/cyber_text"
+                    android:textColorHint="@color/cyber_muted"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnHomeVerify"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:text="בדיקה"
+                    android:textSize="12sp"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
+
+                <TextView
+                    android:id="@+id/tvHomeVerifyResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:text="ממתין לבדיקה"
+                    android:textColor="@color/cyber_text"
+                    android:textSize="11sp"
+                    android:padding="4dp" />
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="הודעות אחרונות לפי המעקב שלך"
-            android:textColor="@color/azretr_text_secondary"
-            android:textSize="14sp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="8dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvMessages"
+        <LinearLayout
+            android:id="@+id/mapPanel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:clipToPadding="false" />
+            android:layout_weight="52"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/cyber_panel_bg">
 
-        <Button
-            android:id="@+id/btnClearCache"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:text="ניקוי קאש" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etMapSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="חיפוש אזור בעברית: איראן / תימן / מפרץ"
+                    android:singleLine="true"
+                    android:background="@drawable/cyber_edit_bg"
+                    android:textColor="@color/cyber_text"
+                    android:textColorHint="@color/cyber_muted"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnMapSearch"
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:text="חפש"
+                    android:textSize="12sp"
+                    android:background="@drawable/cyber_button_bg"
+                    android:textColor="@color/cyber_green" />
+            </LinearLayout>
+
+            <com.pasiflonet.mobile.utils.CyberMiddleEastMapView
+                android:id="@+id/cyberMap"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnClearCache"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:text="ניקוי קאש"
+                android:textSize="11sp"
+                android:background="@drawable/cyber_button_bg"
+                android:textColor="@color/cyber_green" />
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

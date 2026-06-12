@@ -98,7 +98,7 @@ class MainActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    private fun setupUI() {
+    private fun setupUI() { try { com.pasiflonet.mobile.utils.CyberUiHelper.wireMapSearch(b.root); com.pasiflonet.mobile.utils.CyberUiHelper.wireVerifyBox(b.root) } catch (_: Exception) { }
         try {
             val dashboard = b.mainContent as? android.widget.LinearLayout
             if (dashboard != null && dashboard.findViewWithTag<android.view.View>("azretr_military_button") == null) {
@@ -277,7 +277,23 @@ class MainActivity : BaseActivity() {
             }
         } catch (_: Exception) { }
 
-b.btnSettings.setOnClickListener {
+
+        try {
+            b.root.findViewById<android.widget.Button>(resources.getIdentifier("btnCurrentIntel", "id", packageName))?.setOnClickListener {
+                startActivity(android.content.Intent(this, CurrentIntelActivity::class.java))
+            }
+            b.root.findViewById<android.widget.Button>(resources.getIdentifier("btnVerifyIntel", "id", packageName))?.setOnClickListener {
+                startActivity(android.content.Intent(this, VerifyIntelActivity::class.java))
+            }
+            b.root.findViewById<android.widget.Button>(resources.getIdentifier("btnFlights", "id", packageName))?.setOnClickListener {
+                startActivity(android.content.Intent(this, FlightTrackerActivity::class.java))
+            }
+            b.root.findViewById<android.widget.Button>(resources.getIdentifier("btnMilitaryFlights", "id", packageName))?.setOnClickListener {
+                startActivity(android.content.Intent(this, MilitaryFlightMonitorActivity::class.java))
+            }
+        } catch (_: Exception) { }
+
+        b.btnSettings.setOnClickListener {
             try {
                 startActivity(Intent(this, SettingsActivity::class.java))
             } catch (_: Exception) {
@@ -342,7 +358,7 @@ b.btnSettings.setOnClickListener {
         lifecycleScope.launch(Dispatchers.IO) {
             TdLibManager.currentMessages.collect { m ->
                 withContext(Dispatchers.Main) {
-                    adapter.updateList(m)
+                    adapter.updateList(m); com.pasiflonet.mobile.utils.CyberUiHelper.flashUpdateButtons(this@MainActivity, b.root)
                 }
 
                 m.forEach { msg ->
