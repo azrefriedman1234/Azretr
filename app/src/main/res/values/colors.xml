@@ -1,51 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#FFFFFFFF</color>
-    <color name="black">#FF000000</color>
-
-    <color name="cy_bg">#040805</color>
-    <color name="cy_bg_2">#07100A</color>
-    <color name="cy_card">#0A140D</color>
-    <color name="cy_card_2">#0D1A11</color>
-    <color name="cy_text">#E9FFF0</color>
-    <color name="cy_text_dim">#9BC5A7</color>
-    <color name="cy_stroke">#39FF88</color>
-    <color name="cy_stroke_soft">#168A4D</color>
-    <color name="cy_accent">#00E676</color>
-    <color name="cy_accent_dark">#00C853</color>
-    <color name="cy_chip">#0D2214</color>
-
-    <color name="cyber_primary">#00E676</color>
-    <color name="cyber_primary_dark">#00C853</color>
-    <color name="cyber_secondary">#39FF88</color>
-    <color name="cyber_black">#040805</color>
-    <color name="cyber_white">#E9FFF0</color>
-    <color name="cyber_card">#0D1A11</color>
-    <color name="cyber_border_dim">#168A4D</color>
-
-    <color name="accent_primary">#00E676</color>
-    <color name="accent_soft">#0D2214</color>
-    <color name="surface_chip">#0D2214</color>
-    <color name="surface_input">#0D1A11</color>
-    <color name="surface_card">#0D1A11</color>
-    <color name="stroke_soft">#168A4D</color>
-    <color name="text_primary">#E9FFF0</color>
-    <color name="text_secondary">#9BC5A7</color>
-    <color name="btn_gradient_start">#00E676</color>
-    <color name="btn_gradient_end">#00C853</color>
-
-    <color name="ui_accent">#00E676</color>
-    <color name="ui_card">#0A140D</color>
-    <color name="ui_card_alt">#0D1A11</color>
-    <color name="ui_stroke">#168A4D</color>
-    <color name="ui_bg_top">#07100A</color>
-    <color name="ui_bg_bottom">#040805</color>
-    <color name="ui_text_primary">#E9FFF0</color>
-    <color name="ui_text_secondary">#9BC5A7</color>
-
-    <color name="purple_200">#39FF88</color>
-    <color name="purple_500">#00E676</color>
-    <color name="purple_700">#00C853</color>
-    <color name="teal_200">#39FF88</color>
-    <color name="teal_700">#168A4D</color>
+    <color name="bg_dark">#06111F</color>
+    <color name="bg_card">#102033</color>
+    <color name="accent">#00E5FF</color>
 </resources>
