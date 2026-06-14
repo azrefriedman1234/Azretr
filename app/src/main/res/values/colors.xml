@@ -1,5 +1,9 @@
 <resources>
-    <color name="bg_dark">#06111F</color>
-    <color name="bg_card">#102033</color>
-    <color name="accent">#00E5FF</color>
+    <color name="bg">#07111F</color>
+    <color name="card">#102238</color>
+    <color name="card2">#152B46</color>
+    <color name="text">#F4F8FF</color>
+    <color name="muted">#9CB4D0</color>
+    <color name="accent">#35D0FF</color>
+    <color name="accent2">#8DFFB8</color>
 </resources>

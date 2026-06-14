@@ -1,80 +1,72 @@
 # Azretr Ultra
 
-אפליקציית Android בעברית מלאה, RTL, בעיצוב חמ״ל מודרני, מותאמת במיוחד ל־Galaxy Z Fold 6 ולמסכים רחבים.
+אפליקציית Android עברית RTL לניטור, עריכת מדיה ושליחה לערוץ Telegram.
 
-## מה יש בפרויקט
+## מה כלול
 
-- ממשק Dashboard מודרני בעברית.
-- התאמה למסך מתקפל: תפריט צד במסך רחב ותצוגת כרטיסים במסך רגיל.
-- מודיעין מהיר דרך GDELT API.
-- אימות דיווחים ראשוני לפי מקורות פתוחים.
-- מסך הכנה לחיבור Telegram TDLib ושמירת API ID / API Hash / ערוץ יעד.
-- קישורי מעקב טיסות: OpenSky, ADS-B Exchange, FlightRadar24.
-- מפה וניווט ל־Google Maps ול־Waze.
-- יצירת דוח אירוע לשיתוף.
-- מקורות OSINT מהירים.
-- יומן תצפיות מקומי.
-- GitHub Actions שמקמפל APK אוטומטית ומעלה Artifact.
+- ממשק עברי מלא ו־RTL.
+- התאמה למסכים מתקפלים כמו Galaxy Z Fold 6 באמצעות Activities גמישות ו־resizeableActivity.
+- חיבור Telegram דרך TDLib מקומי בלבד (`app/libs/tdlib.aar`).
+- שימוש ב־FFmpeg Kit מקומי בלבד (`app/libs/ffmpeg-kit-full-gpl-6.0.aar`).
+- עורך מדיה:
+  - בחירת תמונה/וידאו.
+  - סימן מים נגרר באצבע.
+  - טשטוש מותאם אישית על תמונות באמצעות סימון מלבנים.
+  - ייצוא תמונה עם סימן מים וטשטוש.
+  - עיבוד וידאו בסיסי עם FFmpeg אם ה־AAR קיים.
+- שליחה לערוץ:
+  - דרך TDLib והחשבון המחובר, כמו באפליקציה המקורית.
+  - מצב גיבוי אופציונלי דרך Bot API.
+- מקורות מידע:
+  - GDELT.
+  - מקורות רשמיים בישראל.
+  - תעופה / ADS-B / OpenSky.
+  - חירום, כבאות, מד״א, פיקוד העורף.
+- GitHub Actions לקימפול APK.
 
-> הערה חשובה: חיבור Telegram אמיתי דרך TDLib דורש הוספת ספריית TDLib ובניית תהליך Login מלא. בפרויקט הזה יש מסך, שמירת הגדרות ונקודת הרחבה מוכנה, בלי לשמור סודות בשרת חיצוני.
+## חשוב לגבי AAR
 
-## פקודות Termux לחילוץ והעלאה לגיטהאב
+הפרויקט לא מוריד TDLib או FFmpeg מהרשת בזמן קימפול. הוא משתמש רק בקבצים מקומיים מתוך:
 
-שים את הקובץ `AzretrUltra.zip` בתיקיית Downloads ואז הרץ:
-
-```bash
-pkg update -y
-pkg install -y git unzip
-termux-setup-storage
-cd /sdcard/Download
-unzip AzretrUltra.zip
-cd AzretrUltra
-
-git init
-git branch -M main
-git add .
-git commit -m "Initial Azretr Ultra Android project"
+```text
+app/libs/
 ```
 
-### העלאה לריפו חדש
+השאר את הקבצים שכבר קיימים אצלך בריפו:
 
-צור ריפו חדש בגיטהאב בשם `AzretrUltra`, ואז:
-
-```bash
-git remote add origin https://github.com/azrefriedman1234/AzretrUltra.git
-git push -u origin main
+```text
+app/libs/tdlib.aar
+app/libs/ffmpeg-kit-full-gpl-6.0.aar
 ```
 
-### העלאה לריפו הקיים Azretr
-
-אם אתה רוצה להעלות לתוך הריפו הקיים במקום הפרויקט הישן:
+## פקודות Termux להחלפה בטוחה
 
 ```bash
-git remote add origin https://github.com/azrefriedman1234/Azretr.git
-git push -u origin main
+cd ~/storage/downloads
+rm -rf ~/AzretrUltra_NEW
+unzip -o AzretrUltra_FULL.zip -d ~/AzretrUltra_NEW
+
+cd ~/Azretr
+mkdir -p ~/azretr_libs_backup
+cp -av app/libs/*.aar ~/azretr_libs_backup/ 2>/dev/null || true
+cp -av app/libs/*.jar ~/azretr_libs_backup/ 2>/dev/null || true
+
+rsync -av --delete \
+  --exclude ".git" \
+  --exclude "app/libs" \
+  ~/AzretrUltra_NEW/AzretrUltra/ ~/Azretr/
+
+mkdir -p app/libs
+cp -av ~/azretr_libs_backup/* app/libs/ 2>/dev/null || true
+
+git status
+git add -A
+git commit -m "Upgrade Azretr Ultra full media TDLib FFmpeg tools"
+git push
 ```
 
-אם GitHub אומר שהריפו כבר מכיל היסטוריה, עדיף לפתוח ריפו חדש. אם אתה בטוח שאתה רוצה להחליף הכל:
+אחרי ה־push:
 
-```bash
-git push -u origin main --force
-```
-
-## איפה מורידים את ה־APK אחרי Push
-
-1. פתח את הריפו בגיטהאב.
-2. עבור ל־Actions.
-3. פתח את הריצה בשם `Build Android APK`.
-4. בתחתית העמוד הורד את Artifact בשם `AzretrUltra-debug-apk`.
-
-## קומפילציה מקומית למי שיש Android SDK
-
-```bash
-gradle :app:assembleDebug
-```
-
-ה־APK יופיע כאן:
-
-```bash
-app/build/outputs/apk/debug/app-debug.apk
+```text
+GitHub → Azretr → Actions → Build Android APK → Artifacts
 ```

@@ -1,14 +1,31 @@
 plugins { id 'com.android.application' }
 
 android {
-    namespace 'com.azretr.ultra'
+    namespace 'com.pasiflonet.mobile'
     compileSdk 35
 
     defaultConfig {
-        applicationId 'com.azretr.ultra'
+        applicationId 'com.pasiflonet.mobile'
         minSdk 26
         targetSdk 35
-        versionCode 1
-        versionName '1.0.0'
+        versionCode 30
+        versionName '3.0-ultra'
     }
+
+    packagingOptions {
+        resources.excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE',
+                'META-INF/LICENSE.txt',
+                'META-INF/NOTICE',
+                'META-INF/NOTICE.txt',
+                'META-INF/*.kotlin_module'
+        ]
+        jniLibs.useLegacyPackaging true
+    }
+}
+
+dependencies {
+    // משתמש רק בקבצי AAR/JAR מקומיים מתוך app/libs. אין הורדת TDLib/FFmpeg מהרשת.
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }
